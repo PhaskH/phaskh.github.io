@@ -113,6 +113,36 @@ select {
 
 .calculator-actions {
   margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.selection-actions-panel {
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.selection-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+}
+
+.selection-actions-help {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.button-disabled {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(237, 242, 247, 0.58);
+}
+
+.button-disabled:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .skill-summary {

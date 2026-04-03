@@ -27,6 +27,7 @@ const els = {
   calculatorWeapon: document.getElementById("calculator-weapon"),
   resultGrid: document.getElementById("result-grid"),
   calculatorActions: document.getElementById("calculator-actions"),
+  selectionActions: document.getElementById("selection-actions"),
   skillSummaryList: document.getElementById("skill-summary-list"),
   newBuild: document.getElementById("new-build"),
   newWeapon: document.getElementById("new-weapon"),
@@ -507,23 +508,39 @@ function renderCalculatorActions() {
   const selectedWeaponId = els.calculatorWeapon.value || state.selectedWeaponId;
   const weapon = getWeaponById(selectedWeaponId);
   const actions = [
-    `<button id="compare-build-weapon-matrix" type="button">Compare selected Builds/Weapons</button>`,
+    `<button id="compare-rift" type="button" class="${weapon?.isRift ? "" : "button-disabled"}">Compare Rift Combinations</button>`,
   ];
-  if (weapon?.isRift) {
-    actions.push(`<button id="compare-rift" type="button">Compare Rift Combinations</button>`);
-  }
 
   els.calculatorActions.innerHTML = actions.join("");
-  els.calculatorActions
+  els.calculatorActions.querySelector("#compare-rift").addEventListener("click", () => {
+    if (weapon?.isRift) {
+      openRiftComparison();
+      return;
+    }
+    openRiftUnavailableMessage();
+  });
+}
+
+function renderSelectionActions() {
+  els.selectionActions.innerHTML = `
+    <button id="compare-build-weapon-matrix" type="button">Compare Selected Builds & Weapons</button>
+    <div class="selection-actions-help">Select the builds and weapons you want to compare below, then click the button.</div>
+  `;
+  els.selectionActions
     .querySelector("#compare-build-weapon-matrix")
     .addEventListener("click", () => {
       openBuildWeaponComparison();
     });
-  if (weapon?.isRift) {
-    els.calculatorActions.querySelector("#compare-rift").addEventListener("click", () => {
-      openRiftComparison();
-    });
-  }
+}
+
+function openRiftUnavailableMessage() {
+  els.modalTitle.textContent = "Rift Combinations";
+  els.riftModal.querySelector(".modal-window")?.classList.add("modal-window-medium");
+  els.riftModal.querySelector(".modal-window")?.classList.remove("modal-window-compact");
+  els.riftModalContent.innerHTML = `
+    <div class="comparison-intro">This option is only available with rift base weapons.</div>
+  `;
+  els.riftModal.classList.remove("hidden");
 }
 
 function renderSkillSummary() {
@@ -975,6 +992,7 @@ function deleteWeapon(id) {
 }
 
 function renderAll() {
+  renderSelectionActions();
   renderCalculatorSelectors();
   renderResultGrid();
   renderCalculatorActions();
