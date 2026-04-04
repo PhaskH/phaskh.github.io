@@ -16,6 +16,7 @@ const state = {
   buildDraft: null,
   weaponDraft: null,
   matrixComparison: null,
+  buildEditorColumnCount: 1,
 };
 
 const els = {
@@ -637,6 +638,7 @@ function renderBuildForm() {
   }
 
   els.buildForm.classList.remove("hidden");
+  state.buildEditorColumnCount = getBuildEditorColumnCount();
   const labels = getBuildLabels(state.buildDraft, buildDefaultWeapon());
 
   const fieldsMarkup = orderBuildFieldsByVisibleColumn(state.data.buildFields)
@@ -1488,7 +1490,12 @@ function wireGlobalEvents() {
 
   window.addEventListener("resize", () => {
     if (state.buildDraft) {
-      renderBuildForm();
+      const nextColumnCount = getBuildEditorColumnCount();
+      if (nextColumnCount !== state.buildEditorColumnCount) {
+        renderBuildForm();
+      } else {
+        syncBuildEditorSeparators();
+      }
       return;
     }
     syncBuildEditorSeparators();
