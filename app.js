@@ -3,6 +3,7 @@ const STORAGE_KEYS = {
   weapons: "mhn_weapons_v1",
   selectedBuildId: "mhn_selected_build_v1",
   selectedWeaponId: "mhn_selected_weapon_v1",
+  uptimes: "mhn_uptimes_v1",
 };
 
 const state = {
@@ -17,6 +18,9 @@ const state = {
   weaponDraft: null,
   matrixComparison: null,
   buildEditorColumnCount: 1,
+  uptimeFields: [],
+  uptimeValues: {},
+  uptimeDraft: null,
 };
 
 const els = {
@@ -234,6 +238,19 @@ function saveStoredValue(key, value) {
   localStorage.setItem(key, value);
 }
 
+function loadStoredObject(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      return fallback;
+    }
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 function exportAppData() {
   return JSON.stringify(
     {
@@ -303,6 +320,38 @@ function weaponImportFingerprint(item) {
     values: item.values,
     isRift: Boolean(item.isRift),
   });
+}
+
+function collectDefaultUptimeFields() {
+  const sheet = state.data?.sheets?.Calculator1;
+  if (!sheet) {
+    return [];
+  }
+
+  const fields = [];
+  for (let rowIndex = 23; rowIndex <= 46; rowIndex += 1) {
+    const label = sheet[rowIndex]?.[3];
+    const defaultValue = Number(sheet[rowIndex]?.[4]);
+    if (!label) {
+      continue;
+    }
+    fields.push({
+      ref: `E${rowIndex + 1}`,
+      label: String(label),
+      defaultValue: Number.isFinite(defaultValue) ? defaultValue : 0,
+    });
+  }
+  return fields;
+}
+
+function buildDefaultUptimeValues() {
+  return Object.fromEntries(
+    state.uptimeFields.map((field) => [field.ref, field.defaultValue]),
+  );
+}
+
+function persistUptimes() {
+  localStorage.setItem(STORAGE_KEYS.uptimes, JSON.stringify(state.uptimeValues));
 }
 
 async function copyTextToClipboard(text) {
@@ -403,6 +452,9 @@ function applyScenario(engine, build, weapon) {
   }
   for (const field of state.data.weaponFields) {
     writeCell(engine, "Calculator1", field.ref, weapon.values[field.ref]);
+  }
+  for (const field of state.uptimeFields) {
+    writeCell(engine, "Calculator1", field.ref, state.uptimeValues[field.ref]);
   }
 }
 
@@ -525,12 +577,18 @@ function renderCalculatorActions() {
 function renderSelectionActions() {
   els.selectionActions.innerHTML = `
     <button id="compare-build-weapon-matrix" type="button">Compare Selected Builds & Weapons</button>
+    <button id="view-edit-uptimes" type="button">View/Edit Uptimes</button>
     <div class="selection-actions-help">Select the builds and weapons you want to compare below, then click the button.</div>
   `;
   els.selectionActions
     .querySelector("#compare-build-weapon-matrix")
     .addEventListener("click", () => {
       openBuildWeaponComparison();
+    });
+  els.selectionActions
+    .querySelector("#view-edit-uptimes")
+    .addEventListener("click", () => {
+      openUptimesModal();
     });
 }
 
@@ -541,6 +599,67 @@ function openRiftUnavailableMessage() {
   els.riftModalContent.innerHTML = `
     <div class="comparison-intro">This option is only available with rift base weapons.</div>
   `;
+  els.riftModal.classList.remove("hidden");
+}
+
+function openUptimesModal() {
+  state.uptimeDraft = { ...state.uptimeValues };
+  renderUptimesModal();
+}
+
+function renderUptimesModal() {
+  if (!state.uptimeDraft) {
+    return;
+  }
+
+  els.modalTitle.textContent = "View/Edit Uptimes";
+  els.riftModal.querySelector(".modal-window")?.classList.add("modal-window-medium");
+  els.riftModal.querySelector(".modal-window")?.classList.remove("modal-window-compact");
+  els.riftModalContent.innerHTML = `
+    <div class="editor-actions-row uptime-actions-row">
+      <button type="button" id="save-uptimes">Save Values</button>
+      <button class="secondary" type="button" id="revert-uptimes">Revert to Default (KreaTV1 sheet)</button>
+      <button class="secondary" type="button" id="discard-uptimes">Discard</button>
+    </div>
+    <div class="uptime-list">
+      ${state.uptimeFields
+        .map((field) => `
+          <label class="uptime-row" for="uptime-${field.ref}">
+            <span class="uptime-label">${escapeHtml(field.label)}</span>
+            <input id="uptime-${field.ref}" type="number" min="0" max="100" step="0.1" data-uptime-field="${field.ref}" value="${escapeHtml(((state.uptimeDraft[field.ref] ?? 0) * 100).toFixed(1))}" />
+            <span class="uptime-unit">%</span>
+          </label>
+        `)
+        .join("")}
+    </div>
+  `;
+
+  els.riftModalContent.querySelectorAll("[data-uptime-field]").forEach((input) => {
+    input.addEventListener("input", (event) => {
+      const ref = event.target.dataset.uptimeField;
+      const numeric = Number(event.target.value);
+      const percent = Number.isFinite(numeric) ? Math.min(100, Math.max(0, numeric)) / 100 : 0;
+      state.uptimeDraft[ref] = percent;
+    });
+  });
+
+  els.riftModalContent.querySelector("#save-uptimes").addEventListener("click", () => {
+    state.uptimeValues = { ...state.uptimeDraft };
+    persistUptimes();
+    state.uptimeDraft = null;
+    closeModal();
+    renderAll();
+  });
+
+  els.riftModalContent.querySelector("#revert-uptimes").addEventListener("click", () => {
+    state.uptimeDraft = buildDefaultUptimeValues();
+    renderUptimesModal();
+  });
+
+  els.riftModalContent.querySelector("#discard-uptimes").addEventListener("click", () => {
+    closeModal();
+  });
+
   els.riftModal.classList.remove("hidden");
 }
 
@@ -1392,6 +1511,7 @@ function renderBuildWeaponComparison() {
 
 function closeModal() {
   state.matrixComparison = null;
+  state.uptimeDraft = null;
   els.riftModal.querySelector(".modal-window")?.classList.remove("modal-window-compact");
   els.riftModal.querySelector(".modal-window")?.classList.remove("modal-window-medium");
   els.riftModal.classList.add("hidden");
@@ -1520,6 +1640,11 @@ async function init() {
 
   state.builds = loadStoredItems(STORAGE_KEYS.builds);
   state.weapons = loadStoredItems(STORAGE_KEYS.weapons);
+  state.uptimeFields = collectDefaultUptimeFields();
+  state.uptimeValues = {
+    ...buildDefaultUptimeValues(),
+    ...loadStoredObject(STORAGE_KEYS.uptimes, {}),
+  };
 
   if (!state.builds.length) {
     state.builds = [buildDefaultBuild()];

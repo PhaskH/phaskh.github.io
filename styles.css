@@ -128,11 +128,45 @@ select {
   align-items: center;
   justify-content: flex-start;
   gap: 14px;
+  flex-wrap: wrap;
 }
 
 .selection-actions-help {
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.uptime-list {
+  display: grid;
+  grid-template-columns: max-content 84px max-content;
+  gap: 8px 4px;
+  margin-bottom: 14px;
+  width: fit-content;
+  align-items: center;
+}
+
+.uptime-actions-row {
+  margin-bottom: 14px;
+}
+
+.uptime-row {
+  display: contents;
+}
+
+.uptime-label {
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.uptime-row input {
+  width: 84px;
+  min-width: 84px;
+  text-align: right;
+}
+
+.uptime-unit {
+  color: var(--muted);
+  font-size: 0.88rem;
 }
 
 .button-disabled {
