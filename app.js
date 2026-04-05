@@ -36,6 +36,8 @@ const els = {
   skillSummaryList: document.getElementById("skill-summary-list"),
   newBuild: document.getElementById("new-build"),
   newWeapon: document.getElementById("new-weapon"),
+  exportSelectedBuilds: document.getElementById("export-selected-builds"),
+  exportSelectedWeapons: document.getElementById("export-selected-weapons"),
   exportData: document.getElementById("export-data"),
   importData: document.getElementById("import-data"),
   riftModal: document.getElementById("rift-modal"),
@@ -257,6 +259,18 @@ function exportAppData() {
       version: 1,
       builds: state.builds,
       weapons: state.weapons,
+    },
+    null,
+    0,
+  );
+}
+
+function exportScopedData({ builds = [], weapons = [] }) {
+  return JSON.stringify(
+    {
+      version: 1,
+      builds,
+      weapons,
     },
     null,
     0,
@@ -1325,14 +1339,13 @@ function openBuildWeaponComparison() {
   renderBuildWeaponComparison();
 }
 
-function openExportModal() {
-  const payload = exportAppData();
+function openExportModal(payload = exportAppData(), description = "Copy this string and keep it somewhere safe. It contains all currently stored builds and weapons.") {
   els.modalTitle.textContent = "Export Data";
   els.riftModal.querySelector(".modal-window")?.classList.add("modal-window-medium");
   els.riftModal.querySelector(".modal-window")?.classList.remove("modal-window-compact");
   els.riftModalContent.innerHTML = `
     <div class="transfer-copy">
-      <p class="comparison-intro">Copy this string and keep it somewhere safe. It contains all currently stored builds and weapons.</p>
+      <p class="comparison-intro">${escapeHtml(description)}</p>
       <textarea class="transfer-textarea" id="export-payload" readonly></textarea>
       <div class="transfer-actions">
         <button type="button" id="copy-export-payload">Copy</button>
@@ -1568,6 +1581,22 @@ function wireGlobalEvents() {
     renderWeaponForm();
     renderWeaponList();
     scrollEditorIntoView(els.weaponForm);
+  });
+
+  els.exportSelectedBuilds.addEventListener("click", () => {
+    const builds = state.builds.filter((build) => build.compareEnabled !== false);
+    openExportModal(
+      exportScopedData({ builds, weapons: [] }),
+      "Copy this string to export only the selected builds.",
+    );
+  });
+
+  els.exportSelectedWeapons.addEventListener("click", () => {
+    const weapons = state.weapons.filter((weapon) => weapon.compareEnabled !== false);
+    openExportModal(
+      exportScopedData({ builds: [], weapons }),
+      "Copy this string to export only the selected weapons.",
+    );
   });
 
   els.exportData.addEventListener("click", () => {

@@ -680,9 +680,14 @@ button.danger:hover {
 }
 
 .transfer-feedback {
-  min-height: 1.2em;
-  color: var(--muted);
-  font-size: 0.88rem;
+  min-height: 1.6em;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 12px;
+  border: 1px solid rgba(79, 140, 255, 0.26);
+  border-radius: 10px;
+  background: rgba(79, 140, 255, 0.08);
 }
 
 .comparison-table-wrap {
@@ -721,12 +726,12 @@ button.danger:hover {
 
 .comparison-corner {
   z-index: 3;
-  min-width: 170px;
+  min-width: 132px;
 }
 
 .comparison-header-cell,
 .comparison-header-row {
-  padding: 10px 12px;
+  padding: 7px 9px;
   text-align: left;
   font-size: 0.88rem;
   color: var(--text);
@@ -736,11 +741,11 @@ button.danger:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  gap: 2px;
   width: 100%;
-  min-width: 148px;
-  min-height: 84px;
-  padding: 10px 12px;
+  min-width: 112px;
+  min-height: 64px;
+  padding: 7px 9px;
   border: 0;
   border-radius: 0;
   color: var(--text);
@@ -827,7 +832,4 @@ button.danger:hover {
     align-items: flex-start;
   }
 
-  .comparison-cell {
-    min-width: 132px;
-  }
 }

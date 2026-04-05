@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MHN Lance Meta Generator</title>
+    <title>MHN eDMG Build Compare</title>
     <link rel="stylesheet" href="./styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/hyperformula@3.2.0/dist/hyperformula.full.min.js"></script>
     <script src="./data/workbook-data.js"></script>
@@ -12,8 +12,8 @@
     <div class="app-shell">
       <header class="app-header">
         <div>
-          <h1>MHN Lance Meta Generator - Beta!</h1>
-          <p>Created by Phask, using KreaTV1 calc sheet (3.6.0), built for Scorch, Zuu and #lance (works for other weapons too...)</p>
+          <h1>MHN eDMG Build Compare - Beta! v0.3.6.2</h1>
+          <p>Created by Phask, using KreaTV1 calc sheet (3.6.2), built for our MHN Community: <a href="https://discord.gg/monsterhunternow" target="_blank" rel="noopener noreferrer">https://discord.gg/monsterhunternow</a></p>
         </div>
       </header>
 
@@ -54,6 +54,7 @@
           </div>
           <div class="library-controls">
             <button id="new-build" type="button">New Build</button>
+            <button id="export-selected-builds" type="button">Export Selected</button>
           </div>
           <div class="library-list" id="build-list"></div>
         </section>
@@ -64,6 +65,7 @@
           </div>
           <div class="library-controls">
             <button id="new-weapon" type="button">New Weapon</button>
+            <button id="export-selected-weapons" type="button">Export Selected</button>
           </div>
           <div class="library-list" id="weapon-list"></div>
         </section>
