@@ -478,6 +478,9 @@ function getBuildLabels(build, weapon) {
   const labels = {};
   for (const field of state.data.buildFields) {
     labels[field.ref] = readCell(engine, "Calculator1", field.labelRef);
+    if (labels[field.ref] === "Vital Fire") {
+      labels[field.ref] = "Vital Element";
+    }
   }
   labels.B3 = "Elemental Attack";
   labels.B4 = "Adv. Elemental Attack";
