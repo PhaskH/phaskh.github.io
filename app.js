@@ -1492,7 +1492,9 @@ function renderBuildWeaponComparison() {
 
       return `
         <tr>
-          <th scope="row" class="comparison-header-row">${escapeHtml(weapon.name)}</th>
+          <th scope="row" class="comparison-header-row" title="${escapeHtml(weapon.name)}">
+            <span class="comparison-header-row-text">${escapeHtml(weapon.name)}</span>
+          </th>
           ${cells}
         </tr>
       `;

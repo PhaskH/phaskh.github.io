@@ -726,7 +726,7 @@ button.danger:hover {
 
 .comparison-corner {
   z-index: 3;
-  min-width: 132px;
+  min-width: 96px;
 }
 
 .comparison-header-cell,
@@ -735,6 +735,24 @@ button.danger:hover {
   text-align: left;
   font-size: 0.88rem;
   color: var(--text);
+}
+
+.comparison-header-row {
+  width: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  vertical-align: top;
+}
+
+.comparison-header-row-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  max-height: calc(1.2em * 2);
+  word-break: break-word;
 }
 
 .comparison-cell {
