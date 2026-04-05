@@ -565,7 +565,7 @@ function renderResultGrid() {
 
   els.resultGrid.innerHTML = `
     <div class="result-card">
-      <div class="label">Effective DPS</div>
+      <div class="label">Effective Damage</div>
       <div class="value">${escapeHtml(formatResult(result.h12))}</div>
     </div>
   `;
