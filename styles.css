@@ -726,28 +726,24 @@ button.danger:hover {
 
 .comparison-corner {
   z-index: 3;
-  min-width: 96px;
+  min-width: 76px;
 }
 
 .comparison-header-cell,
 .comparison-header-row {
-  padding: 7px 9px;
+  padding: 7px 5px;
   text-align: left;
   font-size: 0.88rem;
   color: var(--text);
 }
 
 .comparison-header-cell {
-  width: 112px;
-  min-width: 112px;
-  max-width: 112px;
+  min-width: 82px;
   vertical-align: top;
 }
 
 .comparison-header-row {
-  width: 96px;
-  min-width: 96px;
-  max-width: 96px;
+  min-width: 76px;
   vertical-align: top;
 }
 
@@ -763,15 +759,25 @@ button.danger:hover {
   word-break: break-word;
 }
 
+.comparison-header-cell-text {
+  width: 82px;
+  max-width: 82px;
+}
+
+.comparison-header-row-text {
+  width: 76px;
+  max-width: 76px;
+}
+
 .comparison-cell {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
   width: 100%;
-  min-width: 112px;
+  min-width: 82px;
   min-height: 64px;
-  padding: 7px 9px;
+  padding: 7px 5px;
   border: 0;
   border-radius: 0;
   color: var(--text);
