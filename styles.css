@@ -737,6 +737,13 @@ button.danger:hover {
   color: var(--text);
 }
 
+.comparison-header-cell {
+  width: 112px;
+  min-width: 112px;
+  max-width: 112px;
+  vertical-align: top;
+}
+
 .comparison-header-row {
   width: 96px;
   min-width: 96px;
@@ -744,6 +751,7 @@ button.danger:hover {
   vertical-align: top;
 }
 
+.comparison-header-cell-text,
 .comparison-header-row-text {
   display: -webkit-box;
   -webkit-box-orient: vertical;

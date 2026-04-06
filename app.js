@@ -1453,8 +1453,8 @@ function renderBuildWeaponComparison() {
   const headerCells = buildsToCompare
     .map(
       (build) => `
-        <th scope="col" class="comparison-header-cell">
-          ${escapeHtml(build.name)}
+        <th scope="col" class="comparison-header-cell" title="${escapeHtml(build.name)}">
+          <span class="comparison-header-cell-text">${escapeHtml(build.name)}</span>
         </th>
       `,
     )
