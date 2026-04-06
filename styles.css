@@ -760,13 +760,13 @@ button.danger:hover {
 }
 
 .comparison-header-cell-text {
-  width: 82px;
-  max-width: 82px;
+  width: auto;
+  max-width: min(140px, 18vw);
 }
 
 .comparison-header-row-text {
-  width: 76px;
-  max-width: 76px;
+  width: auto;
+  max-width: min(120px, 15vw);
 }
 
 .comparison-cell {
