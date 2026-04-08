@@ -341,6 +341,11 @@ function collectDefaultUptimeFields() {
   if (!sheet) {
     return [];
   }
+  const engine = createEngine();
+  const getDefaultValue = (ref, fallback = 0) => {
+    const value = readCell(engine, "Calculator1", ref);
+    return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+  };
 
   const fields = [];
   const remainingHealthLabel = sheet[14]?.[3];
@@ -364,6 +369,21 @@ function collectDefaultUptimeFields() {
       displayScale: 100,
     });
   }
+
+  [
+    { ref: "H68", label: "Resus BE" },
+    { ref: "I68", label: "Coal BE" },
+    { ref: "H69", label: "Resus BD" },
+    { ref: "I69", label: "Coal BD" },
+  ].forEach((field) => {
+    fields.push({
+      ref: field.ref,
+      label: field.label,
+      defaultValue: getDefaultValue(field.ref),
+      displayScale: 100,
+    });
+  });
+
   return fields;
 }
 
@@ -371,6 +391,10 @@ function buildDefaultUptimeValues() {
   return Object.fromEntries(
     state.uptimeFields.map((field) => [field.ref, field.defaultValue]),
   );
+}
+
+function isUsingDefaultUptime(field, value) {
+  return Math.abs((value ?? 0) - (field?.defaultValue ?? 0)) < 0.000001;
 }
 
 function persistUptimes() {
@@ -663,6 +687,7 @@ function renderUptimesModal() {
                 : ((state.uptimeDraft[field.ref] ?? 0) * (field.displayScale ?? 100)).toFixed(1),
             )}" />
             <span class="uptime-unit">${field.displayScale === 1 ? "" : "%"}</span>
+            <span class="uptime-default-indicator" data-uptime-default-indicator="${field.ref}">${isUsingDefaultUptime(field, state.uptimeDraft[field.ref]) ? "Using Krea default" : ""}</span>
           </label>
         `)
         .join("")}
@@ -678,6 +703,10 @@ function renderUptimesModal() {
       const fallbackValue = field?.displayScale === 1 ? 1 : 0;
       const boundedValue = Number.isFinite(numeric) ? Math.min(100, Math.max(minValue, numeric)) : fallbackValue;
       state.uptimeDraft[ref] = boundedValue / (field?.displayScale ?? 100);
+      const indicator = els.riftModalContent.querySelector(`[data-uptime-default-indicator="${ref}"]`);
+      if (indicator) {
+        indicator.textContent = isUsingDefaultUptime(field, state.uptimeDraft[ref]) ? "Using Krea default" : "";
+      }
     });
   });
 
