@@ -35,7 +35,11 @@ const els = {
   selectionActions: document.getElementById("selection-actions"),
   skillSummaryList: document.getElementById("skill-summary-list"),
   newBuild: document.getElementById("new-build"),
+  selectAllBuilds: document.getElementById("select-all-builds"),
+  deselectAllBuilds: document.getElementById("deselect-all-builds"),
   newWeapon: document.getElementById("new-weapon"),
+  selectAllWeapons: document.getElementById("select-all-weapons"),
+  deselectAllWeapons: document.getElementById("deselect-all-weapons"),
   exportSelectedBuilds: document.getElementById("export-selected-builds"),
   exportSelectedWeapons: document.getElementById("export-selected-weapons"),
   exportData: document.getElementById("export-data"),
@@ -399,6 +403,18 @@ function isUsingDefaultUptime(field, value) {
 
 function persistUptimes() {
   localStorage.setItem(STORAGE_KEYS.uptimes, JSON.stringify(state.uptimeValues));
+}
+
+function setAllBuildsCompareEnabled(compareEnabled) {
+  state.builds = state.builds.map((build) => ({ ...build, compareEnabled }));
+  persistBuilds();
+  renderBuildList();
+}
+
+function setAllWeaponsCompareEnabled(compareEnabled) {
+  state.weapons = state.weapons.map((weapon) => ({ ...weapon, compareEnabled }));
+  persistWeapons();
+  renderWeaponList();
 }
 
 async function copyTextToClipboard(text) {
@@ -1388,12 +1404,21 @@ function openBuildWeaponComparison() {
 }
 
 function openExportModal(payload = exportAppData(), description = "Copy this string and keep it somewhere safe. It contains all currently stored builds and weapons.") {
+  let exportSummary = "Exporting: 0 builds, 0 weapons";
+  try {
+    const parsed = JSON.parse(payload);
+    const buildCount = Array.isArray(parsed?.builds) ? parsed.builds.length : 0;
+    const weaponCount = Array.isArray(parsed?.weapons) ? parsed.weapons.length : 0;
+    exportSummary = `Exporting: ${buildCount} builds, ${weaponCount} weapons`;
+  } catch {}
+
   els.modalTitle.textContent = "Export Data";
   els.riftModal.querySelector(".modal-window")?.classList.add("modal-window-medium");
   els.riftModal.querySelector(".modal-window")?.classList.remove("modal-window-compact");
   els.riftModalContent.innerHTML = `
     <div class="transfer-copy">
       <p class="comparison-intro">${escapeHtml(description)}</p>
+      <div class="transfer-summary">${escapeHtml(exportSummary)}</div>
       <textarea class="transfer-textarea" id="export-payload" readonly></textarea>
       <div class="transfer-actions">
         <button type="button" id="copy-export-payload">Copy</button>
@@ -1625,12 +1650,28 @@ function wireGlobalEvents() {
     scrollEditorIntoView(els.buildForm);
   });
 
+  els.selectAllBuilds.addEventListener("click", () => {
+    setAllBuildsCompareEnabled(true);
+  });
+
+  els.deselectAllBuilds.addEventListener("click", () => {
+    setAllBuildsCompareEnabled(false);
+  });
+
   els.newWeapon.addEventListener("click", () => {
     state.editingWeaponId = null;
     state.weaponDraft = buildDefaultWeapon();
     renderWeaponForm();
     renderWeaponList();
     scrollEditorIntoView(els.weaponForm);
+  });
+
+  els.selectAllWeapons.addEventListener("click", () => {
+    setAllWeaponsCompareEnabled(true);
+  });
+
+  els.deselectAllWeapons.addEventListener("click", () => {
+    setAllWeaponsCompareEnabled(false);
   });
 
   els.exportSelectedBuilds.addEventListener("click", () => {

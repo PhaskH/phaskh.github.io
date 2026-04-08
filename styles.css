@@ -667,6 +667,12 @@ button.danger:hover {
   gap: 12px;
 }
 
+.transfer-summary {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .transfer-textarea {
   width: 100%;
   min-height: 220px;
