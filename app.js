@@ -343,6 +343,14 @@ function collectDefaultUptimeFields() {
   }
 
   const fields = [];
+  const remainingHealthLabel = sheet[14]?.[3];
+  fields.push({
+    ref: "E15",
+    label: String(remainingHealthLabel || "Remaining Health"),
+    defaultValue: 100,
+    displayScale: 1,
+  });
+
   for (let rowIndex = 23; rowIndex <= 46; rowIndex += 1) {
     const label = sheet[rowIndex]?.[3];
     const defaultValue = Number(sheet[rowIndex]?.[4]);
@@ -353,6 +361,7 @@ function collectDefaultUptimeFields() {
       ref: `E${rowIndex + 1}`,
       label: String(label),
       defaultValue: Number.isFinite(defaultValue) ? defaultValue : 0,
+      displayScale: 100,
     });
   }
   return fields;
@@ -648,8 +657,12 @@ function renderUptimesModal() {
         .map((field) => `
           <label class="uptime-row" for="uptime-${field.ref}">
             <span class="uptime-label">${escapeHtml(field.label)}</span>
-            <input id="uptime-${field.ref}" type="number" min="0" max="100" step="0.1" data-uptime-field="${field.ref}" value="${escapeHtml(((state.uptimeDraft[field.ref] ?? 0) * 100).toFixed(1))}" />
-            <span class="uptime-unit">%</span>
+            <input id="uptime-${field.ref}" type="number" min="${field.displayScale === 1 ? "1" : "0"}" max="100" step="${field.displayScale === 1 ? "1" : "0.1"}" data-uptime-field="${field.ref}" value="${escapeHtml(
+              field.displayScale === 1
+                ? String(Math.round(state.uptimeDraft[field.ref] ?? 0))
+                : ((state.uptimeDraft[field.ref] ?? 0) * (field.displayScale ?? 100)).toFixed(1),
+            )}" />
+            <span class="uptime-unit">${field.displayScale === 1 ? "" : "%"}</span>
           </label>
         `)
         .join("")}
@@ -659,9 +672,12 @@ function renderUptimesModal() {
   els.riftModalContent.querySelectorAll("[data-uptime-field]").forEach((input) => {
     input.addEventListener("input", (event) => {
       const ref = event.target.dataset.uptimeField;
+      const field = state.uptimeFields.find((item) => item.ref === ref);
       const numeric = Number(event.target.value);
-      const percent = Number.isFinite(numeric) ? Math.min(100, Math.max(0, numeric)) / 100 : 0;
-      state.uptimeDraft[ref] = percent;
+      const minValue = field?.displayScale === 1 ? 1 : 0;
+      const fallbackValue = field?.displayScale === 1 ? 1 : 0;
+      const boundedValue = Number.isFinite(numeric) ? Math.min(100, Math.max(minValue, numeric)) : fallbackValue;
+      state.uptimeDraft[ref] = boundedValue / (field?.displayScale ?? 100);
     });
   });
 
