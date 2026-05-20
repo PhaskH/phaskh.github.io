@@ -358,6 +358,7 @@ function collectDefaultUptimeFields() {
     label: String(remainingHealthLabel || "Remaining Health"),
     defaultValue: 100,
     displayScale: 1,
+    maxValue: 160,
   });
 
   for (let rowIndex = 23; rowIndex <= 46; rowIndex += 1) {
@@ -399,6 +400,35 @@ function buildDefaultUptimeValues() {
 
 function isUsingDefaultUptime(field, value) {
   return Math.abs((value ?? 0) - (field?.defaultValue ?? 0)) < 0.000001;
+}
+
+function getUptimeMinValue(field) {
+  return field?.displayScale === 1 ? 1 : 0;
+}
+
+function getUptimeMaxValue(field) {
+  return field?.maxValue ?? 100;
+}
+
+function updateUptimeFeedback(input, field) {
+  const ref = input.dataset.uptimeField;
+  const numeric = Number(input.value);
+  const minValue = getUptimeMinValue(field);
+  const maxValue = getUptimeMaxValue(field);
+  const isInvalid = input.value.trim() !== "" && (!Number.isFinite(numeric) || numeric < minValue || numeric > maxValue);
+  const feedback = els.riftModalContent.querySelector(`[data-uptime-feedback="${ref}"]`);
+
+  input.classList.toggle("uptime-input-invalid", isInvalid);
+  input.setAttribute("aria-invalid", isInvalid ? "true" : "false");
+
+  if (!feedback) {
+    return;
+  }
+
+  feedback.classList.toggle("uptime-validation-error", isInvalid);
+  feedback.textContent = isInvalid
+    ? `Only values ${minValue}-${maxValue} are valid.`
+    : isUsingDefaultUptime(field, state.uptimeDraft[ref]) ? "Using Krea default" : "";
 }
 
 function persistUptimes() {
@@ -694,18 +724,22 @@ function renderUptimesModal() {
     </div>
     <div class="uptime-list">
       ${state.uptimeFields
-        .map((field) => `
+        .map((field) => {
+          const minValue = getUptimeMinValue(field);
+          const maxValue = getUptimeMaxValue(field);
+          return `
           <label class="uptime-row" for="uptime-${field.ref}">
             <span class="uptime-label">${escapeHtml(field.label)}</span>
-            <input id="uptime-${field.ref}" type="number" min="${field.displayScale === 1 ? "1" : "0"}" max="100" step="${field.displayScale === 1 ? "1" : "0.1"}" data-uptime-field="${field.ref}" value="${escapeHtml(
+            <input id="uptime-${field.ref}" type="number" min="${minValue}" max="${maxValue}" step="${field.displayScale === 1 ? "1" : "0.1"}" data-uptime-field="${field.ref}" aria-invalid="false" aria-describedby="uptime-feedback-${field.ref}" value="${escapeHtml(
               field.displayScale === 1
                 ? String(Math.round(state.uptimeDraft[field.ref] ?? 0))
                 : ((state.uptimeDraft[field.ref] ?? 0) * (field.displayScale ?? 100)).toFixed(1),
             )}" />
             <span class="uptime-unit">${field.displayScale === 1 ? "" : "%"}</span>
-            <span class="uptime-default-indicator" data-uptime-default-indicator="${field.ref}">${isUsingDefaultUptime(field, state.uptimeDraft[field.ref]) ? "Using Krea default" : ""}</span>
+            <span id="uptime-feedback-${field.ref}" class="uptime-feedback" data-uptime-feedback="${field.ref}">${isUsingDefaultUptime(field, state.uptimeDraft[field.ref]) ? "Using Krea default" : ""}</span>
           </label>
-        `)
+        `;
+        })
         .join("")}
     </div>
   `;
@@ -715,15 +749,15 @@ function renderUptimesModal() {
       const ref = event.target.dataset.uptimeField;
       const field = state.uptimeFields.find((item) => item.ref === ref);
       const numeric = Number(event.target.value);
-      const minValue = field?.displayScale === 1 ? 1 : 0;
-      const fallbackValue = field?.displayScale === 1 ? 1 : 0;
-      const boundedValue = Number.isFinite(numeric) ? Math.min(100, Math.max(minValue, numeric)) : fallbackValue;
+      const minValue = getUptimeMinValue(field);
+      const maxValue = getUptimeMaxValue(field);
+      const fallbackValue = minValue;
+      const boundedValue = Number.isFinite(numeric) ? Math.min(maxValue, Math.max(minValue, numeric)) : fallbackValue;
       state.uptimeDraft[ref] = boundedValue / (field?.displayScale ?? 100);
-      const indicator = els.riftModalContent.querySelector(`[data-uptime-default-indicator="${ref}"]`);
-      if (indicator) {
-        indicator.textContent = isUsingDefaultUptime(field, state.uptimeDraft[ref]) ? "Using Krea default" : "";
-      }
+      updateUptimeFeedback(event.target, field);
     });
+    const field = state.uptimeFields.find((item) => item.ref === input.dataset.uptimeField);
+    updateUptimeFeedback(input, field);
   });
 
   els.riftModalContent.querySelector("#save-uptimes").addEventListener("click", () => {

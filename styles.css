@@ -176,10 +176,15 @@ select {
   font-size: 0.88rem;
 }
 
-.uptime-default-indicator {
+.uptime-feedback {
   color: #98dbb5;
   font-size: 0.82rem;
   white-space: nowrap;
+}
+
+.uptime-feedback.uptime-validation-error {
+  color: var(--danger);
+  font-weight: 600;
 }
 
 .button-disabled {
@@ -269,6 +274,13 @@ input:focus,
 select:focus {
   outline: 2px solid rgba(79, 140, 255, 0.35);
   border-color: var(--accent);
+}
+
+.uptime-row input.uptime-input-invalid,
+.uptime-row input.uptime-input-invalid:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 1px rgba(210, 100, 100, 0.4);
+  outline: 2px solid rgba(210, 100, 100, 0.2);
 }
 
 button {
