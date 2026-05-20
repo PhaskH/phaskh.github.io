@@ -1,123 +1,10 @@
 const STORAGE_KEYS = {
-  builds: "mhn_builds_v363",
-  weapons: "mhn_weapons_v363",
-  selectedBuildId: "mhn_selected_build_v363",
-  selectedWeaponId: "mhn_selected_weapon_v363",
-  uptimes: "mhn_uptimes_v363",
-};
-
-const LEGACY_STORAGE_KEYS = {
   builds: "mhn_builds_v1",
   weapons: "mhn_weapons_v1",
   selectedBuildId: "mhn_selected_build_v1",
   selectedWeaponId: "mhn_selected_weapon_v1",
   uptimes: "mhn_uptimes_v1",
 };
-
-const EXPORT_FORMAT_VERSION = 2;
-
-const LEGACY_BUILD_KEYS = [
-  "elementalAttack",
-  "advancedElementalAttack",
-  "aggressiveDodger",
-  "artillery",
-  "attackBoost",
-  "advancedAttackBoost",
-  "attackEfficacy",
-  "bleedingEdge",
-  "bluntForce",
-  "bubblyDance",
-  "buildupBoost",
-  "burst",
-  "advancedBurst",
-  "chameleosVenomist",
-  "chargeMaster",
-  "coalescence",
-  "criticalBoost",
-  "criticalElement",
-  "criticalEye",
-  "criticalFerocity",
-  "criticalStrength",
-  "dauntless",
-  "fightingSpirit",
-  "fortify",
-  "headstrong",
-  "hellfireCloak",
-  "heroics",
-  "huntersUnity",
-  "kirinFlashstorm",
-  "kushalaFrostwind",
-  "latentPower",
-  "malzenoCrimsonblood",
-  "namielleElectrowave",
-  "nergiganteAvidity",
-  "morphBoost",
-  "offensiveDodger",
-  "offensiveGuard",
-  "paralysisExploit",
-  "partbreaker",
-  "peakPerformance",
-  "poisonExploit",
-  "pursuit",
-  "rawPower",
-  "reckless",
-  "resentment",
-  "resuscitate",
-  "risingTide",
-  "sharedSword",
-  "skywardStriker",
-  "sneakAttack",
-  "solidarity",
-  "specialBoost",
-  "specialPartbreaker",
-  "statusSneakAttack",
-  "sweltingSummer",
-  "teostraBlastpowder",
-  "timedCharger",
-  "valor",
-  "vitalElement",
-  "weaknessExploit",
-];
-
-const LEGACY_BUILD_REF_TO_KEY = Object.freeze(
-  Object.fromEntries(LEGACY_BUILD_KEYS.map((key, index) => [`B${index + 3}`, key])),
-);
-
-const LEGACY_WEAPON_REF_TO_KEY = Object.freeze({
-  E3: "weaponAttack",
-  E4: "weaponElement",
-  E5: "damageType",
-  E6: "weaponAffinity",
-  E7: "weaponType",
-});
-
-const LEGACY_UPTIME_REF_TO_KEY = Object.freeze({
-  E15: "remainingHealth",
-  E24: "aggressiveDodger",
-  E25: "artillery",
-  E26: "bluntForce",
-  E27: "burst",
-  E28: "chargeMaster",
-  E29: "dauntless",
-  E30: "fightingSpirit",
-  E31: "fortify",
-  E32: "headstrong",
-  E33: "heroics",
-  E34: "latentPower",
-  E35: "morphBoost",
-  E36: "offensiveDodger",
-  E37: "offensiveGuard",
-  E38: "paralysisExploit",
-  E39: "poisonExploit",
-  E40: "pursuit",
-  E41: "resentment",
-  E42: "skywardStriker",
-  E43: "statusSneakAttack",
-  E44: "specialBoost",
-  E45: "specialPartbreaker",
-  E46: "valor",
-  E47: "weaknessExploit",
-});
 
 const state = {
   data: null,
@@ -153,7 +40,6 @@ const els = {
   newWeapon: document.getElementById("new-weapon"),
   selectAllWeapons: document.getElementById("select-all-weapons"),
   deselectAllWeapons: document.getElementById("deselect-all-weapons"),
-  selectWeaponType: document.getElementById("select-weapon-type"),
   exportSelectedBuilds: document.getElementById("export-selected-builds"),
   exportSelectedWeapons: document.getElementById("export-selected-weapons"),
   exportData: document.getElementById("export-data"),
@@ -284,10 +170,6 @@ function createEngine() {
   });
 }
 
-function calculatorSheetName() {
-  return state.data?.calculatorSheet ?? "Calculator1";
-}
-
 function readCell(engine, sheetName, ref) {
   const sheetId = engine.getSheetId(sheetName);
   return engine.getCellValue(toAddress(sheetId, ref));
@@ -295,7 +177,7 @@ function readCell(engine, sheetName, ref) {
 
 function writeCell(engine, sheetName, ref, value) {
   const sheetId = engine.getSheetId(sheetName);
-  engine.setCellContents(toAddress(sheetId, ref), value);
+  engine.setCellContents(toAddress(sheetId, ref), [[value]]);
 }
 
 function isErrorValue(value) {
@@ -375,83 +257,12 @@ function loadStoredObject(key, fallback) {
   }
 }
 
-function fieldRefToKeyMap(fields) {
-  return Object.fromEntries(fields.map((field) => [field.ref, field.key ?? field.ref]));
-}
-
-function fieldKeyToRefMap(fields) {
-  return Object.fromEntries(fields.map((field) => [field.key ?? field.ref, field.ref]));
-}
-
-function addImportWarning(warnings, context, field) {
-  warnings.push(`${context}: ${field}`);
-}
-
-function semanticValuesFromCurrent(values, fields) {
-  const refToKey = fieldRefToKeyMap(fields);
-  return Object.fromEntries(
-    fields.map((field) => [field.key ?? field.ref, values?.[field.ref] ?? field.defaultValue ?? 0]),
-  );
-}
-
-function semanticValuesFromInput(values, fields, refToKey, warnings, context) {
-  const semanticValues = {};
-  const currentKeys = new Set(fields.map((field) => field.key ?? field.ref));
-  if (!values || typeof values !== "object") {
-    return semanticValues;
-  }
-
-  Object.entries(values).forEach(([field, value]) => {
-    if (refToKey[field]) {
-      semanticValues[refToKey[field]] = value;
-    } else if (currentKeys.has(field)) {
-      semanticValues[field] = value;
-    } else {
-      addImportWarning(warnings, context, field);
-    }
-  });
-
-  return semanticValues;
-}
-
-function currentValuesFromSemantic(semanticValues, fields, warnings, context) {
-  const keyToRef = fieldKeyToRefMap(fields);
-  const values = {};
-  Object.entries(semanticValues).forEach(([key, value]) => {
-    const ref = keyToRef[key];
-    if (!ref) {
-      addImportWarning(warnings, context, key);
-      return;
-    }
-    values[ref] = value;
-  });
-  return values;
-}
-
-function serializeBuild(build) {
-  return {
-    name: build.name,
-    compareEnabled: build.compareEnabled !== false,
-    skills: semanticValuesFromCurrent(build.values, state.data.buildFields),
-  };
-}
-
-function serializeWeapon(weapon) {
-  return {
-    name: weapon.name,
-    compareEnabled: weapon.compareEnabled !== false,
-    isRift: Boolean(weapon.isRift),
-    properties: semanticValuesFromCurrent(weapon.values, state.data.weaponFields),
-  };
-}
-
 function exportAppData() {
   return JSON.stringify(
     {
-      formatVersion: EXPORT_FORMAT_VERSION,
-      sheetVersion: state.data?.sheetVersion ?? "unknown",
-      builds: state.builds.map(serializeBuild),
-      weapons: state.weapons.map(serializeWeapon),
+      version: 1,
+      builds: state.builds,
+      weapons: state.weapons,
     },
     null,
     0,
@@ -461,154 +272,44 @@ function exportAppData() {
 function exportScopedData({ builds = [], weapons = [] }) {
   return JSON.stringify(
     {
-      formatVersion: EXPORT_FORMAT_VERSION,
-      sheetVersion: state.data?.sheetVersion ?? "unknown",
-      builds: builds.map(serializeBuild),
-      weapons: weapons.map(serializeWeapon),
+      version: 1,
+      builds,
+      weapons,
     },
     null,
     0,
   );
 }
 
-function normalizeBuildItem(item, { source = "current", preserveId = false, warnings = [] } = {}) {
+function normalizeImportedBuild(item) {
   const base = buildDefaultBuild();
-  const name = String(item?.name || "Imported Build");
-  const context = `Build "${name}"`;
-  const semanticValues =
-    item?.skills && typeof item.skills === "object"
-      ? semanticValuesFromInput(item.skills, state.data.buildFields, {}, warnings, context)
-      : semanticValuesFromInput(
-          item?.values,
-          state.data.buildFields,
-          source === "legacy" ? LEGACY_BUILD_REF_TO_KEY : fieldRefToKeyMap(state.data.buildFields),
-          warnings,
-          context,
-        );
-
   return {
     ...base,
-    id: preserveId && item?.id ? String(item.id) : makeId(),
-    name,
+    ...item,
+    id: makeId(),
+    name: String(item?.name || "Imported Build"),
     compareEnabled: typeof item?.compareEnabled === "boolean" ? item.compareEnabled : true,
     values: {
       ...base.values,
-      ...currentValuesFromSemantic(semanticValues, state.data.buildFields, warnings, context),
+      ...(item?.values && typeof item.values === "object" ? item.values : {}),
     },
   };
 }
 
-function normalizeBuildUptimes(values, { source = "current", warnings = [] } = {}) {
-  const context = "Uptimes";
-  const semanticValues = semanticValuesFromInput(
-    values,
-    state.uptimeFields,
-    source === "legacy" ? LEGACY_UPTIME_REF_TO_KEY : fieldRefToKeyMap(state.uptimeFields),
-    warnings,
-    context,
-  );
-  return currentValuesFromSemantic(semanticValues, state.uptimeFields, warnings, context);
-}
-
-function normalizeImportedBuild(item, warnings = [], source = "legacy") {
-  return normalizeBuildItem(item, { source, warnings });
-}
-
-function normalizeWeaponItem(item, { source = "current", preserveId = false, warnings = [] } = {}) {
+function normalizeImportedWeapon(item) {
   const base = buildDefaultWeapon();
-  const name = String(item?.name || "Imported Weapon");
-  const context = `Weapon "${name}"`;
-  const semanticValues =
-    item?.properties && typeof item.properties === "object"
-      ? semanticValuesFromInput(item.properties, state.data.weaponFields, {}, warnings, context)
-      : semanticValuesFromInput(
-          item?.values,
-          state.data.weaponFields,
-          source === "legacy" ? LEGACY_WEAPON_REF_TO_KEY : fieldRefToKeyMap(state.data.weaponFields),
-          warnings,
-          context,
-        );
-
   return {
     ...base,
-    id: preserveId && item?.id ? String(item.id) : makeId(),
-    name,
+    ...item,
+    id: makeId(),
+    name: String(item?.name || "Imported Weapon"),
     compareEnabled: typeof item?.compareEnabled === "boolean" ? item.compareEnabled : true,
     values: {
       ...base.values,
-      ...currentValuesFromSemantic(semanticValues, state.data.weaponFields, warnings, context),
+      ...(item?.values && typeof item.values === "object" ? item.values : {}),
     },
     isRift: Boolean(item?.isRift),
   };
-}
-
-function normalizeImportedWeapon(item, warnings = [], source = "legacy") {
-  return normalizeWeaponItem(item, { source, warnings });
-}
-
-function loadBuildsForCurrentVersion() {
-  const currentBuilds = loadStoredItems(STORAGE_KEYS.builds);
-  if (currentBuilds.length) {
-    return currentBuilds.map((build) => normalizeBuildItem(build, { source: "current", preserveId: true }));
-  }
-
-  const legacyBuilds = loadStoredItems(LEGACY_STORAGE_KEYS.builds);
-  if (!legacyBuilds.length) {
-    return [];
-  }
-
-  const warnings = [];
-  const migrated = legacyBuilds.map((build) => normalizeBuildItem(build, {
-    source: "legacy",
-    preserveId: true,
-    warnings,
-  }));
-  if (warnings.length) {
-    console.warn("Some legacy build fields could not be migrated:", warnings);
-  }
-  return migrated;
-}
-
-function loadWeaponsForCurrentVersion() {
-  const currentWeapons = loadStoredItems(STORAGE_KEYS.weapons);
-  if (currentWeapons.length) {
-    return currentWeapons.map((weapon) => normalizeWeaponItem(weapon, { source: "current", preserveId: true }));
-  }
-
-  const legacyWeapons = loadStoredItems(LEGACY_STORAGE_KEYS.weapons);
-  if (!legacyWeapons.length) {
-    return [];
-  }
-
-  const warnings = [];
-  const migrated = legacyWeapons.map((weapon) => normalizeWeaponItem(weapon, {
-    source: "legacy",
-    preserveId: true,
-    warnings,
-  }));
-  if (warnings.length) {
-    console.warn("Some legacy weapon fields could not be migrated:", warnings);
-  }
-  return migrated;
-}
-
-function loadUptimesForCurrentVersion() {
-  const currentUptimes = loadStoredObject(STORAGE_KEYS.uptimes, null);
-  if (currentUptimes) {
-    return normalizeBuildUptimes(currentUptimes, { source: "current" });
-  }
-
-  const legacyUptimes = loadStoredObject(LEGACY_STORAGE_KEYS.uptimes, null);
-  if (!legacyUptimes) {
-    return {};
-  }
-
-  const warnings = [];
-  const migrated = normalizeBuildUptimes(legacyUptimes, { source: "legacy", warnings });
-  if (warnings.length) {
-    console.warn("Some legacy uptime fields could not be migrated:", warnings);
-  }
-  return migrated;
 }
 
 function stableStringify(value) {
@@ -640,19 +341,15 @@ function weaponImportFingerprint(item) {
 }
 
 function collectDefaultUptimeFields() {
-  if (Array.isArray(state.data?.uptimeFields)) {
-    return state.data.uptimeFields.map((field) => ({
-      ...field,
-      label: String(field.label),
-      defaultValue: typeof field.defaultValue === "number" ? field.defaultValue : Number(field.defaultValue) || 0,
-      displayScale: field.displayScale ?? 100,
-    }));
-  }
-
-  const sheet = state.data?.sheets?.[calculatorSheetName()];
+  const sheet = state.data?.sheets?.Calculator1;
   if (!sheet) {
     return [];
   }
+  const engine = createEngine();
+  const getDefaultValue = (ref, fallback = 0) => {
+    const value = readCell(engine, "Calculator1", ref);
+    return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+  };
 
   const fields = [];
   const remainingHealthLabel = sheet[14]?.[3];
@@ -677,6 +374,20 @@ function collectDefaultUptimeFields() {
       displayScale: 100,
     });
   }
+
+  [
+    { ref: "H68", label: "Resus BE" },
+    { ref: "I68", label: "Coal BE" },
+    { ref: "H69", label: "Resus BD" },
+    { ref: "I69", label: "Coal BD" },
+  ].forEach((field) => {
+    fields.push({
+      ref: field.ref,
+      label: field.label,
+      defaultValue: getDefaultValue(field.ref),
+      displayScale: 100,
+    });
+  });
 
   return fields;
 }
@@ -732,44 +443,6 @@ function setAllBuildsCompareEnabled(compareEnabled) {
 
 function setAllWeaponsCompareEnabled(compareEnabled) {
   state.weapons = state.weapons.map((weapon) => ({ ...weapon, compareEnabled }));
-  persistWeapons();
-  renderWeaponList();
-}
-
-function getAvailableWeaponTypes() {
-  const availableTypes = new Set(
-    state.weapons
-      .map((weapon) => String(weapon.values?.E7 ?? "").trim())
-      .filter(Boolean),
-  );
-  const orderedTypes = (weaponSchemaMap().E7?.options ?? [])
-    .map((option) => String(option))
-    .filter((option) => availableTypes.has(option));
-  const extraTypes = [...availableTypes]
-    .filter((type) => !orderedTypes.includes(type))
-    .sort((a, b) => a.localeCompare(b));
-
-  return [...orderedTypes, ...extraTypes];
-}
-
-function renderWeaponTypeShortcut() {
-  if (!els.selectWeaponType) {
-    return;
-  }
-
-  const weaponTypes = getAvailableWeaponTypes();
-  els.selectWeaponType.disabled = weaponTypes.length === 0;
-  els.selectWeaponType.innerHTML = [
-    `<option value="">Type...</option>`,
-    ...weaponTypes.map((weaponType) => `<option value="${escapeHtml(weaponType)}">${escapeHtml(weaponType)}</option>`),
-  ].join("");
-}
-
-function selectWeaponsByType(weaponType) {
-  state.weapons = state.weapons.map((weapon) => ({
-    ...weapon,
-    compareEnabled: String(weapon.values?.E7 ?? "") === weaponType,
-  }));
   persistWeapons();
   renderWeaponList();
 }
@@ -868,13 +541,13 @@ function getWeaponById(id) {
 
 function applyScenario(engine, build, weapon) {
   for (const field of state.data.buildFields) {
-    writeCell(engine, calculatorSheetName(), field.ref, build.values[field.ref]);
+    writeCell(engine, "Calculator1", field.ref, build.values[field.ref]);
   }
   for (const field of state.data.weaponFields) {
-    writeCell(engine, calculatorSheetName(), field.ref, weapon.values[field.ref]);
+    writeCell(engine, "Calculator1", field.ref, weapon.values[field.ref]);
   }
   for (const field of state.uptimeFields) {
-    writeCell(engine, calculatorSheetName(), field.ref, state.uptimeValues[field.ref]);
+    writeCell(engine, "Calculator1", field.ref, state.uptimeValues[field.ref]);
   }
 }
 
@@ -883,7 +556,7 @@ function getBuildLabels(build, weapon) {
   applyScenario(engine, build, weapon);
   const labels = {};
   for (const field of state.data.buildFields) {
-    labels[field.ref] = readCell(engine, calculatorSheetName(), field.labelRef);
+    labels[field.ref] = readCell(engine, "Calculator1", field.labelRef);
     if (labels[field.ref] === "Vital Fire") {
       labels[field.ref] = "Vital Element";
     }
@@ -898,7 +571,7 @@ function getWeaponLabels(weapon) {
   applyScenario(engine, state.buildDraft ?? buildDefaultBuild(), weapon);
   const labels = {};
   for (const field of state.data.weaponFields) {
-    labels[field.ref] = readCell(engine, calculatorSheetName(), field.labelRef);
+    labels[field.ref] = readCell(engine, "Calculator1", field.labelRef);
   }
   return labels;
 }
@@ -913,7 +586,7 @@ function calculateSelectedScenario() {
   const engine = createEngine();
   applyScenario(engine, build, weapon);
   return {
-    h12: readCell(engine, calculatorSheetName(), state.data.resultCell),
+    h12: readCell(engine, "Calculator1", state.data.resultCell),
   };
 }
 
@@ -944,7 +617,7 @@ window.__mhnDebugScenario = function __mhnDebugScenario() {
     "AX87",
     "AX88",
   ];
-  return Object.fromEntries(refs.map((ref) => [ref, readCell(engine, calculatorSheetName(), ref)]));
+  return Object.fromEntries(refs.map((ref) => [ref, readCell(engine, "Calculator1", ref)]));
 };
 
 function renderCalculatorSelectors() {
@@ -1147,15 +820,7 @@ function renderSkillSummary() {
     .join("");
 }
 
-function renderLibraryList(
-  targetEl,
-  items,
-  selectedId,
-  editHandlerName,
-  deleteHandlerName,
-  moveUpHandlerName,
-  moveDownHandlerName,
-) {
+function renderLibraryList(targetEl, items, selectedId, editHandlerName, deleteHandlerName) {
   if (!items.length) {
     targetEl.innerHTML = `<div class="empty-state">Nothing saved yet.</div>`;
     return;
@@ -1163,27 +828,20 @@ function renderLibraryList(
 
   targetEl.innerHTML = items
     .map(
-      (item, index) => {
-        const escapedName = escapeHtml(item.name);
-        return `
+      (item) => `
         <div class="library-item ${item.id === selectedId ? "selected" : ""}">
           <div class="library-item-main">
             <label class="library-item-check">
               <input type="checkbox" data-action="toggle-compare" data-id="${item.id}" ${item.compareEnabled !== false ? "checked" : ""} />
             </label>
-            <div class="library-item-name">${escapedName}</div>
+            <div class="library-item-name">${escapeHtml(item.name)}</div>
           </div>
           <div class="library-item-actions">
-            <div class="library-reorder-actions">
-              <button class="secondary library-reorder-button" type="button" data-action="${moveUpHandlerName}" data-id="${item.id}" aria-label="Move ${escapedName} up" title="Move up" ${index === 0 ? "disabled" : ""}>↑</button>
-              <button class="secondary library-reorder-button" type="button" data-action="${moveDownHandlerName}" data-id="${item.id}" aria-label="Move ${escapedName} down" title="Move down" ${index === items.length - 1 ? "disabled" : ""}>↓</button>
-            </div>
             <button class="secondary" type="button" data-action="${editHandlerName}" data-id="${item.id}">Edit</button>
-            <button class="danger" type="button" data-action="${deleteHandlerName}" data-id="${item.id}">Del</button>
+            <button class="danger" type="button" data-action="${deleteHandlerName}" data-id="${item.id}">Delete</button>
           </div>
         </div>
-      `;
-      },
+      `,
     )
     .join("");
 }
@@ -1195,8 +853,6 @@ function renderBuildList() {
     state.selectedBuildId,
     "edit-build",
     "delete-build",
-    "move-build-up",
-    "move-build-down",
   );
 }
 
@@ -1207,8 +863,6 @@ function renderWeaponList() {
     state.selectedWeaponId,
     "edit-weapon",
     "delete-weapon",
-    "move-weapon-up",
-    "move-weapon-down",
   );
 }
 
@@ -1431,40 +1085,6 @@ function persistWeapons() {
   saveStoredItems(STORAGE_KEYS.weapons, state.weapons);
 }
 
-function moveLibraryItem(items, id, direction) {
-  const currentIndex = items.findIndex((item) => item.id === id);
-  const nextIndex = currentIndex + direction;
-  if (currentIndex < 0 || nextIndex < 0 || nextIndex >= items.length) {
-    return items;
-  }
-
-  const reordered = [...items];
-  [reordered[currentIndex], reordered[nextIndex]] = [reordered[nextIndex], reordered[currentIndex]];
-  return reordered;
-}
-
-function moveBuild(id, direction) {
-  const reordered = moveLibraryItem(state.builds, id, direction);
-  if (reordered === state.builds) {
-    return;
-  }
-
-  state.builds = reordered;
-  persistBuilds();
-  renderAll();
-}
-
-function moveWeapon(id, direction) {
-  const reordered = moveLibraryItem(state.weapons, id, direction);
-  if (reordered === state.weapons) {
-    return;
-  }
-
-  state.weapons = reordered;
-  persistWeapons();
-  renderAll();
-}
-
 function saveBuildDraft() {
   const cleanName = state.buildDraft.name.trim() || "Unnamed Build";
   const payload = {
@@ -1621,7 +1241,6 @@ function renderAll() {
   renderSkillSummary();
   renderBuildList();
   renderWeaponList();
-  renderWeaponTypeShortcut();
   renderBuildForm();
   renderWeaponForm();
 }
@@ -1720,7 +1339,7 @@ function openRiftComparison() {
         ...variant,
         label: describeRiftVariant(variant.counts, isRaw),
         upgradeSequence: describeRiftUpgradeSequence(variant.counts, isRaw),
-        h12: readCell(engine, calculatorSheetName(), state.data.resultCell),
+        h12: readCell(engine, "Calculator1", state.data.resultCell),
       };
     })
     .sort((a, b) => {
@@ -1802,7 +1421,7 @@ function openBuildWeaponComparison() {
   for (const weapon of weaponsToCompare) {
     for (const build of buildsToCompare) {
       applyScenario(engine, build, weapon);
-      results[buildMatrixKey(build.id, weapon.id)] = readCell(engine, calculatorSheetName(), state.data.resultCell);
+      results[buildMatrixKey(build.id, weapon.id)] = readCell(engine, "Calculator1", state.data.resultCell);
     }
   }
 
@@ -1878,8 +1497,6 @@ function openImportModal() {
 
     try {
       const parsed = JSON.parse(payload);
-      const importSource = parsed?.formatVersion === EXPORT_FORMAT_VERSION ? "semantic" : "legacy";
-      const importWarnings = [];
       const existingBuildFingerprints = new Set(state.builds.map(buildImportFingerprint));
       const existingWeaponFingerprints = new Set(state.weapons.map(weaponImportFingerprint));
       const importedBuilds = [];
@@ -1887,7 +1504,7 @@ function openImportModal() {
 
       if (Array.isArray(parsed.builds)) {
         for (const rawBuild of parsed.builds) {
-          const normalizedBuild = normalizeImportedBuild(rawBuild, importWarnings, importSource);
+          const normalizedBuild = normalizeImportedBuild(rawBuild);
           const fingerprint = buildImportFingerprint(normalizedBuild);
           if (existingBuildFingerprints.has(fingerprint)) {
             continue;
@@ -1899,7 +1516,7 @@ function openImportModal() {
 
       if (Array.isArray(parsed.weapons)) {
         for (const rawWeapon of parsed.weapons) {
-          const normalizedWeapon = normalizeImportedWeapon(rawWeapon, importWarnings, importSource);
+          const normalizedWeapon = normalizeImportedWeapon(rawWeapon);
           const fingerprint = weaponImportFingerprint(normalizedWeapon);
           if (existingWeaponFingerprints.has(fingerprint)) {
             continue;
@@ -1910,9 +1527,7 @@ function openImportModal() {
       }
 
       if (!importedBuilds.length && !importedWeapons.length) {
-        feedback.textContent = importWarnings.length
-          ? `No new builds or weapons were imported. Warning: these fields could not be imported: ${importWarnings.join(", ")}.`
-          : "No new builds or weapons were imported.";
+        feedback.textContent = "No new builds or weapons were imported.";
         return;
       }
 
@@ -1921,11 +1536,7 @@ function openImportModal() {
       persistBuilds();
       persistWeapons();
       renderAll();
-      const migrationNote = importSource === "legacy" ? " Legacy v1 data was converted." : "";
-      const warningNote = importWarnings.length
-        ? ` Warning: these fields could not be imported: ${importWarnings.join(", ")}.`
-        : "";
-      feedback.textContent = `Imported ${importedBuilds.length} builds and ${importedWeapons.length} weapons.${migrationNote}${warningNote}`;
+      feedback.textContent = `Imported ${importedBuilds.length} builds and ${importedWeapons.length} weapons.`;
     } catch {
       feedback.textContent = "Import failed. Check that the pasted string is a valid export.";
     }
@@ -2097,16 +1708,6 @@ function wireGlobalEvents() {
     setAllWeaponsCompareEnabled(false);
   });
 
-  els.selectWeaponType.addEventListener("change", (event) => {
-    const weaponType = event.target.value;
-    if (!weaponType) {
-      return;
-    }
-
-    selectWeaponsByType(weaponType);
-    event.target.value = "";
-  });
-
   els.exportSelectedBuilds.addEventListener("click", () => {
     const builds = state.builds.filter((build) => build.compareEnabled !== false);
     openExportModal(
@@ -2139,18 +1740,10 @@ function wireGlobalEvents() {
         editBuild(id);
       } else if (action === "delete-build") {
         deleteBuild(id);
-      } else if (action === "move-build-up") {
-        moveBuild(id, -1);
-      } else if (action === "move-build-down") {
-        moveBuild(id, 1);
       } else if (action === "edit-weapon") {
         editWeapon(id);
       } else if (action === "delete-weapon") {
         deleteWeapon(id);
-      } else if (action === "move-weapon-up") {
-        moveWeapon(id, -1);
-      } else if (action === "move-weapon-down") {
-        moveWeapon(id, 1);
       }
       return;
     }
@@ -2201,7 +1794,7 @@ async function init() {
   if (window.WORKBOOK_DATA) {
     state.data = window.WORKBOOK_DATA;
   } else {
-    const response = await fetch("./data/workbook-data.json");
+    const response = await fetch("./data/workbook-data2.json");
     state.data = await response.json();
   }
 
@@ -2209,12 +1802,12 @@ async function init() {
     throw new Error("Workbook data failed to load.");
   }
 
+  state.builds = loadStoredItems(STORAGE_KEYS.builds);
+  state.weapons = loadStoredItems(STORAGE_KEYS.weapons);
   state.uptimeFields = collectDefaultUptimeFields();
-  state.builds = loadBuildsForCurrentVersion();
-  state.weapons = loadWeaponsForCurrentVersion();
   state.uptimeValues = {
     ...buildDefaultUptimeValues(),
-    ...loadUptimesForCurrentVersion(),
+    ...loadStoredObject(STORAGE_KEYS.uptimes, {}),
   };
 
   if (!state.builds.length) {
@@ -2243,8 +1836,8 @@ async function init() {
   }));
   persistWeapons();
 
-  const storedBuildId = loadStoredValue(STORAGE_KEYS.selectedBuildId) ?? loadStoredValue(LEGACY_STORAGE_KEYS.selectedBuildId);
-  const storedWeaponId = loadStoredValue(STORAGE_KEYS.selectedWeaponId) ?? loadStoredValue(LEGACY_STORAGE_KEYS.selectedWeaponId);
+  const storedBuildId = loadStoredValue(STORAGE_KEYS.selectedBuildId);
+  const storedWeaponId = loadStoredValue(STORAGE_KEYS.selectedWeaponId);
   state.selectedBuildId = getBuildById(storedBuildId)?.id ?? state.builds[0].id;
   state.selectedWeaponId = getWeaponById(storedWeaponId)?.id ?? state.weapons[0].id;
   saveStoredValue(STORAGE_KEYS.selectedBuildId, state.selectedBuildId);

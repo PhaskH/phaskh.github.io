@@ -40,11 +40,6 @@ select {
   margin-bottom: 24px;
 }
 
-.version-switch {
-  margin: 0 0 8px;
-  font-size: 0.9rem;
-}
-
 .app-header h1 {
   margin: 0 0 8px;
   font-size: 1.8rem;
@@ -321,29 +316,7 @@ button.danger:hover {
 }
 
 .library-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;
   margin-bottom: 12px;
-}
-
-.library-controls button {
-  min-height: 38px;
-  padding: 0 10px;
-  border-radius: 8px;
-  white-space: nowrap;
-}
-
-.library-shortcut-select {
-  width: 96px;
-  min-width: 0;
-  min-height: 38px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: #0f141b;
-  color: var(--text);
-  padding: 0 8px;
 }
 
 .library-list {
@@ -358,12 +331,11 @@ button.danger:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
   padding: 12px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.02);
-  min-width: 0;
 }
 
 .library-item.selected {
@@ -372,17 +344,12 @@ button.danger:hover {
 
 .library-item-name {
   font-weight: 600;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .library-item-main {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -408,41 +375,8 @@ button.danger:hover {
 
 .library-item-actions {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex: 0 0 auto;
-  gap: 6px;
-  flex-wrap: nowrap;
-}
-
-.library-reorder-actions {
-  display: inline-flex;
-  flex: 0 0 auto;
-  gap: 4px;
-}
-
-.library-item-actions > button {
-  min-height: 38px;
-  padding: 0 10px;
-  border-radius: 8px;
-  white-space: nowrap;
-}
-
-.library-reorder-button {
-  width: 38px;
-  min-width: 38px;
-  min-height: 38px;
-  padding: 0;
-  border-radius: 8px;
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.library-reorder-button:disabled,
-.library-reorder-button:disabled:hover {
-  opacity: 0.38;
-  cursor: not-allowed;
-  background: transparent;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .editor-form {
@@ -926,41 +860,6 @@ button.danger:hover {
 
   .calculator-layout {
     grid-template-columns: 1fr;
-  }
-
-  .library-item {
-    gap: 6px;
-    padding: 8px;
-  }
-
-  .library-controls {
-    overflow-x: auto;
-    padding-bottom: 2px;
-  }
-
-  .library-controls button {
-    padding: 0 8px;
-  }
-
-  .library-shortcut-select {
-    width: 86px;
-    padding: 0 6px;
-  }
-
-  .library-item-main {
-    gap: 6px;
-  }
-
-  .library-item-actions {
-    gap: 4px;
-  }
-
-  .library-item-actions > button {
-    padding: 0 8px;
-  }
-
-  .library-reorder-actions {
-    gap: 3px;
   }
 
   .editor-row,
