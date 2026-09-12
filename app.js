@@ -1379,6 +1379,7 @@ function getFilteredWeaponLibraryEntries() {
     }
     const searchable = [
       weapon.name,
+      weapon.monster,
       weapon.series?.name,
       weapon.weaponType,
       WEAPON_LIBRARY_ATTRIBUTE_LABELS[weapon.attribute?.type],
@@ -1417,12 +1418,13 @@ function renderWeaponLibraryResults() {
       const skills = (weapon.skills ?? [])
         .map((skill) => `${skill.name} Lv${skill.level}`)
         .join(" · ");
+      const originName = weapon.monster ?? weapon.series?.name ?? "Unknown";
       return `
         <article class="weapon-library-card ${baseSaved && (!riftLevel || riftSaved) ? "weapon-library-card-added" : ""}">
           <div class="weapon-library-card-header">
             <div>
-              <h3>${escapeHtml(weapon.name)}</h3>
-              <div class="weapon-library-series">${escapeHtml(weapon.series?.name ?? "Unknown series")}</div>
+              <h3>${escapeHtml(originName)} ${escapeHtml(weapon.weaponType)}</h3>
+              <div class="weapon-library-series">${escapeHtml(weapon.name)}</div>
             </div>
             ${riftLevel ? `<span class="weapon-library-rift-badge">Rift Lv${riftLevel}</span>` : ""}
           </div>
@@ -1857,14 +1859,7 @@ function renderWeaponForm() {
       const baseLabel = labels[field.ref] ?? field.labelRef;
       const label = field.ref === "E6" ? `${baseLabel} %` : baseLabel;
       const value = state.weaponDraft.values[field.ref];
-      const options =
-        field.ref === "E5"
-          ? (field.options ?? []).filter(
-              (option) =>
-                !["Poison", "Paralysis", "Sleep", "Blast"].includes(String(option)) ||
-                String(option) === String(value),
-            )
-          : field.options;
+      const options = field.options;
       let inputMarkup;
       if (options) {
         inputMarkup = `<select data-weapon-field="${field.ref}">

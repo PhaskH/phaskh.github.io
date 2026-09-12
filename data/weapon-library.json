@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "game": "Monster Hunter Now",
   "language": "en",
-  "generatedAt": "2026-09-12T00:29:19Z",
+  "generatedAt": "2026-09-12T15:58:12Z",
   "statsAt": {
     "grade": 10,
     "level": 5
@@ -101,6 +101,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -151,6 +152,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -201,6 +203,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -251,6 +254,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -301,6 +305,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -351,6 +356,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -426,6 +432,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -476,6 +483,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -528,6 +536,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -580,6 +589,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -632,6 +642,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -699,6 +710,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -791,6 +803,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -883,6 +896,7 @@
           "zhHant": "獵人"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -956,6 +970,7 @@
           "zhHant": "凶豺龍"
         }
       },
+      "monster": "Great Jagras",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1006,6 +1021,7 @@
           "zhHant": "凶豺龍"
         }
       },
+      "monster": "Great Jagras",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1056,6 +1072,7 @@
           "zhHant": "凶豺龍"
         }
       },
+      "monster": "Great Jagras",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1108,6 +1125,7 @@
           "zhHant": "凶豺龍"
         }
       },
+      "monster": "Great Jagras",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1160,6 +1178,7 @@
           "zhHant": "凶豺龍"
         }
       },
+      "monster": "Great Jagras",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1212,6 +1231,7 @@
           "zhHant": "凶豺龍"
         }
       },
+      "monster": "Great Jagras",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1304,6 +1324,7 @@
           "zhHant": "凶豺龍"
         }
       },
+      "monster": "Great Jagras",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1414,6 +1435,7 @@
           "zhHant": "搔鳥"
         }
       },
+      "monster": "Kulu-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1464,6 +1486,7 @@
           "zhHant": "搔鳥"
         }
       },
+      "monster": "Kulu-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1514,6 +1537,7 @@
           "zhHant": "搔鳥"
         }
       },
+      "monster": "Kulu-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1564,6 +1588,7 @@
           "zhHant": "搔鳥"
         }
       },
+      "monster": "Kulu-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1639,6 +1664,7 @@
           "zhHant": "搔鳥"
         }
       },
+      "monster": "Kulu-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1689,6 +1715,7 @@
           "zhHant": "搔鳥"
         }
       },
+      "monster": "Kulu-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1756,6 +1783,7 @@
           "zhHant": "搔鳥"
         }
       },
+      "monster": "Kulu-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -1829,6 +1857,7 @@
           "zhHant": "毒妖鳥"
         }
       },
+      "monster": "Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -2010,6 +2039,7 @@
           "zhHant": "毒妖鳥"
         }
       },
+      "monster": "Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -2191,6 +2221,7 @@
           "zhHant": "毒妖鳥"
         }
       },
+      "monster": "Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -2372,6 +2403,7 @@
           "zhHant": "毒妖鳥"
         }
       },
+      "monster": "Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -2578,6 +2610,7 @@
           "zhHant": "毒妖鳥"
         }
       },
+      "monster": "Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -2759,6 +2792,7 @@
           "zhHant": "毒妖鳥"
         }
       },
+      "monster": "Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -2942,6 +2976,7 @@
           "zhHant": "毒妖鳥"
         }
       },
+      "monster": "Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3142,6 +3177,7 @@
           "zhHant": "毒妖鳥"
         }
       },
+      "monster": "Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3359,6 +3395,7 @@
           "zhHant": "毒妖鳥"
         }
       },
+      "monster": "Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3563,6 +3600,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3613,6 +3651,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3663,6 +3702,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3713,6 +3753,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3789,6 +3830,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3839,6 +3881,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3891,6 +3934,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -3960,6 +4004,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -4070,6 +4115,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -4180,6 +4226,7 @@
           "zhHant": "妖水"
         }
       },
+      "monster": "Coral Pukei-Pukei",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -4253,6 +4300,7 @@
           "zhHant": "土砂龍"
         }
       },
+      "monster": "Barroth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -4428,6 +4476,7 @@
           "zhHant": "土砂龍"
         }
       },
+      "monster": "Barroth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -4603,6 +4652,7 @@
           "zhHant": "土砂龍"
         }
       },
+      "monster": "Barroth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -4778,6 +4828,7 @@
           "zhHant": "土砂龍"
         }
       },
+      "monster": "Barroth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -4979,6 +5030,7 @@
           "zhHant": "土砂龍"
         }
       },
+      "monster": "Barroth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -5154,6 +5206,7 @@
           "zhHant": "土砂龍"
         }
       },
+      "monster": "Barroth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -5331,6 +5384,7 @@
           "zhHant": "土砂龍"
         }
       },
+      "monster": "Barroth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -5508,6 +5562,7 @@
           "zhHant": "土砂龍"
         }
       },
+      "monster": "Barroth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -5725,6 +5780,7 @@
           "zhHant": "凶顎龍"
         }
       },
+      "monster": "Great Girros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -5906,6 +5962,7 @@
           "zhHant": "凶顎龍"
         }
       },
+      "monster": "Great Girros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -6087,6 +6144,7 @@
           "zhHant": "凶顎龍"
         }
       },
+      "monster": "Great Girros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -6268,6 +6326,7 @@
           "zhHant": "凶顎龍"
         }
       },
+      "monster": "Great Girros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -6451,6 +6510,7 @@
           "zhHant": "凶顎龍"
         }
       },
+      "monster": "Great Girros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -6634,6 +6694,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -6815,6 +6876,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -6996,6 +7058,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -7177,6 +7240,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -7358,6 +7422,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -7539,6 +7604,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -7746,6 +7812,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -7927,6 +7994,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -8110,6 +8178,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -8293,6 +8362,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -8476,6 +8546,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -8676,6 +8747,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -8899,6 +8971,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -9140,6 +9213,7 @@
           "zhHant": "飛雷龍"
         }
       },
+      "monster": "Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -9344,6 +9418,7 @@
           "zhHant": "朱毒"
         }
       },
+      "monster": "Viper Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -9406,6 +9481,7 @@
           "zhHant": "朱毒"
         }
       },
+      "monster": "Viper Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -9468,6 +9544,7 @@
           "zhHant": "朱毒"
         }
       },
+      "monster": "Viper Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -9532,6 +9609,7 @@
           "zhHant": "朱毒"
         }
       },
+      "monster": "Viper Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -9596,6 +9674,7 @@
           "zhHant": "朱毒"
         }
       },
+      "monster": "Viper Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -9677,6 +9756,7 @@
           "zhHant": "朱毒"
         }
       },
+      "monster": "Viper Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -9781,6 +9861,7 @@
           "zhHant": "朱毒"
         }
       },
+      "monster": "Viper Tobi-Kadachi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -9866,6 +9947,7 @@
           "zhHant": "浮空龍"
         }
       },
+      "monster": "Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -10065,6 +10147,7 @@
           "zhHant": "浮空龍"
         }
       },
+      "monster": "Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -10290,6 +10373,7 @@
           "zhHant": "浮空龍"
         }
       },
+      "monster": "Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -10491,6 +10575,7 @@
           "zhHant": "浮空龍"
         }
       },
+      "monster": "Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -10750,6 +10835,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -10800,6 +10886,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -10850,6 +10937,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -10900,6 +10988,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -10976,6 +11065,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -11026,6 +11116,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -11078,6 +11169,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -11147,6 +11239,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -11257,6 +11350,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -11367,6 +11461,7 @@
           "zhHant": "浮夢"
         }
       },
+      "monster": "Nightshade Paolumu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -11440,6 +11535,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -11621,6 +11717,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -11802,6 +11899,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -11983,6 +12081,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -12164,6 +12263,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -12345,6 +12445,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -12552,6 +12653,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -12733,6 +12835,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -12916,6 +13019,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -13099,6 +13203,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -13282,6 +13387,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -13480,6 +13586,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -13721,6 +13828,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -13944,6 +14052,7 @@
           "zhHant": "泥魚龍"
         }
       },
+      "monster": "Jyuratodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -14148,6 +14257,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -14329,6 +14439,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -14510,6 +14621,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -14691,6 +14803,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -14872,6 +14985,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -15053,6 +15167,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -15260,6 +15375,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -15443,6 +15559,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -15626,6 +15743,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -15826,6 +15944,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16049,6 +16168,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16272,6 +16392,7 @@
           "zhHant": "蠻顎龍"
         }
       },
+      "monster": "Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16476,6 +16597,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16526,6 +16648,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16576,6 +16699,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16626,6 +16750,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16676,6 +16801,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16726,6 +16852,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16801,6 +16928,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16853,6 +16981,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16905,6 +17034,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -16974,6 +17104,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -17084,6 +17215,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -17176,6 +17308,7 @@
           "zhHant": "雷顎"
         }
       },
+      "monster": "Fulgur Anjanath",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -17249,6 +17382,7 @@
           "zhHant": "雌火龍"
         }
       },
+      "monster": "Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -17430,6 +17564,7 @@
           "zhHant": "雌火龍"
         }
       },
+      "monster": "Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -17611,6 +17746,7 @@
           "zhHant": "雌火龍"
         }
       },
+      "monster": "Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -17818,6 +17954,7 @@
           "zhHant": "雌火龍"
         }
       },
+      "monster": "Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -18001,6 +18138,7 @@
           "zhHant": "雌火龍"
         }
       },
+      "monster": "Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -18184,6 +18322,7 @@
           "zhHant": "雌火龍"
         }
       },
+      "monster": "Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -18367,6 +18506,7 @@
           "zhHant": "雌火龍"
         }
       },
+      "monster": "Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -18565,6 +18705,7 @@
           "zhHant": "雌火龍"
         }
       },
+      "monster": "Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -18800,6 +18941,7 @@
           "zhHant": "雌火龍"
         }
       },
+      "monster": "Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19004,6 +19146,7 @@
           "zhHant": "火龍心"
         }
       },
+      "monster": "Pink Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19054,6 +19197,7 @@
           "zhHant": "火龍心"
         }
       },
+      "monster": "Pink Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19104,6 +19248,7 @@
           "zhHant": "火龍心"
         }
       },
+      "monster": "Pink Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19180,6 +19325,7 @@
           "zhHant": "火龍心"
         }
       },
+      "monster": "Pink Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19232,6 +19378,7 @@
           "zhHant": "火龍心"
         }
       },
+      "monster": "Pink Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19284,6 +19431,7 @@
           "zhHant": "火龍心"
         }
       },
+      "monster": "Pink Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19357,6 +19505,7 @@
           "zhHant": "金黃澄月"
         }
       },
+      "monster": "Gold Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19407,6 +19556,7 @@
           "zhHant": "金黃澄月"
         }
       },
+      "monster": "Gold Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19457,6 +19607,7 @@
           "zhHant": "金黃澄月"
         }
       },
+      "monster": "Gold Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19532,6 +19683,7 @@
           "zhHant": "金黃澄月"
         }
       },
+      "monster": "Gold Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19584,6 +19736,7 @@
           "zhHant": "金黃澄月"
         }
       },
+      "monster": "Gold Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19636,6 +19789,7 @@
           "zhHant": "金黃澄月"
         }
       },
+      "monster": "Gold Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19688,6 +19842,7 @@
           "zhHant": "金黃澄月"
         }
       },
+      "monster": "Gold Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19798,6 +19953,7 @@
           "zhHant": "金黃澄月"
         }
       },
+      "monster": "Gold Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19890,6 +20046,7 @@
           "zhHant": "金黃澄月"
         }
       },
+      "monster": "Gold Rathian",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -19963,6 +20120,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -20144,6 +20302,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -20325,6 +20484,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -20506,6 +20666,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -20687,6 +20848,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -20894,6 +21056,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -21075,6 +21238,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -21258,6 +21422,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -21441,6 +21606,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -21624,6 +21790,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -21824,6 +21991,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -22065,6 +22233,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -22288,6 +22457,7 @@
           "zhHant": "風漂龍"
         }
       },
+      "monster": "Legiana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -22492,6 +22662,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -22667,6 +22838,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -22842,6 +23014,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -23017,6 +23190,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -23192,6 +23366,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -23392,6 +23567,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -23567,6 +23743,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -23744,6 +23921,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -23921,6 +24099,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -24098,6 +24277,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -24292,6 +24472,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -24509,6 +24690,7 @@
           "zhHant": "角龍"
         }
       },
+      "monster": "Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -24707,6 +24889,7 @@
           "zhHant": "暴君角龍"
         }
       },
+      "monster": "Black Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -24757,6 +24940,7 @@
           "zhHant": "暴君角龍"
         }
       },
+      "monster": "Black Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -24807,6 +24991,7 @@
           "zhHant": "暴君角龍"
         }
       },
+      "monster": "Black Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -24859,6 +25044,7 @@
           "zhHant": "暴君角龍"
         }
       },
+      "monster": "Black Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -24911,6 +25097,7 @@
           "zhHant": "暴君角龍"
         }
       },
+      "monster": "Black Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -24980,6 +25167,7 @@
           "zhHant": "暴君角龍"
         }
       },
+      "monster": "Black Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -25072,6 +25260,7 @@
           "zhHant": "暴君角龍"
         }
       },
+      "monster": "Black Diablos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -25145,6 +25334,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -25326,6 +25516,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -25507,6 +25698,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -25688,6 +25880,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -25869,6 +26062,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -26050,6 +26244,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -26257,6 +26452,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -26438,6 +26634,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -26621,6 +26818,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -26804,6 +27002,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -26987,6 +27186,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27187,6 +27387,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27428,6 +27629,7 @@
           "zhHant": "火龍"
         }
       },
+      "monster": "Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27632,6 +27834,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27682,6 +27885,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27732,6 +27936,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27782,6 +27987,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27832,6 +28038,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27884,6 +28091,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27936,6 +28144,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -27988,6 +28197,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28057,6 +28267,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28167,6 +28378,7 @@
           "zhHant": "火龍魂"
         }
       },
+      "monster": "Azure Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28240,6 +28452,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28290,6 +28503,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28340,6 +28554,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28390,6 +28605,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28440,6 +28656,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28490,6 +28707,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28540,6 +28758,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28592,6 +28811,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28644,6 +28864,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28696,6 +28917,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28763,6 +28985,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28873,6 +29096,7 @@
           "zhHant": "銀白耀日"
         }
       },
+      "monster": "Silver Rathalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -28946,6 +29170,7 @@
           "zhHant": "骨鎚龍"
         }
       },
+      "monster": "Radobaan",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -29127,6 +29352,7 @@
           "zhHant": "骨鎚龍"
         }
       },
+      "monster": "Radobaan",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -29308,6 +29534,7 @@
           "zhHant": "骨鎚龍"
         }
       },
+      "monster": "Radobaan",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -29489,6 +29716,7 @@
           "zhHant": "骨鎚龍"
         }
       },
+      "monster": "Radobaan",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -29695,6 +29923,7 @@
           "zhHant": "骨鎚龍"
         }
       },
+      "monster": "Radobaan",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -29930,6 +30159,7 @@
           "zhHant": "猛牛龍"
         }
       },
+      "monster": "Banbaro",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -30129,6 +30359,7 @@
           "zhHant": "猛牛龍"
         }
       },
+      "monster": "Banbaro",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -30328,6 +30559,7 @@
           "zhHant": "猛牛龍"
         }
       },
+      "monster": "Banbaro",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -30527,6 +30759,7 @@
           "zhHant": "猛牛龍"
         }
       },
+      "monster": "Banbaro",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -30726,6 +30959,7 @@
           "zhHant": "猛牛龍"
         }
       },
+      "monster": "Banbaro",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -30927,6 +31161,7 @@
           "zhHant": "猛牛龍"
         }
       },
+      "monster": "Banbaro",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -31128,6 +31363,7 @@
           "zhHant": "猛牛龍"
         }
       },
+      "monster": "Banbaro",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -31387,6 +31623,7 @@
           "zhHant": "猛牛龍"
         }
       },
+      "monster": "Banbaro",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -31609,6 +31846,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -31790,6 +32028,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -31971,6 +32210,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -32152,6 +32392,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -32333,6 +32574,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -32514,6 +32756,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -32721,6 +32964,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -32902,6 +33146,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -33085,6 +33330,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -33268,6 +33514,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -33451,6 +33698,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -33649,6 +33897,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -33872,6 +34121,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -34095,6 +34345,7 @@
           "zhHant": "冰牙龍"
         }
       },
+      "monster": "Barioth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -34299,6 +34550,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -34504,6 +34756,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -34709,6 +34962,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -34914,6 +35168,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -35119,6 +35374,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -35324,6 +35580,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -35555,6 +35812,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -35760,6 +36018,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -35967,6 +36226,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -36174,6 +36434,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -36381,6 +36642,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -36605,6 +36867,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -36870,6 +37133,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37117,6 +37381,7 @@
           "zhHant": "雷狼龍"
         }
       },
+      "monster": "Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37345,6 +37610,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37407,6 +37673,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37469,6 +37736,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37531,6 +37799,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37593,6 +37862,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37655,6 +37925,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37743,6 +38014,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37805,6 +38077,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37869,6 +38142,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37933,6 +38207,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -37997,6 +38272,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38078,6 +38354,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38182,6 +38459,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38286,6 +38564,7 @@
           "zhHant": "獄狼龍"
         }
       },
+      "monster": "Stygian Zinogre",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38371,6 +38650,7 @@
           "zhHant": "眩鳥"
         }
       },
+      "monster": "Tzitzi-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38421,6 +38701,7 @@
           "zhHant": "眩鳥"
         }
       },
+      "monster": "Tzitzi-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38471,6 +38752,7 @@
           "zhHant": "眩鳥"
         }
       },
+      "monster": "Tzitzi-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38538,6 +38820,7 @@
           "zhHant": "眩鳥"
         }
       },
+      "monster": "Tzitzi-Ya-Ku",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38630,6 +38913,7 @@
           "zhHant": "慘爪龍"
         }
       },
+      "monster": "Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38680,6 +38964,7 @@
           "zhHant": "慘爪龍"
         }
       },
+      "monster": "Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38730,6 +39015,7 @@
           "zhHant": "慘爪龍"
         }
       },
+      "monster": "Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38782,6 +39068,7 @@
           "zhHant": "慘爪龍"
         }
       },
+      "monster": "Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38849,6 +39136,7 @@
           "zhHant": "慘爪龍"
         }
       },
+      "monster": "Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38941,6 +39229,7 @@
           "zhHant": "亡爪"
         }
       },
+      "monster": "Ebony Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -38991,6 +39280,7 @@
           "zhHant": "亡爪"
         }
       },
+      "monster": "Ebony Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39041,6 +39331,7 @@
           "zhHant": "亡爪"
         }
       },
+      "monster": "Ebony Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39093,6 +39384,7 @@
           "zhHant": "亡爪"
         }
       },
+      "monster": "Ebony Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39162,6 +39454,7 @@
           "zhHant": "亡爪"
         }
       },
+      "monster": "Ebony Odogaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39254,6 +39547,7 @@
           "zhHant": "岩龍"
         }
       },
+      "monster": "Basarios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39304,6 +39598,7 @@
           "zhHant": "岩龍"
         }
       },
+      "monster": "Basarios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39354,6 +39649,7 @@
           "zhHant": "岩龍"
         }
       },
+      "monster": "Basarios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39429,6 +39725,7 @@
           "zhHant": "岩龍"
         }
       },
+      "monster": "Basarios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39479,6 +39776,7 @@
           "zhHant": "岩龍"
         }
       },
+      "monster": "Basarios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39531,6 +39829,7 @@
           "zhHant": "岩龍"
         }
       },
+      "monster": "Basarios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39623,6 +39922,7 @@
           "zhHant": "岩龍"
         }
       },
+      "monster": "Basarios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39733,6 +40033,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -39914,6 +40215,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -40095,6 +40397,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -40276,6 +40579,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -40457,6 +40761,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -40638,6 +40943,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -40845,6 +41151,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -41026,6 +41333,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -41209,6 +41517,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -41392,6 +41701,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -41575,6 +41885,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -41775,6 +42086,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -42016,6 +42328,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -42257,6 +42570,7 @@
           "zhHant": "恐暴龍"
         }
       },
+      "monster": "Deviljho",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -42461,6 +42775,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -42642,6 +42957,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -42823,6 +43139,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -43004,6 +43321,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -43185,6 +43503,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -43391,6 +43710,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -43574,6 +43894,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -43757,6 +44078,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -43957,6 +44279,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44180,6 +44503,7 @@
           "zhHant": "奇怪龍"
         }
       },
+      "monster": "Khezu",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44384,6 +44708,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44446,6 +44771,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44508,6 +44834,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44570,6 +44897,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44632,6 +44960,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44694,6 +45023,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44781,6 +45111,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44843,6 +45174,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44907,6 +45239,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -44971,6 +45304,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -45035,6 +45369,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -45116,6 +45451,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -45238,6 +45574,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -45360,6 +45697,7 @@
           "zhHant": "鋼龍"
         }
       },
+      "monster": "Kushala Daora",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -45445,6 +45783,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -45650,6 +45989,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -45855,6 +46195,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -46060,6 +46401,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -46265,6 +46607,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -46470,6 +46813,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -46701,6 +47045,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -46906,6 +47251,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -47113,6 +47459,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -47320,6 +47667,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -47527,6 +47875,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -47751,6 +48100,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48016,6 +48366,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48263,6 +48614,7 @@
           "zhHant": "泡狐龍"
         }
       },
+      "monster": "Mizutsune",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48491,6 +48843,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48553,6 +48906,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48615,6 +48969,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48677,6 +49032,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48739,6 +49095,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48826,6 +49183,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48888,6 +49246,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -48952,6 +49311,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49016,6 +49376,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49138,6 +49499,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49260,6 +49622,7 @@
           "zhHant": "帝王"
         }
       },
+      "monster": "Teostra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49345,6 +49708,7 @@
           "zhHant": "傘鳥"
         }
       },
+      "monster": "Aknosom",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49395,6 +49759,7 @@
           "zhHant": "傘鳥"
         }
       },
+      "monster": "Aknosom",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49445,6 +49810,7 @@
           "zhHant": "傘鳥"
         }
       },
+      "monster": "Aknosom",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49495,6 +49861,7 @@
           "zhHant": "傘鳥"
         }
       },
+      "monster": "Aknosom",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49545,6 +49912,7 @@
           "zhHant": "傘鳥"
         }
       },
+      "monster": "Aknosom",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49597,6 +49965,7 @@
           "zhHant": "傘鳥"
         }
       },
+      "monster": "Aknosom",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49649,6 +50018,7 @@
           "zhHant": "傘鳥"
         }
       },
+      "monster": "Aknosom",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49716,6 +50086,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -49897,6 +50268,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -50078,6 +50450,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -50259,6 +50632,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -50440,6 +50814,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -50621,6 +50996,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -50828,6 +51204,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -51009,6 +51386,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -51192,6 +51570,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -51375,6 +51754,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -51558,6 +51938,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -51758,6 +52139,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -51993,6 +52375,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52228,6 +52611,7 @@
           "zhHant": "禍鎧"
         }
       },
+      "monster": "Magnamalo",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52432,6 +52816,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52482,6 +52867,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52532,6 +52918,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52582,6 +52969,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52632,6 +53020,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52682,6 +53071,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52758,6 +53148,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52808,6 +53199,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52860,6 +53252,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52912,6 +53305,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -52964,6 +53358,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53033,6 +53428,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53143,6 +53539,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53235,6 +53632,7 @@
           "zhHant": "金色"
         }
       },
+      "monster": "Rajang",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53308,6 +53706,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53370,6 +53769,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53432,6 +53832,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53494,6 +53895,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53556,6 +53958,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53618,6 +54021,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53706,6 +54110,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53768,6 +54173,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53832,6 +54238,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53896,6 +54303,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -53960,6 +54368,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -54041,6 +54450,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -54163,6 +54573,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -54267,6 +54678,7 @@
           "zhHant": "戰紋"
         }
       },
+      "monster": "Nergigante",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -54352,6 +54764,7 @@
           "zhHant": "白兔獸"
         }
       },
+      "monster": "Lagombi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -54557,6 +54970,7 @@
           "zhHant": "白兔獸"
         }
       },
+      "monster": "Lagombi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -54762,6 +55176,7 @@
           "zhHant": "白兔獸"
         }
       },
+      "monster": "Lagombi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -54967,6 +55382,7 @@
           "zhHant": "白兔獸"
         }
       },
+      "monster": "Lagombi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -55174,6 +55590,7 @@
           "zhHant": "白兔獸"
         }
       },
+      "monster": "Lagombi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -55381,6 +55798,7 @@
           "zhHant": "白兔獸"
         }
       },
+      "monster": "Lagombi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -55603,6 +56021,7 @@
           "zhHant": "白兔獸"
         }
       },
+      "monster": "Lagombi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -55850,6 +56269,7 @@
           "zhHant": "赤甲獸"
         }
       },
+      "monster": "Volvidon",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -55900,6 +56320,7 @@
           "zhHant": "赤甲獸"
         }
       },
+      "monster": "Volvidon",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -55950,6 +56371,7 @@
           "zhHant": "赤甲獸"
         }
       },
+      "monster": "Volvidon",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -56002,6 +56424,7 @@
           "zhHant": "赤甲獸"
         }
       },
+      "monster": "Volvidon",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -56054,6 +56477,7 @@
           "zhHant": "赤甲獸"
         }
       },
+      "monster": "Volvidon",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -56106,6 +56530,7 @@
           "zhHant": "赤甲獸"
         }
       },
+      "monster": "Volvidon",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -56198,6 +56623,7 @@
           "zhHant": "人魚龍"
         }
       },
+      "monster": "Somnacanth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -56403,6 +56829,7 @@
           "zhHant": "人魚龍"
         }
       },
+      "monster": "Somnacanth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -56608,6 +57035,7 @@
           "zhHant": "人魚龍"
         }
       },
+      "monster": "Somnacanth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -56813,6 +57241,7 @@
           "zhHant": "人魚龍"
         }
       },
+      "monster": "Somnacanth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -57018,6 +57447,7 @@
           "zhHant": "人魚龍"
         }
       },
+      "monster": "Somnacanth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -57249,6 +57679,7 @@
           "zhHant": "人魚龍"
         }
       },
+      "monster": "Somnacanth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -57456,6 +57887,7 @@
           "zhHant": "人魚龍"
         }
       },
+      "monster": "Somnacanth",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -57678,6 +58110,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -57728,6 +58161,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -57778,6 +58212,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -57828,6 +58263,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -57878,6 +58314,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -57928,6 +58365,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58003,6 +58441,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58053,6 +58492,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58105,6 +58545,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58157,6 +58598,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58209,6 +58651,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58278,6 +58721,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58388,6 +58832,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58480,6 +58925,7 @@
           "zhHant": "轟龍"
         }
       },
+      "monster": "Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58553,6 +58999,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58603,6 +59050,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58653,6 +59101,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58703,6 +59152,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58753,6 +59203,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58829,6 +59280,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58879,6 +59331,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58931,6 +59384,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -58983,6 +59437,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59035,6 +59490,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59102,6 +59558,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59194,6 +59651,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59286,6 +59744,7 @@
           "zhHant": "轟吼"
         }
       },
+      "monster": "Brute Tigrex",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59359,6 +59818,7 @@
           "zhHant": "麒麟"
         }
       },
+      "monster": "Kirin",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59421,6 +59881,7 @@
           "zhHant": "麒麟"
         }
       },
+      "monster": "Kirin",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59483,6 +59944,7 @@
           "zhHant": "麒麟"
         }
       },
+      "monster": "Kirin",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59545,6 +60007,7 @@
           "zhHant": "麒麟"
         }
       },
+      "monster": "Kirin",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59633,6 +60096,7 @@
           "zhHant": "麒麟"
         }
       },
+      "monster": "Kirin",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59695,6 +60159,7 @@
           "zhHant": "麒麟"
         }
       },
+      "monster": "Kirin",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59759,6 +60224,7 @@
           "zhHant": "麒麟"
         }
       },
+      "monster": "Kirin",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59840,6 +60306,7 @@
           "zhHant": "麒麟"
         }
       },
+      "monster": "Kirin",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -59944,6 +60411,7 @@
           "zhHant": "麒麟"
         }
       },
+      "monster": "Kirin",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -60066,6 +60534,7 @@
           "zhHant": "爆鱗龍"
         }
       },
+      "monster": "Bazelgeuse",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -60271,6 +60740,7 @@
           "zhHant": "爆鱗龍"
         }
       },
+      "monster": "Bazelgeuse",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -60476,6 +60946,7 @@
           "zhHant": "爆鱗龍"
         }
       },
+      "monster": "Bazelgeuse",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -60706,6 +61177,7 @@
           "zhHant": "爆鱗龍"
         }
       },
+      "monster": "Bazelgeuse",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -60911,6 +61383,7 @@
           "zhHant": "爆鱗龍"
         }
       },
+      "monster": "Bazelgeuse",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61118,6 +61591,7 @@
           "zhHant": "爆鱗龍"
         }
       },
+      "monster": "Bazelgeuse",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61325,6 +61799,7 @@
           "zhHant": "爆鱗龍"
         }
       },
+      "monster": "Bazelgeuse",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61566,6 +62041,7 @@
           "zhHant": "纏蛙"
         }
       },
+      "monster": "Chatacabra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61616,6 +62092,7 @@
           "zhHant": "纏蛙"
         }
       },
+      "monster": "Chatacabra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61666,6 +62143,7 @@
           "zhHant": "纏蛙"
         }
       },
+      "monster": "Chatacabra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61718,6 +62196,7 @@
           "zhHant": "纏蛙"
         }
       },
+      "monster": "Chatacabra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61785,6 +62264,7 @@
           "zhHant": "纏蛙"
         }
       },
+      "monster": "Chatacabra",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61877,6 +62357,7 @@
           "zhHant": "青熊獸"
         }
       },
+      "monster": "Arzuros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61927,6 +62408,7 @@
           "zhHant": "青熊獸"
         }
       },
+      "monster": "Arzuros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -61977,6 +62459,7 @@
           "zhHant": "青熊獸"
         }
       },
+      "monster": "Arzuros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -62027,6 +62510,7 @@
           "zhHant": "青熊獸"
         }
       },
+      "monster": "Arzuros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -62102,6 +62586,7 @@
           "zhHant": "青熊獸"
         }
       },
+      "monster": "Arzuros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -62154,6 +62639,7 @@
           "zhHant": "青熊獸"
         }
       },
+      "monster": "Arzuros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -62246,6 +62732,7 @@
           "zhHant": "青熊獸"
         }
       },
+      "monster": "Arzuros",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -62319,6 +62806,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -62500,6 +62988,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -62681,6 +63170,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -62862,6 +63352,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -63043,6 +63534,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -63224,6 +63716,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -63430,6 +63923,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -63611,6 +64105,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -63794,6 +64289,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -63977,6 +64473,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -64160,6 +64657,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -64358,6 +64856,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -64581,6 +65080,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -64804,6 +65304,7 @@
           "zhHant": "斬龍"
         }
       },
+      "monster": "Glavenus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65008,6 +65509,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65070,6 +65572,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65132,6 +65635,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65194,6 +65698,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65256,6 +65761,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65344,6 +65850,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65408,6 +65915,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65472,6 +65980,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65536,6 +66045,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65617,6 +66127,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65739,6 +66250,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65861,6 +66373,7 @@
           "zhHant": "霞龍"
         }
       },
+      "monster": "Chameleos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65946,6 +66459,7 @@
           "zhHant": "毒狗龍"
         }
       },
+      "monster": "Great Wroggi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -65996,6 +66510,7 @@
           "zhHant": "毒狗龍"
         }
       },
+      "monster": "Great Wroggi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -66046,6 +66561,7 @@
           "zhHant": "毒狗龍"
         }
       },
+      "monster": "Great Wroggi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -66096,6 +66612,7 @@
           "zhHant": "毒狗龍"
         }
       },
+      "monster": "Great Wroggi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -66146,6 +66663,7 @@
           "zhHant": "毒狗龍"
         }
       },
+      "monster": "Great Wroggi",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -66219,6 +66737,7 @@
           "zhHant": "天狗獸"
         }
       },
+      "monster": "Bishaten",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -66418,6 +66937,7 @@
           "zhHant": "天狗獸"
         }
       },
+      "monster": "Bishaten",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -66617,6 +67137,7 @@
           "zhHant": "天狗獸"
         }
       },
+      "monster": "Bishaten",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -66818,6 +67339,7 @@
           "zhHant": "天狗獸"
         }
       },
+      "monster": "Bishaten",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67059,6 +67581,7 @@
           "zhHant": "天狗獸"
         }
       },
+      "monster": "Bishaten",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67318,6 +67841,7 @@
           "zhHant": "天狗獸"
         }
       },
+      "monster": "Bishaten",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67522,6 +68046,7 @@
           "zhHant": "冰魚龍"
         }
       },
+      "monster": "Beotodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67572,6 +68097,7 @@
           "zhHant": "冰魚龍"
         }
       },
+      "monster": "Beotodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67622,6 +68148,7 @@
           "zhHant": "冰魚龍"
         }
       },
+      "monster": "Beotodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67674,6 +68201,7 @@
           "zhHant": "冰魚龍"
         }
       },
+      "monster": "Beotodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67743,6 +68271,7 @@
           "zhHant": "冰魚龍"
         }
       },
+      "monster": "Beotodus",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67835,6 +68364,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67885,6 +68415,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67935,6 +68466,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -67985,6 +68517,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68035,6 +68568,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68085,6 +68619,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68160,6 +68695,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68210,6 +68746,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68262,6 +68799,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68314,6 +68852,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68366,6 +68905,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68433,6 +68973,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68525,6 +69066,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68617,6 +69159,7 @@
           "zhHant": "迅龍"
         }
       },
+      "monster": "Nargacuga",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68690,6 +69233,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68752,6 +69296,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68814,6 +69359,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68901,6 +69447,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -68963,6 +69510,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69027,6 +69575,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69091,6 +69640,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69155,6 +69705,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69236,6 +69787,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69358,6 +69910,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69462,6 +70015,7 @@
           "zhHant": "觸角"
         }
       },
+      "monster": "Namielle",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69547,6 +70101,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69597,6 +70152,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69647,6 +70203,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69697,6 +70254,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69747,6 +70305,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69797,6 +70356,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69872,6 +70432,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69922,6 +70483,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -69974,6 +70536,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70026,6 +70589,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70078,6 +70642,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70147,6 +70712,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70239,6 +70805,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70331,6 +70898,7 @@
           "zhHant": "剛纏獸"
         }
       },
+      "monster": "Garangolm",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70404,6 +70972,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70454,6 +71023,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70504,6 +71074,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70554,6 +71125,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70604,6 +71176,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70654,6 +71227,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70730,6 +71304,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70780,6 +71355,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70832,6 +71408,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70884,6 +71461,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -70936,6 +71514,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71003,6 +71582,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71113,6 +71693,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71223,6 +71804,7 @@
           "zhHant": "冰狼龍"
         }
       },
+      "monster": "Lunagaron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71296,6 +71878,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71346,6 +71929,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71396,6 +71980,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71446,6 +72031,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71496,6 +72082,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71546,6 +72133,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71622,6 +72210,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71672,6 +72261,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71724,6 +72314,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71776,6 +72367,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71828,6 +72420,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -71897,6 +72490,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72007,6 +72601,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72117,6 +72712,7 @@
           "zhHant": "棘龍"
         }
       },
+      "monster": "Espinas",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72190,6 +72786,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72252,6 +72849,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72314,6 +72912,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72376,6 +72975,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72438,6 +73038,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72500,6 +73101,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72587,6 +73189,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72649,6 +73252,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72713,6 +73317,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72777,6 +73382,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72841,6 +73447,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -72920,6 +73527,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73042,6 +73650,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73164,6 +73773,7 @@
           "zhHant": "爵銀龍"
         }
       },
+      "monster": "Malzeno",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73249,6 +73859,7 @@
           "zhHant": "炎尾龍"
         }
       },
+      "monster": "Quematrice",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73299,6 +73910,7 @@
           "zhHant": "炎尾龍"
         }
       },
+      "monster": "Quematrice",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73349,6 +73961,7 @@
           "zhHant": "炎尾龍"
         }
       },
+      "monster": "Quematrice",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73399,6 +74012,7 @@
           "zhHant": "炎尾龍"
         }
       },
+      "monster": "Quematrice",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73449,6 +74063,7 @@
           "zhHant": "炎尾龍"
         }
       },
+      "monster": "Quematrice",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73499,6 +74114,7 @@
           "zhHant": "炎尾龍"
         }
       },
+      "monster": "Quematrice",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73551,6 +74167,7 @@
           "zhHant": "炎尾龍"
         }
       },
+      "monster": "Quematrice",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73624,6 +74241,7 @@
           "zhHant": "雪鬼獸"
         }
       },
+      "monster": "Goss Harag",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73674,6 +74292,7 @@
           "zhHant": "雪鬼獸"
         }
       },
+      "monster": "Goss Harag",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73724,6 +74343,7 @@
           "zhHant": "雪鬼獸"
         }
       },
+      "monster": "Goss Harag",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73774,6 +74394,7 @@
           "zhHant": "雪鬼獸"
         }
       },
+      "monster": "Goss Harag",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73824,6 +74445,7 @@
           "zhHant": "雪鬼獸"
         }
       },
+      "monster": "Goss Harag",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73876,6 +74498,7 @@
           "zhHant": "雪鬼獸"
         }
       },
+      "monster": "Goss Harag",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -73945,6 +74568,7 @@
           "zhHant": "雪鬼獸"
         }
       },
+      "monster": "Goss Harag",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74055,6 +74679,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74105,6 +74730,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74155,6 +74781,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74205,6 +74832,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74255,6 +74883,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74305,6 +74934,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74381,6 +75011,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74431,6 +75062,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74483,6 +75115,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74535,6 +75168,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74587,6 +75221,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74656,6 +75291,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74748,6 +75384,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74840,6 +75477,7 @@
           "zhHant": "電龍"
         }
       },
+      "monster": "Astalos",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74913,6 +75551,7 @@
           "zhHant": "泥翁龍"
         }
       },
+      "monster": "Almudron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -74963,6 +75602,7 @@
           "zhHant": "泥翁龍"
         }
       },
+      "monster": "Almudron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75013,6 +75653,7 @@
           "zhHant": "泥翁龍"
         }
       },
+      "monster": "Almudron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75063,6 +75704,7 @@
           "zhHant": "泥翁龍"
         }
       },
+      "monster": "Almudron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75115,6 +75757,7 @@
           "zhHant": "泥翁龍"
         }
       },
+      "monster": "Almudron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75167,6 +75810,7 @@
           "zhHant": "泥翁龍"
         }
       },
+      "monster": "Almudron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75259,6 +75903,7 @@
           "zhHant": "泥翁龍"
         }
       },
+      "monster": "Almudron",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75332,6 +75977,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75382,6 +76028,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75432,6 +76079,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75482,6 +76130,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75532,6 +76181,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75582,6 +76232,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75658,6 +76309,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75708,6 +76360,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75760,6 +76413,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75812,6 +76466,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75864,6 +76519,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -75931,6 +76587,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76023,6 +76680,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76115,6 +76773,7 @@
           "zhHant": "千刃龍"
         }
       },
+      "monster": "Seregios",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76188,6 +76847,7 @@
           "zhHant": "將軍蟹"
         }
       },
+      "monster": "Shogun Ceanataur",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76238,6 +76898,7 @@
           "zhHant": "將軍蟹"
         }
       },
+      "monster": "Shogun Ceanataur",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76288,6 +76949,7 @@
           "zhHant": "將軍蟹"
         }
       },
+      "monster": "Shogun Ceanataur",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76338,6 +77000,7 @@
           "zhHant": "將軍蟹"
         }
       },
+      "monster": "Shogun Ceanataur",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76388,6 +77051,7 @@
           "zhHant": "將軍蟹"
         }
       },
+      "monster": "Shogun Ceanataur",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76438,6 +77102,7 @@
           "zhHant": "將軍蟹"
         }
       },
+      "monster": "Shogun Ceanataur",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76490,6 +77155,7 @@
           "zhHant": "將軍蟹"
         }
       },
+      "monster": "Shogun Ceanataur",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76582,6 +77248,7 @@
           "zhHant": "將軍蟹"
         }
       },
+      "monster": "Shogun Ceanataur",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76655,6 +77322,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76729,6 +77397,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76803,6 +77472,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76877,6 +77547,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -76951,6 +77622,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77025,6 +77697,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77125,6 +77798,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77199,6 +77873,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77275,6 +77950,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77351,6 +78027,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77427,6 +78104,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77520,6 +78198,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77636,6 +78315,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77752,6 +78432,7 @@
           "zhHant": "雪崩"
         }
       },
+      "monster": "Velkhana",
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77849,6 +78530,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77899,6 +78581,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77949,6 +78632,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -77999,6 +78683,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78049,6 +78734,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78099,6 +78785,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78149,6 +78836,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78201,6 +78889,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78253,6 +78942,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78363,6 +79053,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78473,6 +79164,7 @@
           "zhHant": "Carnival 2024"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78546,6 +79238,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78596,6 +79289,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78646,6 +79340,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78696,6 +79391,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78746,6 +79442,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78796,6 +79493,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78872,6 +79570,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78922,6 +79621,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -78974,6 +79674,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79026,6 +79727,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79078,6 +79780,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79145,6 +79848,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79237,6 +79941,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79329,6 +80034,7 @@
           "zhHant": "龍骨"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79402,6 +80108,7 @@
           "zhHant": "Halloween"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79452,6 +80159,7 @@
           "zhHant": "Halloween"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79527,6 +80235,7 @@
           "zhHant": "春節"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79577,6 +80286,7 @@
           "zhHant": "春節"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79627,6 +80337,7 @@
           "zhHant": "春節"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79719,6 +80430,7 @@
           "zhHant": "兔子玩具"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79769,6 +80481,7 @@
           "zhHant": "兔子玩具"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79821,6 +80534,7 @@
           "zhHant": "Mr.Beast"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79871,6 +80585,7 @@
           "zhHant": "游泳"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -79981,6 +80696,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80071,6 +80787,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80161,6 +80878,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80251,6 +80969,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80341,6 +81060,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80431,6 +81151,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80546,6 +81267,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80636,6 +81358,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80728,6 +81451,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80820,6 +81544,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -80912,6 +81637,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -81019,6 +81745,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -81151,6 +81878,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -81301,6 +82029,7 @@
           "zhHant": "祈望"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -81414,6 +82143,7 @@
           "zhHant": "歲末冬日祭 2025"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -81476,6 +82206,7 @@
           "zhHant": "歲末冬日祭 2025"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -81549,6 +82280,7 @@
           "zhHant": "春季慶典2026"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
@@ -81784,6 +82516,7 @@
           "zhHant": "夏日祭典2026"
         }
       },
+      "monster": null,
       "statsAt": {
         "grade": 10,
         "level": 5
