@@ -133,6 +133,34 @@ const MODAL_MODE_CLASSES = [
   "modal-window-uptime",
 ];
 
+const WEAPON_LIBRARY_TYPE_MAP = Object.freeze({
+  SwordAndShield: "Sword & Shield",
+  DualBlades: "Dual Blades",
+  GreatSword: "Greatsword",
+  LongSword: "Longsword",
+  Hammer: "Hammer",
+  HuntingHorn: "Hunting Horn",
+  Lance: "Lance",
+  Gunlance: "Gunlance",
+  SwitchAxe: "Switch Axe",
+  LightBowgun: "Light Bowgun",
+  HeavyBowgun: "Heavy Bowgun",
+  Bow: "Bow",
+});
+
+const WEAPON_LIBRARY_ATTRIBUTE_LABELS = Object.freeze({
+  none: "Raw",
+  fire: "Fire",
+  water: "Water",
+  thunder: "Thunder",
+  ice: "Ice",
+  dragon: "Dragon",
+  poison: "Poison",
+  paralysis: "Paralysis",
+  sleep: "Sleep",
+  blast: "Blast",
+});
+
 const LIBRARY_ACTION_HANDLERS = {
   "edit-build": (id) => editBuild(id),
   "delete-build": (id) => deleteBuild(id),
@@ -164,6 +192,9 @@ const state = {
   uptimeFields: [],
   uptimeValues: {},
   uptimeDraft: null,
+  weaponLibraryType: "all",
+  weaponLibraryAttribute: "all",
+  weaponLibraryQuery: "",
 };
 
 const els = {
@@ -537,6 +568,12 @@ function serializeWeapon(weapon) {
     name: weapon.name,
     compareEnabled: weapon.compareEnabled !== false,
     isRift: Boolean(weapon.isRift),
+    ...(weapon.libraryId ? { libraryId: weapon.libraryId } : {}),
+    ...(weapon.libraryVariant ? { libraryVariant: weapon.libraryVariant } : {}),
+    ...(Number.isFinite(weapon.riftLevel) ? { riftLevel: weapon.riftLevel } : {}),
+    ...(typeof weapon.riftNodesApplied === "boolean"
+      ? { riftNodesApplied: weapon.riftNodesApplied }
+      : {}),
     properties: semanticValuesFromCurrent(weapon.values, state.data.weaponFields),
   };
 }
@@ -648,6 +685,14 @@ function normalizeWeaponItem(item, { source = "current", preserveId = false, war
       ...currentValuesFromSemantic(semanticValues, state.data.weaponFields, warnings, context),
     },
     isRift: Boolean(item?.isRift),
+    libraryId: item?.libraryId ? String(item.libraryId) : null,
+    libraryVariant: item?.libraryVariant ? String(item.libraryVariant) : null,
+    riftLevel:
+      item?.riftLevel != null && Number.isFinite(Number(item.riftLevel))
+        ? Number(item.riftLevel)
+        : null,
+    riftNodesApplied:
+      typeof item?.riftNodesApplied === "boolean" ? item.riftNodesApplied : null,
   };
 }
 
@@ -992,6 +1037,14 @@ function normalizeRuntimeWeapon(weapon) {
     values: { ...base.values, ...weapon.values },
     isRift: Boolean(weapon.isRift),
     compareEnabled: typeof weapon.compareEnabled === "boolean" ? weapon.compareEnabled : true,
+    libraryId: weapon.libraryId ? String(weapon.libraryId) : null,
+    libraryVariant: weapon.libraryVariant ? String(weapon.libraryVariant) : null,
+    riftLevel:
+      weapon.riftLevel != null && Number.isFinite(Number(weapon.riftLevel))
+        ? Number(weapon.riftLevel)
+        : null,
+    riftNodesApplied:
+      typeof weapon.riftNodesApplied === "boolean" ? weapon.riftNodesApplied : null,
   };
 }
 
@@ -1149,6 +1202,7 @@ function renderSelectionActions() {
     </div>
     <div class="selection-actions-row">
       <button id="view-edit-uptimes" type="button">View/Edit Uptimes</button>
+      <button id="open-weapon-library" type="button">Weapon Library</button>
     </div>
   `;
   els.selectionActions
@@ -1161,6 +1215,353 @@ function renderSelectionActions() {
     .addEventListener("click", () => {
       openUptimesModal();
     });
+  els.selectionActions
+    .querySelector("#open-weapon-library")
+    .addEventListener("click", () => {
+      openWeaponLibrary();
+    });
+}
+
+function getWeaponLibraryEntries() {
+  const weapons = Array.isArray(window.WEAPON_LIBRARY?.weapons)
+    ? window.WEAPON_LIBRARY.weapons
+    : [];
+  return weapons.filter(
+    (weapon) =>
+      weapon.weaponTypeKey !== "InsectGlaive" &&
+      (weapon.weaponTypeKey === "ChargeBlade" || WEAPON_LIBRARY_TYPE_MAP[weapon.weaponTypeKey]),
+  );
+}
+
+function mapLibraryWeaponType(weapon) {
+  if (weapon.weaponTypeKey === "ChargeBlade") {
+    return weapon.mechanics?.phial === "Impact Phial"
+      ? "Charge Blade (Impact)"
+      : "Charge Blade (Power)";
+  }
+  return WEAPON_LIBRARY_TYPE_MAP[weapon.weaponTypeKey] ?? null;
+}
+
+function getLibraryEntry(libraryId) {
+  return getWeaponLibraryEntries().find((weapon) => weapon.id === libraryId) ?? null;
+}
+
+function getLibraryRiftLevel(weapon) {
+  const level = Number(weapon.customization?.max_level);
+  return Number.isFinite(level) && level > 0 ? level : null;
+}
+
+function getRiftFixedStats(weapon) {
+  const maxLevel = getLibraryRiftLevel(weapon);
+  const totals = {
+    attack: Number(weapon.attack) || 0,
+    attribute: Number(weapon.attribute?.value) || 0,
+    affinityPercent: Number(weapon.affinityPercent) || 0,
+  };
+  if (!maxLevel) {
+    return totals;
+  }
+  for (const rule of weapon.customization?.level_rules ?? []) {
+    if (Number(rule.level_no) > maxLevel) {
+      continue;
+    }
+    totals.attack += Number(rule.attack_add) || 0;
+    totals.attribute += Number(rule.element_add) || 0;
+    totals.affinityPercent += Number(rule.affinity_add) || 0;
+  }
+  return totals;
+}
+
+function getLibraryVariantKey(weapon, useRiftMaximum) {
+  return useRiftMaximum
+    ? `rift-lv${getLibraryRiftLevel(weapon)}-no-nodes`
+    : "g10-5";
+}
+
+function buildWeaponFromLibrary(weapon, useRiftMaximum = false) {
+  const riftLevel = useRiftMaximum ? getLibraryRiftLevel(weapon) : null;
+  const stats = useRiftMaximum
+    ? getRiftFixedStats(weapon)
+    : {
+        attack: Number(weapon.attack) || 0,
+        attribute: Number(weapon.attribute?.value) || 0,
+        affinityPercent: Number(weapon.affinityPercent) || 0,
+      };
+  const damageType = WEAPON_LIBRARY_ATTRIBUTE_LABELS[weapon.attribute?.type] ?? "Raw";
+  return {
+    id: makeId(),
+    name: useRiftMaximum
+      ? `${weapon.name} (Rift Lv${riftLevel}, No Nodes)`
+      : weapon.name,
+    compareEnabled: true,
+    isRift: useRiftMaximum,
+    libraryId: weapon.id,
+    libraryVariant: getLibraryVariantKey(weapon, useRiftMaximum),
+    riftLevel,
+    riftNodesApplied: useRiftMaximum ? false : null,
+    values: {
+      E3: stats.attack,
+      E4: stats.attribute,
+      E5: damageType,
+      E6: stats.affinityPercent / 100,
+      E7: mapLibraryWeaponType(weapon),
+    },
+  };
+}
+
+function isLibraryVariantSaved(weapon, useRiftMaximum = false) {
+  const variant = getLibraryVariantKey(weapon, useRiftMaximum);
+  const candidate = buildWeaponFromLibrary(weapon, useRiftMaximum);
+  if (
+    state.weapons.some(
+      (saved) =>
+        saved.libraryId === weapon.id &&
+        saved.libraryVariant === variant &&
+        Boolean(saved.isRift) === Boolean(candidate.isRift) &&
+        stableStringify(saved.values) === stableStringify(candidate.values),
+    )
+  ) {
+    return true;
+  }
+  const candidateFingerprint = weaponImportFingerprint(candidate);
+  return state.weapons.some(
+    (saved) => weaponImportFingerprint(saved) === candidateFingerprint,
+  );
+}
+
+function addWeaponFromLibrary(weapon, useRiftMaximum, button) {
+  if (isLibraryVariantSaved(weapon, useRiftMaximum)) {
+    button.textContent = "Added";
+    button.disabled = true;
+    button.classList.add("weapon-library-add-saved");
+    return;
+  }
+
+  const savedWeapon = buildWeaponFromLibrary(weapon, useRiftMaximum);
+  state.weapons = [...state.weapons, savedWeapon];
+  state.selectedWeaponId = savedWeapon.id;
+  saveStoredValue(STORAGE_KEYS.selectedWeaponId, state.selectedWeaponId);
+  persistWeapons();
+  renderCalculatorSelectors();
+  renderResultGrid();
+  renderCalculatorActions();
+  renderSkillSummary();
+  renderWeaponList();
+  renderWeaponTypeShortcut();
+
+  button.textContent = "Added";
+  button.disabled = true;
+  button.classList.add("weapon-library-add-saved");
+  button.closest(".weapon-library-card")?.classList.add("weapon-library-card-added");
+  const feedback = els.riftModalContent.querySelector("#weapon-library-feedback");
+  if (feedback) {
+    feedback.textContent = `${savedWeapon.name} was added to your Weapons list.`;
+  }
+}
+
+function getFilteredWeaponLibraryEntries() {
+  const query = state.weaponLibraryQuery.trim().toLocaleLowerCase();
+  return getWeaponLibraryEntries().filter((weapon) => {
+    if (
+      state.weaponLibraryType !== "all" &&
+      weapon.weaponTypeKey !== state.weaponLibraryType
+    ) {
+      return false;
+    }
+    if (
+      state.weaponLibraryAttribute !== "all" &&
+      weapon.attribute?.type !== state.weaponLibraryAttribute
+    ) {
+      return false;
+    }
+    if (!query) {
+      return true;
+    }
+    const searchable = [
+      weapon.name,
+      weapon.series?.name,
+      weapon.weaponType,
+      WEAPON_LIBRARY_ATTRIBUTE_LABELS[weapon.attribute?.type],
+      ...(weapon.skills ?? []).map((skill) => skill.name),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLocaleLowerCase();
+    return searchable.includes(query);
+  });
+}
+
+function renderWeaponLibraryResults() {
+  const results = els.riftModalContent.querySelector("#weapon-library-results");
+  const count = els.riftModalContent.querySelector("#weapon-library-count");
+  if (!results || !count) {
+    return;
+  }
+  const weapons = getFilteredWeaponLibraryEntries();
+  count.textContent = `${weapons.length} weapon${weapons.length === 1 ? "" : "s"}`;
+  if (!weapons.length) {
+    results.innerHTML = `<div class="weapon-library-empty">No weapons match these filters.</div>`;
+    return;
+  }
+
+  results.innerHTML = weapons
+    .map((weapon) => {
+      const riftLevel = getLibraryRiftLevel(weapon);
+      const baseSaved = isLibraryVariantSaved(weapon, false);
+      const riftSaved = riftLevel ? isLibraryVariantSaved(weapon, true) : false;
+      const attributeLabel = WEAPON_LIBRARY_ATTRIBUTE_LABELS[weapon.attribute?.type] ?? "Raw";
+      const attributeMarkup =
+        weapon.attribute?.category === "raw"
+          ? ""
+          : `<span class="weapon-library-stat weapon-library-attribute-${escapeHtml(weapon.attribute.type)}">${escapeHtml(attributeLabel)} ${escapeHtml(weapon.attribute.value)}</span>`;
+      const skills = (weapon.skills ?? [])
+        .map((skill) => `${skill.name} Lv${skill.level}`)
+        .join(" · ");
+      return `
+        <article class="weapon-library-card ${baseSaved && (!riftLevel || riftSaved) ? "weapon-library-card-added" : ""}">
+          <div class="weapon-library-card-header">
+            <div>
+              <h3>${escapeHtml(weapon.name)}</h3>
+              <div class="weapon-library-series">${escapeHtml(weapon.series?.name ?? "Unknown series")}</div>
+            </div>
+            ${riftLevel ? `<span class="weapon-library-rift-badge">Rift Lv${riftLevel}</span>` : ""}
+          </div>
+          <div class="weapon-library-stats">
+            <span class="weapon-library-stat">Attack ${escapeHtml(weapon.attack)}</span>
+            ${attributeMarkup}
+            <span class="weapon-library-stat">Affinity ${escapeHtml(weapon.affinityPercent)}%</span>
+          </div>
+          <div class="weapon-library-skill">${escapeHtml(skills || "No equipment skill")}</div>
+          <div class="weapon-library-card-actions">
+            <button class="${baseSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="base" ${baseSaved ? "disabled" : ""}>${baseSaved ? "Added" : "Add G10.5"}</button>
+            ${
+              riftLevel
+                ? `<button class="${riftSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="rift" ${riftSaved ? "disabled" : ""}>${riftSaved ? "Added" : `Add Rift Lv${riftLevel}`}</button>`
+                : ""
+            }
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  results.querySelectorAll("[data-library-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const weapon = getLibraryEntry(button.dataset.libraryId);
+      if (!weapon) {
+        return;
+      }
+      addWeaponFromLibrary(weapon, button.dataset.libraryVariant === "rift", button);
+    });
+  });
+}
+
+function renderWeaponLibrary() {
+  const entries = getWeaponLibraryEntries();
+  const typeMetadata = (window.WEAPON_LIBRARY?.weaponTypes ?? []).filter(
+    (type) => type.key !== "InsectGlaive" && entries.some((weapon) => weapon.weaponTypeKey === type.key),
+  );
+  const attributeTypes = Object.keys(WEAPON_LIBRARY_ATTRIBUTE_LABELS).filter((type) =>
+    entries.some((weapon) => weapon.attribute?.type === type),
+  );
+
+  openModal({
+    title: "Weapon Library",
+    content: `
+      <div class="weapon-library-shell">
+        <div class="weapon-library-filter-bar">
+          <div class="weapon-library-toolbar">
+            <label class="weapon-library-search">
+              <span class="visually-hidden">Search weapons</span>
+              <input id="weapon-library-search" type="search" value="${escapeHtml(state.weaponLibraryQuery)}" placeholder="Search weapon, series, or skill" />
+            </label>
+            <label class="weapon-library-attribute-filter">
+              <span class="visually-hidden">Filter by damage type</span>
+              <select id="weapon-library-attribute">
+                <option value="all">All damage types</option>
+                ${attributeTypes
+                  .map(
+                    (type) =>
+                      `<option value="${escapeHtml(type)}" ${state.weaponLibraryAttribute === type ? "selected" : ""}>${escapeHtml(WEAPON_LIBRARY_ATTRIBUTE_LABELS[type])}</option>`,
+                  )
+                  .join("")}
+              </select>
+            </label>
+          </div>
+          <div class="weapon-library-types" role="group" aria-label="Weapon type">
+            <button class="weapon-library-type ${state.weaponLibraryType === "all" ? "active" : ""}" type="button" data-library-type="all">All</button>
+            ${typeMetadata
+              .map(
+                (type) =>
+                  `<button class="weapon-library-type ${state.weaponLibraryType === type.key ? "active" : ""}" type="button" data-library-type="${escapeHtml(type.key)}">${escapeHtml(type.name)}</button>`,
+              )
+              .join("")}
+          </div>
+          <label class="weapon-library-mobile-type">
+            <span>Weapon Type</span>
+            <select id="weapon-library-type-select">
+              <option value="all">All weapon types</option>
+              ${typeMetadata
+                .map(
+                  (type) =>
+                    `<option value="${escapeHtml(type.key)}" ${state.weaponLibraryType === type.key ? "selected" : ""}>${escapeHtml(type.name)}</option>`,
+                )
+                .join("")}
+            </select>
+          </label>
+        </div>
+        <div class="weapon-library-summary">
+          <span id="weapon-library-count"></span>
+          <span id="weapon-library-feedback" class="weapon-library-feedback" role="status" aria-live="polite"></span>
+        </div>
+        <div class="weapon-library-grid" id="weapon-library-results"></div>
+      </div>
+    `,
+  });
+
+  const search = els.riftModalContent.querySelector("#weapon-library-search");
+  search.addEventListener("input", () => {
+    state.weaponLibraryQuery = search.value;
+    renderWeaponLibraryResults();
+  });
+  els.riftModalContent.querySelector("#weapon-library-attribute").addEventListener("change", (event) => {
+    state.weaponLibraryAttribute = event.target.value;
+    renderWeaponLibraryResults();
+  });
+  els.riftModalContent.querySelectorAll("[data-library-type]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.weaponLibraryType = button.dataset.libraryType;
+      const mobileSelect = els.riftModalContent.querySelector("#weapon-library-type-select");
+      if (mobileSelect) {
+        mobileSelect.value = state.weaponLibraryType;
+      }
+      els.riftModalContent.querySelectorAll("[data-library-type]").forEach((item) => {
+        item.classList.toggle("active", item === button);
+      });
+      renderWeaponLibraryResults();
+    });
+  });
+  els.riftModalContent.querySelector("#weapon-library-type-select").addEventListener("change", (event) => {
+    state.weaponLibraryType = event.target.value;
+    els.riftModalContent.querySelectorAll("[data-library-type]").forEach((item) => {
+      item.classList.toggle("active", item.dataset.libraryType === state.weaponLibraryType);
+    });
+    renderWeaponLibraryResults();
+  });
+  renderWeaponLibraryResults();
+  requestAnimationFrame(() => search.focus());
+}
+
+function openWeaponLibrary() {
+  if (!window.WEAPON_LIBRARY) {
+    openModal({
+      title: "Weapon Library",
+      mode: "medium",
+      content: `<div class="comparison-intro">The weapon catalog could not be loaded.</div>`,
+    });
+    return;
+  }
+  renderWeaponLibrary();
 }
 
 function openRiftUnavailableMessage() {
@@ -1168,7 +1569,7 @@ function openRiftUnavailableMessage() {
     title: "Rift Combinations",
     mode: "medium",
     content: `
-    <div class="comparison-intro">This option is only available with rift base weapons.</div>
+    <div class="comparison-intro">This option is only available with rift weapons that do not have node upgrades applied.</div>
   `,
   });
 }
@@ -1459,7 +1860,9 @@ function renderWeaponForm() {
       const options =
         field.ref === "E5"
           ? (field.options ?? []).filter(
-              (option) => !["Poison", "Paralysis", "Sleep", "Blast"].includes(String(option)),
+              (option) =>
+                !["Poison", "Paralysis", "Sleep", "Blast"].includes(String(option)) ||
+                String(option) === String(value),
             )
           : field.options;
       let inputMarkup;
@@ -1511,7 +1914,7 @@ function renderWeaponForm() {
     </div>
     <div class="checkbox-row">
       <input id="weapon-is-rift" type="checkbox" ${state.weaponDraft.isRift ? "checked" : ""} />
-      <label class="editor-label" for="weapon-is-rift">Rift base weapon (no upgrades)</label>
+      <label class="editor-label" for="weapon-is-rift">Rift weapon (node upgrades not applied)</label>
     </div>
     <div class="editor-grid weapon-editor-stack">${fieldsMarkup}</div>
   `;
@@ -1785,74 +2188,93 @@ function renderAll() {
 }
 
 function generateRiftVariants(weapon) {
-  const type = weapon.values.E5;
-  const options = type === "Raw" ? ["attack", "affinity"] : ["attack", "element", "affinity"];
-  const variants = [];
+  const libraryWeapon = weapon.libraryId ? getLibraryEntry(weapon.libraryId) : null;
+  const customization = libraryWeapon?.customization;
+  const milestoneCount = customization
+    ? (customization.milestone_levels ?? []).filter(
+        (level) => Number(level) <= Number(weapon.riftLevel ?? customization.max_level),
+      ).length
+    : 3;
+  const choices = customization
+    ? (customization.choices ?? []).map((choice) => ({
+        key: String(choice.key).toLocaleLowerCase(),
+        label:
+          choice.key === "Element" && weapon.values.E5 !== "Raw"
+            ? weapon.values.E5
+            : choice.label_en,
+        value: Number(choice.value) || 0,
+      }))
+    : [
+        { key: "attack", label: "Attack", value: 100 },
+        ...(weapon.values.E5 === "Raw"
+          ? []
+          : [{ key: "element", label: weapon.values.E5, value: 100 }]),
+        { key: "critical", label: "Affinity", value: 10 },
+      ];
+  if (!milestoneCount || !choices.length) {
+    return [];
+  }
+
+  const allocations = [];
 
   function helper(index, remaining, counts) {
-    if (index === options.length - 1) {
-      counts[options[index]] = remaining;
-      variants.push({ ...counts });
+    if (index === choices.length - 1) {
+      counts[choices[index].key] = remaining;
+      allocations.push({ ...counts });
       return;
     }
     for (let count = 0; count <= remaining; count += 1) {
-      counts[options[index]] = count;
+      counts[choices[index].key] = count;
       helper(index + 1, remaining - count, counts);
     }
   }
 
-  helper(0, 3, {});
+  helper(0, milestoneCount, {});
 
-  return variants.map((counts) => {
+  return allocations.map((counts) => {
     const nextWeapon = deepClone(weapon);
-    nextWeapon.values.E3 = Number(nextWeapon.values.E3) + (counts.attack ?? 0) * 100;
-    if (type !== "Raw") {
-      nextWeapon.values.E4 = Number(nextWeapon.values.E4) + (counts.element ?? 0) * 100;
+    const labels = [];
+    const sequence = [];
+    for (const choice of choices) {
+      const count = counts[choice.key] ?? 0;
+      if (!count) {
+        continue;
+      }
+      const total = count * choice.value;
+      if (choice.key === "attack") {
+        nextWeapon.values.E3 = Number(nextWeapon.values.E3) + total;
+      } else if (choice.key === "element") {
+        nextWeapon.values.E4 = Number(nextWeapon.values.E4) + total;
+      } else if (choice.key === "critical") {
+        nextWeapon.values.E6 = Number(nextWeapon.values.E6) + total / 100;
+      }
+      labels.push(`+${total}${choice.key === "critical" ? "%" : ""} ${choice.label}`);
+      for (let index = 0; index < count; index += 1) {
+        sequence.push(String(choice.label).toLocaleLowerCase());
+      }
     }
-    nextWeapon.values.E6 = Number(nextWeapon.values.E6) + (counts.affinity ?? 0) * 0.1;
     return {
       counts,
       weapon: nextWeapon,
+      label: labels.join(", "),
+      upgradeSequence: sequence.join(", "),
     };
   });
 }
 
-function describeRiftVariant(counts, isRaw) {
-  const parts = [];
-  if (counts.attack) {
-    parts.push(`+${counts.attack * 100} Attack`);
-  }
-  if (!isRaw && counts.element) {
-    parts.push(`+${counts.element * 100} Element`);
-  }
-  if (counts.affinity) {
-    parts.push(`+${counts.affinity * 10} Affinity`);
-  }
-  return parts.join(", ");
-}
-
-function describeRiftUpgradeSequence(counts, isRaw) {
-  const upgrades = [];
-  for (let index = 0; index < (counts.attack ?? 0); index += 1) {
-    upgrades.push("attack");
-  }
-  if (!isRaw) {
-    for (let index = 0; index < (counts.element ?? 0); index += 1) {
-      upgrades.push("element");
-    }
-  }
-  for (let index = 0; index < (counts.affinity ?? 0); index += 1) {
-    upgrades.push("affinity");
-  }
-  return upgrades.join(", ");
-}
-
 function buildSavedRiftWeapon(baseWeapon, variant) {
-  const label = describeRiftVariant(variant.counts, baseWeapon.values.E5 === "Raw");
+  const nodeKey = Object.entries(variant.counts)
+    .filter(([, count]) => count)
+    .map(([key, count]) => `${key}-${count}`)
+    .join("-");
   return {
     ...deepClone(variant.weapon),
-    name: `${baseWeapon.name} (${label || "Rift"})`,
+    name: `${baseWeapon.name} (${variant.label || "Rift"})`,
     isRift: false,
+    libraryVariant: baseWeapon.libraryVariant
+      ? `${baseWeapon.libraryVariant}-nodes-${nodeKey || "none"}`
+      : null,
+    riftNodesApplied: true,
     compareEnabled: true,
   };
 }
@@ -1893,14 +2315,20 @@ function openRiftComparison() {
   }
 
   const engine = createEngine();
-  const variants = generateRiftVariants(weapon)
+  const generatedVariants = generateRiftVariants(weapon);
+  if (!generatedVariants.length) {
+    openModal({
+      title: "Rift Combinations",
+      mode: "medium",
+      content: `<div class="comparison-intro">No node upgrade choices are available for this weapon at its saved rift level.</div>`,
+    });
+    return;
+  }
+  const variants = generatedVariants
     .map((variant) => {
       applyScenario(engine, build, variant.weapon);
-      const isRaw = weapon.values.E5 === "Raw";
       return {
         ...variant,
-        label: describeRiftVariant(variant.counts, isRaw),
-        upgradeSequence: describeRiftUpgradeSequence(variant.counts, isRaw),
         h12: readCell(engine, calculatorSheetName(), state.data.resultCell),
         isSaved: isRiftVariantSaved(weapon, variant),
       };
@@ -2226,6 +2654,7 @@ function setModalMode(mode = null) {
 
 function openModal({ title, content, mode = null }) {
   els.modalTitle.textContent = title;
+  els.closeRiftModal.classList.toggle("secondary", title !== "Weapon Library");
   setModalMode(mode);
   els.riftModalContent.innerHTML = content;
   els.riftModal.classList.remove("hidden");
