@@ -325,9 +325,23 @@ button.weapon-library-type.active {
 }
 
 .weapon-library-card-actions {
+  align-items: center;
   display: flex;
+  flex-wrap: wrap;
   gap: 7px;
   margin-top: auto;
+}
+
+.weapon-library-add-label {
+  color: var(--muted);
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.weapon-library-card-actions-rift button {
+  flex: 1 1 58px;
 }
 
 .weapon-library-card-actions button {

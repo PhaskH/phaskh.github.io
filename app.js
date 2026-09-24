@@ -1434,11 +1434,12 @@ function renderWeaponLibraryResults() {
             <span class="weapon-library-stat">Affinity ${escapeHtml(weapon.affinityPercent)}%</span>
           </div>
           <div class="weapon-library-skill">${escapeHtml(skills || "No equipment skill")}</div>
-          <div class="weapon-library-card-actions">
-            <button class="${baseSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="base" ${baseSaved ? "disabled" : ""}>${baseSaved ? "Added" : "Add G10.5"}</button>
+          <div class="weapon-library-card-actions ${riftLevel ? "weapon-library-card-actions-rift" : ""}">
+            ${riftLevel ? `<span class="weapon-library-add-label">Add G10.5:</span>` : ""}
+            <button class="${baseSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="base" aria-label="${escapeHtml(riftLevel ? `Add ${weapon.name} at G10.5, Rift level 0` : `Add ${weapon.name} at G10.5`)}" ${baseSaved ? "disabled" : ""}>${baseSaved ? "Added" : riftLevel ? "Rift 0" : "Add G10.5"}</button>
             ${
               riftLevel
-                ? `<button class="${riftSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="rift" ${riftSaved ? "disabled" : ""}>${riftSaved ? "Added" : `Add Rift Lv${riftLevel}`}</button>`
+                ? `<button class="${riftSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="rift" aria-label="${escapeHtml(`Add ${weapon.name} at G10.5, Rift level ${riftLevel}`)}" ${riftSaved ? "disabled" : ""}>${riftSaved ? "Added" : `Rift ${riftLevel}`}</button>`
                 : ""
             }
           </div>
@@ -2649,7 +2650,6 @@ function setModalMode(mode = null) {
 
 function openModal({ title, content, mode = null }) {
   els.modalTitle.textContent = title;
-  els.closeRiftModal.classList.toggle("secondary", title !== "Weapon Library");
   setModalMode(mode);
   els.riftModalContent.innerHTML = content;
   els.riftModal.classList.remove("hidden");
