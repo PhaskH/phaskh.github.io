@@ -14,6 +14,7 @@
   });
 
   const UPTIME_REFS = Object.freeze({
+    buildupBoost: "PX_BUILDUP_BOOST_UPTIME",
     meditation: "PX_MEDITATION_UPTIME",
     blastExploitExpectedProcs: "PX_BLAST_EXPLOIT_PROCS",
   });
@@ -22,6 +23,7 @@
     velkhanaAegis: "B2",
     meditation: "B3",
     blastExploit: "B4",
+    buildupBoost: "B5",
   });
 
   const MEDITATION_BONUSES = Object.freeze([0, 0.1, 0.15, 0.2, 0.25, 0.35]);
@@ -57,6 +59,18 @@
   ]);
 
   const UPTIME_FIELDS = Object.freeze([
+    {
+      ref: UPTIME_REFS.buildupBoost,
+      key: "buildupBoostUptime",
+      label: "Buildup Boost",
+      defaultValue: 1,
+      displayScale: 100,
+      minValue: 0,
+      maxValue: 100,
+      step: 0.1,
+      defaultFeedback: "Using default",
+      extension: true,
+    },
     {
       ref: UPTIME_REFS.meditation,
       key: "meditationUptime",
@@ -116,6 +130,16 @@
             '=if($B$5="Element",((($B$3+$Y$6)*(1+$V$10+$V$2)+$Y$13)*(1+$V$17)*$B$10),0)',
           extended:
             '=if($B$5="Element",((($B$3+$Y$6)*(1+$V$10+$V$2)+$Y$13)*(1+$V$17+PhaskExtensions!$B$2)*$B$10),0)',
+        }),
+        Object.freeze({
+          sheet: "Backyard",
+          row: 4,
+          column: 36,
+          label: "Buildup Boost uptime",
+          original:
+            "=index(Skills!$AH$3:$AH$8,match(Calculator!$B$13,Skills!$AG$3:$AG$8,0))/100*$BI$6",
+          extended:
+            "=index(Skills!$AH$3:$AH$8,match(Calculator!$B$13,Skills!$AG$3:$AG$8,0))/100*$BI$6*PhaskExtensions!$B$5",
         }),
         Object.freeze({
           sheet: "Backyard",
@@ -206,6 +230,7 @@
       ["Velkhana Aegis", 0],
       ["Meditation", 0],
       ["Blast Exploit", 0],
+      ["Buildup Boost", 1],
     ];
 
     return sheets;
@@ -244,6 +269,11 @@
     const velkhanaAegisLevel = boundedLevel(buildValues?.[BUILD_REFS.velkhanaAegis], 3);
     const blastExploitLevel = boundedLevel(buildValues?.[BUILD_REFS.blastExploit], 5);
     const meditationUptime = boundedNumber(uptimeValues?.[UPTIME_REFS.meditation], 0, 1);
+    const buildupBoostUptime = boundedNumber(
+      uptimeValues?.[UPTIME_REFS.buildupBoost] ?? 1,
+      0,
+      1,
+    );
     const expectedBlastProcs = Math.round(
       boundedNumber(uptimeValues?.[UPTIME_REFS.blastExploitExpectedProcs], 0, 20),
     );
@@ -254,6 +284,7 @@
         weaponValues?.E5 === "Ice" ? VELKHANA_AEGIS_BONUSES[velkhanaAegisLevel] : 0,
       meditation: MEDITATION_BONUSES[meditationLevel] * meditationUptime,
       blastExploit: BLAST_EXPLOIT_ATTACK_PER_STACK[blastExploitLevel] * averageBlastStacks,
+      buildupBoost: buildupBoostUptime,
       averageBlastStacks,
     };
   }

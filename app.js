@@ -1141,6 +1141,12 @@ function applyScenario(engine, build, weapon) {
       extensions.targetCells.blastExploit,
       modifiers.blastExploit,
     );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.buildupBoost,
+      modifiers.buildupBoost,
+    );
   }
 }
 
