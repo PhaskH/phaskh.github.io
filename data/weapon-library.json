@@ -2116,7 +2116,130 @@
       "mechanics": {
         "shellingType": "Wide"
       },
-      "customization": null
+      "customization": {
+        "max_level": 20,
+        "choices": [
+          {
+            "key": "Attack",
+            "label_en": "Attack",
+            "value": 100
+          },
+          {
+            "key": "Element",
+            "label_en": "Element",
+            "value": 50
+          },
+          {
+            "key": "Critical",
+            "label_en": "Critical",
+            "value": 10
+          }
+        ],
+        "skill_unlocks": [],
+        "milestone_levels": [
+          10,
+          15,
+          20
+        ],
+        "level_rules": [
+          {
+            "level_no": 1,
+            "attack_add": 0,
+            "element_add": 4,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 2,
+            "attack_add": 10,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 3,
+            "attack_add": 0,
+            "element_add": 6,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 4,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 6,
+            "attack_add": 0,
+            "element_add": 4,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 7,
+            "attack_add": 10,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 8,
+            "attack_add": 0,
+            "element_add": 6,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 9,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 11,
+            "attack_add": 0,
+            "element_add": 4,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 12,
+            "attack_add": 10,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 13,
+            "attack_add": 0,
+            "element_add": 6,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 14,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 16,
+            "attack_add": 0,
+            "element_add": 4,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 17,
+            "attack_add": 10,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 18,
+            "attack_add": 0,
+            "element_add": 6,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 19,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          }
+        ]
+      }
     },
     {
       "id": "pukei-switch-axe",
@@ -3659,7 +3782,125 @@
         }
       ],
       "mechanics": {},
-      "customization": null
+      "customization": {
+        "max_level": 20,
+        "choices": [
+          {
+            "key": "Attack",
+            "label_en": "Attack",
+            "value": 100
+          },
+          {
+            "key": "Critical",
+            "label_en": "Critical",
+            "value": 10
+          }
+        ],
+        "skill_unlocks": [],
+        "milestone_levels": [
+          10,
+          15,
+          20
+        ],
+        "level_rules": [
+          {
+            "level_no": 1,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 2,
+            "attack_add": 20,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 3,
+            "attack_add": 23,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 4,
+            "attack_add": 30,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 6,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 7,
+            "attack_add": 20,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 8,
+            "attack_add": 23,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 9,
+            "attack_add": 30,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 11,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 12,
+            "attack_add": 20,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 13,
+            "attack_add": 23,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 14,
+            "attack_add": 30,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 16,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 17,
+            "attack_add": 20,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 18,
+            "attack_add": 23,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 19,
+            "attack_add": 30,
+            "element_add": 0,
+            "affinity_add": 0
+          }
+        ]
+      }
     },
     {
       "id": "barroth-hammer",
@@ -4473,7 +4714,125 @@
       "mechanics": {
         "phial": "Impact Phial"
       },
-      "customization": null
+      "customization": {
+        "max_level": 20,
+        "choices": [
+          {
+            "key": "Attack",
+            "label_en": "Attack",
+            "value": 100
+          },
+          {
+            "key": "Critical",
+            "label_en": "Critical",
+            "value": 10
+          }
+        ],
+        "skill_unlocks": [],
+        "milestone_levels": [
+          10,
+          15,
+          20
+        ],
+        "level_rules": [
+          {
+            "level_no": 1,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 2,
+            "attack_add": 20,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 3,
+            "attack_add": 23,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 4,
+            "attack_add": 30,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 6,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 7,
+            "attack_add": 20,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 8,
+            "attack_add": 23,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 9,
+            "attack_add": 30,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 11,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 12,
+            "attack_add": 20,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 13,
+            "attack_add": 23,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 14,
+            "attack_add": 30,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 16,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 17,
+            "attack_add": 20,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 18,
+            "attack_add": 23,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 19,
+            "attack_add": 30,
+            "element_add": 0,
+            "affinity_add": 0
+          }
+        ]
+      }
     },
     {
       "id": "barroth-light-bowgun",
@@ -14542,7 +14901,130 @@
         }
       ],
       "mechanics": {},
-      "customization": null
+      "customization": {
+        "max_level": 20,
+        "choices": [
+          {
+            "key": "Attack",
+            "label_en": "Attack",
+            "value": 100
+          },
+          {
+            "key": "Element",
+            "label_en": "Element",
+            "value": 50
+          },
+          {
+            "key": "Critical",
+            "label_en": "Critical",
+            "value": 10
+          }
+        ],
+        "skill_unlocks": [],
+        "milestone_levels": [
+          10,
+          15,
+          20
+        ],
+        "level_rules": [
+          {
+            "level_no": 1,
+            "attack_add": 0,
+            "element_add": 4,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 2,
+            "attack_add": 10,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 3,
+            "attack_add": 0,
+            "element_add": 6,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 4,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 6,
+            "attack_add": 0,
+            "element_add": 4,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 7,
+            "attack_add": 10,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 8,
+            "attack_add": 0,
+            "element_add": 6,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 9,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 11,
+            "attack_add": 0,
+            "element_add": 4,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 12,
+            "attack_add": 10,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 13,
+            "attack_add": 0,
+            "element_add": 6,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 14,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 16,
+            "attack_add": 0,
+            "element_add": 4,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 17,
+            "attack_add": 10,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 18,
+            "attack_add": 0,
+            "element_add": 6,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 19,
+            "attack_add": 15,
+            "element_add": 0,
+            "affinity_add": 0
+          }
+        ]
+      }
     },
     {
       "id": "rathian-long-sword",
@@ -15595,7 +16077,125 @@
           }
         ]
       },
-      "customization": null
+      "customization": {
+        "max_level": 20,
+        "choices": [
+          {
+            "key": "Attack",
+            "label_en": "Attack",
+            "value": 100
+          },
+          {
+            "key": "Critical",
+            "label_en": "Critical",
+            "value": 10
+          }
+        ],
+        "skill_unlocks": [],
+        "milestone_levels": [
+          10,
+          15,
+          20
+        ],
+        "level_rules": [
+          {
+            "level_no": 1,
+            "attack_add": 8,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 2,
+            "attack_add": 12,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 3,
+            "attack_add": 14,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 4,
+            "attack_add": 17,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 6,
+            "attack_add": 8,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 7,
+            "attack_add": 12,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 8,
+            "attack_add": 14,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 9,
+            "attack_add": 17,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 11,
+            "attack_add": 8,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 12,
+            "attack_add": 12,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 13,
+            "attack_add": 14,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 14,
+            "attack_add": 17,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 16,
+            "attack_add": 8,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 17,
+            "attack_add": 12,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 18,
+            "attack_add": 14,
+            "element_add": 0,
+            "affinity_add": 0
+          },
+          {
+            "level_no": 19,
+            "attack_add": 17,
+            "element_add": 0,
+            "affinity_add": 0
+          }
+        ]
+      }
     },
     {
       "id": "rathian-heavy-bowgun",
