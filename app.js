@@ -4,6 +4,7 @@ const STORAGE_KEYS = {
   selectedBuildId: "mhn_selected_build_v2",
   selectedWeaponId: "mhn_selected_weapon_v2",
   uptimes: "mhn_uptimes_v2",
+  dayMode: "mhn_day_mode_v2",
 };
 
 const PREVIOUS_STORAGE_KEYS = {
@@ -131,6 +132,7 @@ const MODAL_MODE_CLASSES = [
   "modal-window-compact",
   "modal-window-medium",
   "modal-window-uptime",
+  "modal-window-uptime-day-mode",
 ];
 
 const WEAPON_LIBRARY_TYPE_MAP = Object.freeze({
@@ -193,6 +195,8 @@ const state = {
   uptimeFields: [],
   uptimeValues: {},
   uptimeDraft: null,
+  dayMode: false,
+  dayModeDraft: null,
   weaponLibraryType: "all",
   weaponLibraryAttribute: "all",
   weaponLibraryQuery: "",
@@ -1123,6 +1127,7 @@ function applyScenario(engine, build, weapon) {
       build.values,
       weapon.values,
       state.uptimeValues,
+      { buildupBoostOverrideEnabled: state.dayMode },
     );
     writeCell(
       engine,
@@ -1147,6 +1152,12 @@ function applyScenario(engine, build, weapon) {
       extensions.extensionSheet,
       extensions.targetCells.buildupBoost,
       modifiers.buildupBoost,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.buildupBoostOverrideEnabled,
+      modifiers.buildupBoostOverrideEnabled,
     );
     writeCell(
       engine,
@@ -1730,7 +1741,26 @@ function openRiftUnavailableMessage() {
 
 function openUptimesModal() {
   state.uptimeDraft = { ...state.uptimeValues };
+  state.dayModeDraft = state.dayMode;
   renderUptimesModal();
+}
+
+function renderUptimeField(field) {
+  const minValue = getUptimeMinValue(field);
+  const maxValue = getUptimeMaxValue(field);
+  return `
+    <label class="uptime-row" for="uptime-${field.ref}">
+      <span class="uptime-label">${escapeHtml(field.label)}</span>
+      <input id="uptime-${field.ref}" type="number" min="${minValue}" max="${maxValue}" step="${field.step ?? (field.displayScale === 1 ? "1" : "0.1")}" data-uptime-field="${field.ref}" aria-invalid="false" aria-describedby="uptime-feedback-${field.ref}${field.description ? ` uptime-description-${field.ref}` : ""}" value="${escapeHtml(
+        field.displayScale === 1
+          ? String(Math.round(state.uptimeDraft[field.ref] ?? 0))
+          : ((state.uptimeDraft[field.ref] ?? 0) * (field.displayScale ?? 100)).toFixed(1),
+      )}" />
+      <span class="uptime-unit">${field.displayScale === 1 ? "" : "%"}</span>
+      <span id="uptime-feedback-${field.ref}" class="uptime-feedback" data-uptime-feedback="${field.ref}">${escapeHtml(getDefaultUptimeFeedback(field, state.uptimeDraft[field.ref]))}</span>
+      ${field.description ? `<span id="uptime-description-${field.ref}" class="uptime-description">${escapeHtml(field.description)}</span>` : ""}
+    </label>
+  `;
 }
 
 function renderUptimesModal() {
@@ -1749,26 +1779,33 @@ function renderUptimesModal() {
     </div>
     <div class="uptime-list">
       ${state.uptimeFields
-        .map((field) => {
-          const minValue = getUptimeMinValue(field);
-          const maxValue = getUptimeMaxValue(field);
-          return `
-          <label class="uptime-row" for="uptime-${field.ref}">
-            <span class="uptime-label">${escapeHtml(field.label)}</span>
-            <input id="uptime-${field.ref}" type="number" min="${minValue}" max="${maxValue}" step="${field.step ?? (field.displayScale === 1 ? "1" : "0.1")}" data-uptime-field="${field.ref}" aria-invalid="false" aria-describedby="uptime-feedback-${field.ref}${field.description ? ` uptime-description-${field.ref}` : ""}" value="${escapeHtml(
-              field.displayScale === 1
-                ? String(Math.round(state.uptimeDraft[field.ref] ?? 0))
-                : ((state.uptimeDraft[field.ref] ?? 0) * (field.displayScale ?? 100)).toFixed(1),
-            )}" />
-            <span class="uptime-unit">${field.displayScale === 1 ? "" : "%"}</span>
-            <span id="uptime-feedback-${field.ref}" class="uptime-feedback" data-uptime-feedback="${field.ref}">${escapeHtml(getDefaultUptimeFeedback(field, state.uptimeDraft[field.ref]))}</span>
-            ${field.description ? `<span id="uptime-description-${field.ref}" class="uptime-description">${escapeHtml(field.description)}</span>` : ""}
-          </label>
-        `;
-        })
+        .filter((field) => field.key !== "buildupBoostUptime")
+        .map(renderUptimeField)
         .join("")}
     </div>
+    <div class="day-mode-section">
+      <label class="checkbox-row day-mode-toggle" for="day-mode">
+        <input id="day-mode" type="checkbox" aria-describedby="day-mode-description" ${state.dayModeDraft ? "checked" : ""} />
+        <span class="editor-label">Day Mode<sup class="trademark-mark">TM</sup></span>
+      </label>
+      <div id="day-mode-description" class="day-mode-description">Only use if you know what you are doing!</div>
+      <div class="uptime-list day-mode-uptime-list" ${state.dayModeDraft ? "" : "hidden"}>
+        ${state.uptimeFields
+          .filter((field) => field.key === "buildupBoostUptime")
+          .map(renderUptimeField)
+          .join("")}
+      </div>
+    </div>
   `,
+  });
+
+  const modalWindow = els.riftModal.querySelector(".modal-window");
+  modalWindow?.classList.toggle("modal-window-uptime-day-mode", state.dayModeDraft);
+
+  els.riftModalContent.querySelector("#day-mode").addEventListener("change", (event) => {
+    state.dayModeDraft = event.target.checked;
+    modalWindow?.classList.toggle("modal-window-uptime-day-mode", state.dayModeDraft);
+    els.riftModalContent.querySelector(".day-mode-uptime-list").hidden = !state.dayModeDraft;
   });
 
   els.riftModalContent.querySelectorAll("[data-uptime-field]").forEach((input) => {
@@ -1789,14 +1826,18 @@ function renderUptimesModal() {
 
   els.riftModalContent.querySelector("#save-uptimes").addEventListener("click", () => {
     state.uptimeValues = { ...state.uptimeDraft };
+    state.dayMode = state.dayModeDraft;
     persistUptimes();
+    saveStoredValue(STORAGE_KEYS.dayMode, String(state.dayMode));
     state.uptimeDraft = null;
+    state.dayModeDraft = null;
     closeModal();
     renderAll();
   });
 
   els.riftModalContent.querySelector("#revert-uptimes").addEventListener("click", () => {
     state.uptimeDraft = buildDefaultUptimeValues();
+    state.dayModeDraft = false;
     renderUptimesModal();
   });
 
@@ -2812,6 +2853,7 @@ function openModal({ title, content, mode = null }) {
 function closeModal() {
   state.matrixComparison = null;
   state.uptimeDraft = null;
+  state.dayModeDraft = null;
   setModalMode();
   els.riftModal.classList.add("hidden");
   els.riftModalContent.innerHTML = "";
@@ -3008,6 +3050,7 @@ async function init() {
     ...buildDefaultUptimeValues(),
     ...loadUptimesForCurrentVersion(),
   };
+  state.dayMode = loadStoredValue(STORAGE_KEYS.dayMode) === "true";
   persistUptimes();
 
   if (!state.builds.length) {

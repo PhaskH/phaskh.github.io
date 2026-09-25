@@ -380,6 +380,35 @@ button.weapon-library-type.active {
   margin-bottom: 14px;
 }
 
+.day-mode-section {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.day-mode-toggle {
+  font-weight: 700;
+}
+
+.trademark-mark {
+  margin-left: 1px;
+  font-size: 0.55em;
+  vertical-align: super;
+}
+
+.day-mode-description {
+  margin: -2px 0 10px 26px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.day-mode-uptime-list {
+  margin: 0;
+}
+
+.day-mode-uptime-list[hidden] {
+  display: none;
+}
+
 .uptime-row {
   display: contents;
 }
@@ -902,6 +931,11 @@ button.danger:hover {
 
 .modal-window.modal-window-uptime {
   width: min(560px, 100%);
+}
+
+.modal-window.modal-window-uptime-day-mode {
+  background: linear-gradient(180deg, #481b20 0%, #2b1115 100%);
+  border-color: rgba(235, 99, 107, 0.72);
 }
 
 .modal-close-button {

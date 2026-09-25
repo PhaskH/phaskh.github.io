@@ -29,6 +29,7 @@
     morphAttackBoostDamage: "B6",
     morphAttackBoostAffinity: "B7",
     morphAttackDamageShare: "B8",
+    buildupBoostOverrideEnabled: "B9",
   });
 
   const MEDITATION_BONUSES = Object.freeze([0, 0.1, 0.15, 0.2, 0.25, 0.35]);
@@ -89,6 +90,7 @@
       maxValue: 100,
       step: 0.1,
       defaultFeedback: "Using Phask default",
+      description: "This overrides the calculated status application chance for BuB only!",
       extension: true,
     },
     {
@@ -171,7 +173,7 @@
           original:
             "=index(Skills!$AH$3:$AH$8,match(Calculator!$B$13,Skills!$AG$3:$AG$8,0))/100*$BI$6",
           extended:
-            "=index(Skills!$AH$3:$AH$8,match(Calculator!$B$13,Skills!$AG$3:$AG$8,0))/100*$BI$6*PhaskExtensions!$B$5",
+            "=index(Skills!$AH$3:$AH$8,match(Calculator!$B$13,Skills!$AG$3:$AG$8,0))/100*if(PhaskExtensions!$B$9,PhaskExtensions!$B$5,$BI$6)",
         }),
         Object.freeze({
           sheet: "Backyard",
@@ -275,6 +277,7 @@
       ["Morph Attack Boost damage", 0],
       ["Morph Attack Boost affinity", 0],
       ["Morph Attack damage share", 0.25],
+      ["Buildup Boost override enabled", 0],
     ];
 
     return sheets;
@@ -308,7 +311,7 @@
     return stackGrantingProcs - stackActivationEffort / estimatedFightEffort;
   }
 
-  function calculateScenarioModifiers(buildValues, weaponValues, uptimeValues) {
+  function calculateScenarioModifiers(buildValues, weaponValues, uptimeValues, options = {}) {
     const meditationLevel = boundedLevel(buildValues?.[BUILD_REFS.meditation], 5);
     const velkhanaAegisLevel = boundedLevel(buildValues?.[BUILD_REFS.velkhanaAegis], 3);
     const blastExploitLevel = boundedLevel(buildValues?.[BUILD_REFS.blastExploit], 5);
@@ -337,6 +340,7 @@
       meditation: MEDITATION_BONUSES[meditationLevel] * meditationUptime,
       blastExploit: BLAST_EXPLOIT_ATTACK_PER_STACK[blastExploitLevel] * averageBlastStacks,
       buildupBoost: buildupBoostUptime,
+      buildupBoostOverrideEnabled: options.buildupBoostOverrideEnabled ? 1 : 0,
       morphAttackBoostDamage: supportsMorphAttacks
         ? MORPH_ATTACK_BOOST_DAMAGE[morphAttackBoostLevel]
         : 0,
