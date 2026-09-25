@@ -372,6 +372,7 @@ button.weapon-library-type.active {
   gap: 8px 4px;
   margin-bottom: 14px;
   width: fit-content;
+  max-width: 100%;
   align-items: center;
 }
 
@@ -408,6 +409,29 @@ button.weapon-library-type.active {
 .uptime-feedback.uptime-validation-error {
   color: var(--danger);
   font-weight: 600;
+}
+
+.uptime-description {
+  grid-column: 1 / -1;
+  width: 0;
+  min-width: 100%;
+  margin: -2px 0 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.calculation-warning {
+  grid-column: 1 / -1;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 190, 92, 0.45);
+  border-radius: 8px;
+  background: rgba(255, 190, 92, 0.1);
+  color: #ffd18a;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .button-disabled {

@@ -179,6 +179,7 @@ const COMPARE_COLLECTION_BY_LIST_ID = {
 
 const state = {
   data: null,
+  extensionStatus: null,
   builds: [],
   weapons: [],
   selectedBuildId: null,
@@ -357,7 +358,11 @@ function toAddress(sheetId, ref) {
 }
 
 function createEngine() {
-  return HyperFormula.buildFromSheets(deepClone(state.data.sheets), {
+  const sheets = deepClone(state.data.sheets);
+  if (state.extensionStatus?.enabled) {
+    window.PHASK_SKILL_EXTENSIONS.prepareSheets(sheets, state.data.sheetVersion);
+  }
+  return HyperFormula.buildFromSheets(sheets, {
     licenseKey: "gpl-v3",
   });
 }
@@ -857,11 +862,18 @@ function isUsingDefaultUptime(field, value) {
 }
 
 function getUptimeMinValue(field) {
-  return field?.displayScale === 1 ? 1 : 0;
+  return field?.minValue ?? (field?.displayScale === 1 ? 1 : 0);
 }
 
 function getUptimeMaxValue(field) {
   return field?.maxValue ?? 100;
+}
+
+function getDefaultUptimeFeedback(field, value) {
+  if (!isUsingDefaultUptime(field, value)) {
+    return "";
+  }
+  return field?.defaultFeedback ?? "Using Krea default";
 }
 
 function updateUptimeFeedback(input, field) {
@@ -882,7 +894,7 @@ function updateUptimeFeedback(input, field) {
   feedback.classList.toggle("uptime-validation-error", isInvalid);
   feedback.textContent = isInvalid
     ? `Only values ${minValue}-${maxValue} are valid.`
-    : isUsingDefaultUptime(field, state.uptimeDraft[ref]) ? "Using Krea default" : "";
+    : getDefaultUptimeFeedback(field, state.uptimeDraft[ref]);
 }
 
 function persistUptimes() {
@@ -1065,13 +1077,46 @@ function getWeaponById(id) {
 
 function applyScenario(engine, build, weapon) {
   for (const field of state.data.buildFields) {
+    if (field.extension) {
+      continue;
+    }
     writeCell(engine, calculatorSheetName(), field.ref, build.values[field.ref]);
   }
   for (const field of state.data.weaponFields) {
     writeCell(engine, calculatorSheetName(), field.ref, weapon.values[field.ref]);
   }
   for (const field of state.uptimeFields) {
+    if (field.extension) {
+      continue;
+    }
     writeCell(engine, calculatorSheetName(), field.ref, state.uptimeValues[field.ref]);
+  }
+
+  if (state.extensionStatus?.enabled) {
+    const extensions = window.PHASK_SKILL_EXTENSIONS;
+    const modifiers = extensions.calculateScenarioModifiers(
+      build.values,
+      weapon.values,
+      state.uptimeValues,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.velkhanaAegis,
+      modifiers.velkhanaAegis,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.meditation,
+      modifiers.meditation,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.blastExploit,
+      modifiers.blastExploit,
+    );
   }
 }
 
@@ -1080,7 +1125,9 @@ function getBuildLabels(build, weapon) {
   applyScenario(engine, build, weapon);
   const labels = {};
   for (const field of state.data.buildFields) {
-    labels[field.ref] = readCell(engine, calculatorSheetName(), field.labelRef);
+    labels[field.ref] = field.extension
+      ? field.label
+      : readCell(engine, calculatorSheetName(), field.labelRef);
     if (labels[field.ref] === "Vital Fire") {
       labels[field.ref] = "Vital Element";
     }
@@ -1169,11 +1216,16 @@ function renderResultGrid() {
     return;
   }
 
+  const extensionWarning = state.extensionStatus?.error
+    ? `<div class="calculation-warning">${escapeHtml(state.extensionStatus.error)} Local skill extensions are disabled until their workbook adapter is updated.</div>`
+    : "";
+
   els.resultGrid.innerHTML = `
     <div class="result-card">
       <div class="label">Effective Damage</div>
       <div class="value">${escapeHtml(formatResult(result.h12))}</div>
     </div>
+    ${extensionWarning}
   `;
 }
 
@@ -1593,7 +1645,7 @@ function renderUptimesModal() {
     content: `
     <div class="editor-actions-row uptime-actions-row">
       <button type="button" id="save-uptimes">Save Values</button>
-      <button class="secondary" type="button" id="revert-uptimes">Revert to Default (KreaTV1 sheet)</button>
+      <button class="secondary" type="button" id="revert-uptimes">Revert to Defaults</button>
       <button class="secondary" type="button" id="discard-uptimes">Discard</button>
     </div>
     <div class="uptime-list">
@@ -1604,13 +1656,14 @@ function renderUptimesModal() {
           return `
           <label class="uptime-row" for="uptime-${field.ref}">
             <span class="uptime-label">${escapeHtml(field.label)}</span>
-            <input id="uptime-${field.ref}" type="number" min="${minValue}" max="${maxValue}" step="${field.displayScale === 1 ? "1" : "0.1"}" data-uptime-field="${field.ref}" aria-invalid="false" aria-describedby="uptime-feedback-${field.ref}" value="${escapeHtml(
+            <input id="uptime-${field.ref}" type="number" min="${minValue}" max="${maxValue}" step="${field.step ?? (field.displayScale === 1 ? "1" : "0.1")}" data-uptime-field="${field.ref}" aria-invalid="false" aria-describedby="uptime-feedback-${field.ref}${field.description ? ` uptime-description-${field.ref}` : ""}" value="${escapeHtml(
               field.displayScale === 1
                 ? String(Math.round(state.uptimeDraft[field.ref] ?? 0))
                 : ((state.uptimeDraft[field.ref] ?? 0) * (field.displayScale ?? 100)).toFixed(1),
             )}" />
             <span class="uptime-unit">${field.displayScale === 1 ? "" : "%"}</span>
-            <span id="uptime-feedback-${field.ref}" class="uptime-feedback" data-uptime-feedback="${field.ref}">${isUsingDefaultUptime(field, state.uptimeDraft[field.ref]) ? "Using Krea default" : ""}</span>
+            <span id="uptime-feedback-${field.ref}" class="uptime-feedback" data-uptime-feedback="${field.ref}">${escapeHtml(getDefaultUptimeFeedback(field, state.uptimeDraft[field.ref]))}</span>
+            ${field.description ? `<span id="uptime-description-${field.ref}" class="uptime-description">${escapeHtml(field.description)}</span>` : ""}
           </label>
         `;
         })
@@ -2823,7 +2876,7 @@ async function init() {
   }
 
   if (window.WORKBOOK_DATA) {
-    state.data = window.WORKBOOK_DATA;
+    state.data = deepClone(window.WORKBOOK_DATA);
   } else {
     const response = await fetch("./data/workbook-data.json");
     state.data = await response.json();
@@ -2831,6 +2884,20 @@ async function init() {
 
   if (!state.data) {
     throw new Error("Workbook data failed to load.");
+  }
+
+  const extensionSystem = window.PHASK_SKILL_EXTENSIONS;
+  state.extensionStatus = extensionSystem
+    ? extensionSystem.initialize(state.data)
+    : {
+        enabled: false,
+        error: "Phask's skill-extension module failed to load.",
+      };
+  if (extensionSystem) {
+    extensionSystem.installSchema(state.data);
+  }
+  if (!state.extensionStatus.enabled) {
+    console.warn(state.extensionStatus.error);
   }
 
   state.uptimeFields = collectDefaultUptimeFields();
