@@ -809,14 +809,38 @@ function weaponImportFingerprint(item) {
   });
 }
 
+function orderUptimeFields(fields) {
+  const alphabeticalLabel = (field) =>
+    String(field.label).replace(/^\(([^)]+)\)\s*/, "$1 ");
+  const pinnedFirst = fields.filter((field) => field.key === "remainingHealth");
+  const pinnedLast = fields.filter((field) => field.key === "blastExploitExpectedProcs");
+  const alphabetical = fields
+    .filter(
+      (field) =>
+        field.key !== "remainingHealth" && field.key !== "blastExploitExpectedProcs",
+    )
+    .sort((left, right) =>
+      alphabeticalLabel(left).localeCompare(alphabeticalLabel(right), undefined, {
+        sensitivity: "base",
+      }),
+    );
+
+  return [...pinnedFirst, ...alphabetical, ...pinnedLast];
+}
+
 function collectDefaultUptimeFields() {
   if (Array.isArray(state.data?.uptimeFields)) {
-    return state.data.uptimeFields.map((field) => ({
-      ...field,
-      label: String(field.label),
-      defaultValue: typeof field.defaultValue === "number" ? field.defaultValue : Number(field.defaultValue) || 0,
-      displayScale: field.displayScale ?? 100,
-    }));
+    return orderUptimeFields(
+      state.data.uptimeFields.map((field) => ({
+        ...field,
+        label: String(field.label),
+        defaultValue:
+          typeof field.defaultValue === "number"
+            ? field.defaultValue
+            : Number(field.defaultValue) || 0,
+        displayScale: field.displayScale ?? 100,
+      })),
+    );
   }
 
   const sheet = state.data?.sheets?.[calculatorSheetName()];
@@ -848,7 +872,7 @@ function collectDefaultUptimeFields() {
     });
   }
 
-  return fields;
+  return orderUptimeFields(fields);
 }
 
 function buildDefaultUptimeValues() {

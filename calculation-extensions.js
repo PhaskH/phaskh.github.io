@@ -27,6 +27,7 @@
   const MEDITATION_BONUSES = Object.freeze([0, 0.1, 0.15, 0.2, 0.25, 0.35]);
   const VELKHANA_AEGIS_BONUSES = Object.freeze([0, 0.1, 0.15, 0.2]);
   const BLAST_EXPLOIT_ATTACK_PER_STACK = Object.freeze([0, 30, 60, 90, 120, 150]);
+  const BLAST_THRESHOLD_GROWTH = 1.3;
 
   const BUILD_FIELDS = Object.freeze([
     {
@@ -79,7 +80,7 @@
       step: 1,
       defaultFeedback: "Using default",
       description:
-        "Expected number of blast explosions during a 75-second hunt. Procs are assumed to occur evenly throughout the hunt. Blast Exploit gains up to 10 attack-increase stacks; their contribution is averaged based on how long each stack is active.",
+        "Expected blast explosions during a 75-second hunt. Average stack uptime accounts for Blast thresholds increasing by 30% after each proc and assumes the hunt ends midway toward the next proc.",
       extension: true,
     },
   ]);
@@ -226,10 +227,16 @@
     if (stackGrantingProcs === 0) {
       return 0;
     }
-    return (
-      stackGrantingProcs -
-      (stackGrantingProcs * (stackGrantingProcs + 1)) / (2 * (procs + 1))
-    );
+
+    const cumulativeEffort = (procCount) =>
+      (BLAST_THRESHOLD_GROWTH ** procCount - 1) / (BLAST_THRESHOLD_GROWTH - 1);
+    const estimatedFightEffort = (cumulativeEffort(procs) + cumulativeEffort(procs + 1)) / 2;
+    let stackActivationEffort = 0;
+    for (let proc = 1; proc <= stackGrantingProcs; proc += 1) {
+      stackActivationEffort += cumulativeEffort(proc);
+    }
+
+    return stackGrantingProcs - stackActivationEffort / estimatedFightEffort;
   }
 
   function calculateScenarioModifiers(buildValues, weaponValues, uptimeValues) {
