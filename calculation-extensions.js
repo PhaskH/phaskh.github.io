@@ -84,7 +84,7 @@
       ref: UPTIME_REFS.buildupBoost,
       key: "buildupBoostUptime",
       label: "Buildup Boost",
-      defaultValue: 1,
+      defaultValue: 0.333,
       displayScale: 100,
       minValue: 0,
       maxValue: 100,
@@ -173,7 +173,7 @@
           original:
             "=index(Skills!$AH$3:$AH$8,match(Calculator!$B$13,Skills!$AG$3:$AG$8,0))/100*$BI$6",
           extended:
-            "=index(Skills!$AH$3:$AH$8,match(Calculator!$B$13,Skills!$AG$3:$AG$8,0))/100*if(PhaskExtensions!$B$9,PhaskExtensions!$B$5,$BI$6)",
+            '=index(Skills!$AH$3:$AH$8,match(Calculator!$B$13,Skills!$AG$3:$AG$8,0))/100*if(PhaskExtensions!$B$9,if($B$5="Status",PhaskExtensions!$B$5,0),$BI$6)',
         }),
         Object.freeze({
           sheet: "Backyard",
@@ -273,7 +273,7 @@
       ["Velkhana Aegis", 0],
       ["Meditation", 0],
       ["Blast Exploit", 0],
-      ["Buildup Boost", 1],
+      ["Buildup Boost", 0.333],
       ["Morph Attack Boost damage", 0],
       ["Morph Attack Boost affinity", 0],
       ["Morph Attack damage share", 0.25],
@@ -321,7 +321,7 @@
     );
     const meditationUptime = boundedNumber(uptimeValues?.[UPTIME_REFS.meditation], 0, 1);
     const buildupBoostUptime = boundedNumber(
-      uptimeValues?.[UPTIME_REFS.buildupBoost] ?? 1,
+      uptimeValues?.[UPTIME_REFS.buildupBoost] ?? 0.333,
       0,
       1,
     );
