@@ -3077,7 +3077,7 @@
             ]
           },
           {
-            "name": "Knockbacks Negated",
+            "name": "Wind Pressure Resistance",
             "sequence": [
               "B",
               "B"
@@ -6619,7 +6619,7 @@
             ]
           },
           {
-            "name": "EarPlugs (L)",
+            "name": "Earplugs (L)",
             "sequence": [
               "B",
               "B"
@@ -10613,7 +10613,7 @@
             ]
           },
           {
-            "name": "EarPlugs (S)",
+            "name": "Earplugs (S)",
             "sequence": [
               "B",
               "B"
@@ -16222,7 +16222,7 @@
         {
           "id": "HealthBoost",
           "name": "Health Boost",
-          "level": 1,
+          "level": 2,
           "maxLevel": 5
         }
       ],
@@ -16688,7 +16688,7 @@
             ]
           },
           {
-            "name": "EarPlugs (L)",
+            "name": "Earplugs (L)",
             "sequence": [
               "B",
               "B"
@@ -17933,7 +17933,7 @@
             ]
           },
           {
-            "name": "EarPlugs (S)",
+            "name": "Earplugs (S)",
             "sequence": [
               "B",
               "B"
@@ -20104,7 +20104,7 @@
             ]
           },
           {
-            "name": "EarPlugs (L)",
+            "name": "Earplugs (L)",
             "sequence": [
               "B",
               "B"
@@ -21403,8 +21403,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -21435,8 +21435,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -21467,8 +21467,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -21501,8 +21501,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -21535,8 +21535,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -21586,8 +21586,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -21660,8 +21660,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -21874,6 +21874,12 @@
           "name": "Earplugs",
           "level": 1,
           "maxLevel": 3
+        },
+        {
+          "id": "HealthBoost",
+          "name": "Health Boost",
+          "level": 1,
+          "maxLevel": 5
         }
       ],
       "mechanics": {},
@@ -25878,6 +25884,12 @@
           "name": "Critical Element",
           "level": 2,
           "maxLevel": 5
+        },
+        {
+          "id": "PoisonExploit",
+          "name": "Poison Exploit",
+          "level": 1,
+          "maxLevel": 5
         }
       ],
       "mechanics": {},
@@ -26140,6 +26152,12 @@
           "name": "Critical Element",
           "level": 2,
           "maxLevel": 5
+        },
+        {
+          "id": "PoisonExploit",
+          "name": "Poison Exploit",
+          "level": 1,
+          "maxLevel": 5
         }
       ],
       "mechanics": {
@@ -26198,7 +26216,7 @@
         "ammo": [
           {
             "name": "Piercing Fire Ammo",
-            "capacity": 5,
+            "capacity": 4,
             "recoil": "Low",
             "reload": "Fast",
             "recoilBySkillLevel": [
@@ -26323,7 +26341,7 @@
         "grade": 10,
         "level": 5
       },
-      "attack": 1596,
+      "attack": 1912,
       "affinityPercent": 0,
       "attribute": {
         "type": "sleep",
@@ -34952,7 +34970,7 @@
           },
           {
             "name": "Piercing Dragon Ammo",
-            "capacity": 6,
+            "capacity": 3,
             "recoil": "Low",
             "reload": "Fast",
             "recoilBySkillLevel": [
@@ -44646,8 +44664,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -44801,8 +44819,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -44956,8 +44974,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -45111,8 +45129,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -45266,8 +45284,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -45421,8 +45439,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -45602,8 +45620,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -45757,8 +45775,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -45914,8 +45932,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -46071,8 +46089,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -46228,8 +46246,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -46402,8 +46420,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -46612,8 +46630,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -46660,7 +46678,7 @@
             ]
           },
           {
-            "name": "Sticky Ammo",
+            "name": "Cluster Ammo",
             "capacity": 3,
             "recoil": "Average",
             "reload": "Slow",
@@ -46822,8 +46840,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -46837,7 +46855,7 @@
           },
           {
             "chargeLevel": 2,
-            "shotType": "Pierce",
+            "shotType": "Rapid",
             "shotLevel": 2
           },
           {
@@ -47066,7 +47084,7 @@
         {
           "id": "Resentment",
           "name": "Resentment",
-          "level": 1,
+          "level": 2,
           "maxLevel": 5
         }
       ],
@@ -47128,8 +47146,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -47176,7 +47194,7 @@
             ]
           },
           {
-            "name": "EarPlugs (S)",
+            "name": "Earplugs (S)",
             "sequence": [
               "B",
               "B"
@@ -47630,8 +47648,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -47668,8 +47686,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -47706,8 +47724,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -47744,8 +47762,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -47782,8 +47800,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -47820,8 +47838,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -47884,8 +47902,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -47922,8 +47940,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -47962,8 +47980,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -48002,8 +48020,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -48042,8 +48060,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -48099,8 +48117,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -48197,8 +48215,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -48277,8 +48295,8 @@
           "maxLevel": 1
         },
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 2,
           "maxLevel": 5
         }
@@ -51165,7 +51183,7 @@
     },
     {
       "id": "somnacanth-u-dual-blades",
-      "name": "Bloom Snow Claws",
+      "name": "Bloom Snow Claws+",
       "weaponType": "Dual Blades",
       "weaponTypeKey": "DualBlades",
       "series": {
@@ -51197,7 +51215,7 @@
     },
     {
       "id": "somnacanth-u-great-sword",
-      "name": "Bloom Snow Blade",
+      "name": "Bloom Snow Blade+",
       "weaponType": "Great Sword",
       "weaponTypeKey": "GreatSword",
       "series": {
@@ -51229,7 +51247,7 @@
     },
     {
       "id": "somnacanth-u-long-sword",
-      "name": "Bloom Snow Slash",
+      "name": "Bloom Snow Slash+",
       "weaponType": "Long Sword",
       "weaponTypeKey": "LongSword",
       "series": {
@@ -51261,7 +51279,7 @@
     },
     {
       "id": "somnacanth-u-hammer",
-      "name": "Bloom Snow Blow",
+      "name": "Bloom Snow Blow+",
       "weaponType": "Hammer",
       "weaponTypeKey": "Hammer",
       "series": {
@@ -51293,7 +51311,7 @@
     },
     {
       "id": "somnacanth-u-hunting-horn",
-      "name": "Bloom Snow Flute",
+      "name": "Bloom Snow Flute+",
       "weaponType": "Hunting Horn",
       "weaponTypeKey": "HuntingHorn",
       "series": {
@@ -51330,7 +51348,7 @@
             ]
           },
           {
-            "name": "EarPlugs (L)",
+            "name": "Earplugs (L)",
             "sequence": [
               "B",
               "B"
@@ -51350,7 +51368,7 @@
     },
     {
       "id": "somnacanth-u-charge-blade",
-      "name": "Bloom Snow Wail",
+      "name": "Bloom Snow Wail+",
       "weaponType": "Charge Blade",
       "weaponTypeKey": "ChargeBlade",
       "series": {
@@ -51384,7 +51402,7 @@
     },
     {
       "id": "somnacanth-u-insect-glaive",
-      "name": "Bloom Snow Jab",
+      "name": "Bloom Snow Jab+",
       "weaponType": "Insect Glaive",
       "weaponTypeKey": "InsectGlaive",
       "series": {
@@ -51414,12 +51432,19 @@
       "mechanics": {
         "kinsect": {
           "name": "Fiddlebrix",
-          "type": null,
-          "performance": null,
-          "attackType": null,
-          "bonus": null,
-          "staminaUnits": 0,
-          "extractGauge": []
+          "type": "Powder",
+          "performance": "Rapid",
+          "attackType": "Sever",
+          "bonus": "Harvest Bonus",
+          "staminaUnits": 3,
+          "extractGauge": [
+            "Gray",
+            "Gray",
+            "Red",
+            "Red",
+            "Orange",
+            "Orange"
+          ]
         }
       },
       "customization": null
@@ -53491,8 +53516,8 @@
       },
       "skills": [
         {
-          "id": "Partsbreaker",
-          "name": "Partsbreaker",
+          "id": "Partbreaker",
+          "name": "Partbreaker",
           "level": 1,
           "maxLevel": 5
         }
@@ -55779,7 +55804,7 @@
             ]
           },
           {
-            "name": "EarPlugs (S)",
+            "name": "Earplugs (S)",
             "sequence": [
               "B",
               "B"
@@ -59863,7 +59888,7 @@
         "grade": 10,
         "level": 5
       },
-      "attack": 2082,
+      "attack": 2186,
       "affinityPercent": 40,
       "attribute": {
         "type": "none",
@@ -60647,11 +60672,11 @@
         "grade": 10,
         "level": 5
       },
-      "attack": 1530,
+      "attack": 1591,
       "affinityPercent": 20,
       "attribute": {
         "type": "water",
-        "value": 1269,
+        "value": 1335,
         "category": "element"
       },
       "skills": [
@@ -66460,7 +66485,7 @@
     },
     {
       "id": "brachydios-sword-and-shield",
-      "name": "Dios Edge",
+      "name": "Booming Barrage",
       "weaponType": "Sword & Shield",
       "weaponTypeKey": "SwordAndShield",
       "series": {
@@ -66524,7 +66549,7 @@
     },
     {
       "id": "brachydios-great-sword",
-      "name": "Dios Blade",
+      "name": "Brach Attack",
       "weaponType": "Great Sword",
       "weaponTypeKey": "GreatSword",
       "series": {
@@ -66588,7 +66613,7 @@
     },
     {
       "id": "brachydios-hammer",
-      "name": "Dios Tailhammer",
+      "name": "Brachy Tailhammer",
       "weaponType": "Hammer",
       "weaponTypeKey": "Hammer",
       "series": {
@@ -66778,7 +66803,7 @@
     },
     {
       "id": "brachydios-charge-blade",
-      "name": "Dios Strongarm",
+      "name": "Volatile Blade",
       "weaponType": "Charge Blade",
       "weaponTypeKey": "ChargeBlade",
       "series": {
@@ -66812,7 +66837,7 @@
     },
     {
       "id": "brachydios-insect-glaive",
-      "name": "Dios Rod",
+      "name": "Electrorod",
       "weaponType": "Insect Glaive",
       "weaponTypeKey": "InsectGlaive",
       "series": {
@@ -66937,7 +66962,7 @@
     },
     {
       "id": "brachydios-heavy-bowgun",
-      "name": "Dios Cannon",
+      "name": "Atom Cannon",
       "weaponType": "Heavy Bowgun",
       "weaponTypeKey": "HeavyBowgun",
       "series": {
@@ -67762,7 +67787,7 @@
             ]
           },
           {
-            "name": "EarPlugs (S)",
+            "name": "Earplugs (S)",
             "sequence": [
               "B",
               "B"
@@ -68092,7 +68117,7 @@
           },
           {
             "name": "Cluster Ammo",
-            "capacity": 3,
+            "capacity": 2,
             "recoil": "Average",
             "reload": "Normal",
             "recoilBySkillLevel": [
@@ -68231,7 +68256,7 @@
       "mechanics": {
         "melodies": [
           {
-            "name": "EarPlugs (L)",
+            "name": "Earplugs (L)",
             "sequence": [
               "A",
               "A"
@@ -68958,7 +68983,7 @@
             ]
           },
           {
-            "name": "EarPlugs (L)",
+            "name": "Earplugs (L)",
             "sequence": [
               "B",
               "B"
