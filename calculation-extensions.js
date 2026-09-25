@@ -11,11 +11,13 @@
     meditation: "PX_MEDITATION",
     velkhanaAegis: "PX_VELKHANA_AEGIS",
     blastExploit: "PX_BLAST_EXPLOIT",
+    morphAttackBoost: "PX_MORPH_ATTACK_BOOST",
   });
 
   const UPTIME_REFS = Object.freeze({
     buildupBoost: "PX_BUILDUP_BOOST_UPTIME",
     meditation: "PX_MEDITATION_UPTIME",
+    morphAttackDamageShare: "PX_MORPH_ATTACK_DAMAGE_SHARE",
     blastExploitExpectedProcs: "PX_BLAST_EXPLOIT_PROCS",
   });
 
@@ -24,11 +26,21 @@
     meditation: "B3",
     blastExploit: "B4",
     buildupBoost: "B5",
+    morphAttackBoostDamage: "B6",
+    morphAttackBoostAffinity: "B7",
+    morphAttackDamageShare: "B8",
   });
 
   const MEDITATION_BONUSES = Object.freeze([0, 0.1, 0.15, 0.2, 0.25, 0.35]);
   const VELKHANA_AEGIS_BONUSES = Object.freeze([0, 0.1, 0.15, 0.2]);
   const BLAST_EXPLOIT_ATTACK_PER_STACK = Object.freeze([0, 30, 60, 90, 120, 150]);
+  const MORPH_ATTACK_BOOST_DAMAGE = Object.freeze([0, 0.3, 0.5, 0.8]);
+  const MORPH_ATTACK_BOOST_AFFINITY = Object.freeze([0, 0.6, 0.7, 0.8]);
+  const MORPH_ATTACK_WEAPON_TYPES = new Set([
+    "Switch Axe",
+    "Charge Blade (Power)",
+    "Charge Blade (Impact)",
+  ]);
   const BLAST_THRESHOLD_GROWTH = 1.3;
 
   const BUILD_FIELDS = Object.freeze([
@@ -45,6 +57,14 @@
       key: "meditation",
       label: "Meditation",
       options: ["0", "1", "2", "3", "4", "5"],
+      defaultValue: 0,
+      extension: true,
+    },
+    {
+      ref: BUILD_REFS.morphAttackBoost,
+      key: "morphAttackBoost",
+      label: "Morph Attack Boost",
+      options: ["0", "1", "2", "3"],
       defaultValue: 0,
       extension: true,
     },
@@ -68,7 +88,7 @@
       minValue: 0,
       maxValue: 100,
       step: 0.1,
-      defaultFeedback: "Using default",
+      defaultFeedback: "Using Phask default",
       extension: true,
     },
     {
@@ -80,7 +100,19 @@
       minValue: 0,
       maxValue: 100,
       step: 0.1,
-      defaultFeedback: "Using default",
+      defaultFeedback: "Using Phask default",
+      extension: true,
+    },
+    {
+      ref: UPTIME_REFS.morphAttackDamageShare,
+      key: "morphAttackDamageShare",
+      label: "Morph Attack Dmg Share",
+      defaultValue: 0.25,
+      displayScale: 100,
+      minValue: 0,
+      maxValue: 100,
+      step: 0.1,
+      defaultFeedback: "Using Phask default",
       extension: true,
     },
     {
@@ -92,7 +124,7 @@
       minValue: 0,
       maxValue: 20,
       step: 1,
-      defaultFeedback: "Using default",
+      defaultFeedback: "Using Phask default",
       description:
         "Expected blast explosions during a 75-second hunt. Average stack uptime accounts for Blast thresholds increasing by 30% after each proc and assumes the hunt ends midway toward the next proc.",
       extension: true,
@@ -149,7 +181,16 @@
           original:
             "=$AK$2+$AK$3+$AK$4+$AK$5+$AK$6+$AK$7+$AK$8+$AK$9+$AK$10+$AK$11+$AK$12+$AK$13+$AK$14+$AK$15+$AK$16+$AK$17+$AK$18+$AK$19+$AK$20+$AK$21+$AK$22+$AK$23+$AK$24+AK27",
           extended:
-            "=$AK$2+$AK$3+$AK$4+$AK$5+$AK$6+$AK$7+$AK$8+$AK$9+$AK$10+$AK$11+$AK$12+$AK$13+$AK$14+$AK$15+$AK$16+$AK$17+$AK$18+$AK$19+$AK$20+$AK$21+$AK$22+$AK$23+$AK$24+AK27+PhaskExtensions!$B$3",
+            "=$AK$2+$AK$3+$AK$4+$AK$5+$AK$6+$AK$7+$AK$8+$AK$9+$AK$10+$AK$11+$AK$12+$AK$13+$AK$14+$AK$15+$AK$16+$AK$17+$AK$18+$AK$19+$AK$20+$AK$21+$AK$22+$AK$23+$AK$24+AK27+PhaskExtensions!$B$3+PhaskExtensions!$B$6",
+        }),
+        Object.freeze({
+          sheet: "Backyard",
+          row: 11,
+          column: 40,
+          label: "total affinity",
+          original: "=max(-1,min(1,$AO$5+$AO$7+$AO$8+AO9+AO10+AO11))",
+          extended:
+            "=max(-1,min(1,$AO$5+$AO$7+$AO$8+AO9+AO10+AO11+PhaskExtensions!$B$7))",
         }),
       ]),
     }),
@@ -231,6 +272,9 @@
       ["Meditation", 0],
       ["Blast Exploit", 0],
       ["Buildup Boost", 1],
+      ["Morph Attack Boost damage", 0],
+      ["Morph Attack Boost affinity", 0],
+      ["Morph Attack damage share", 0.25],
     ];
 
     return sheets;
@@ -268,6 +312,10 @@
     const meditationLevel = boundedLevel(buildValues?.[BUILD_REFS.meditation], 5);
     const velkhanaAegisLevel = boundedLevel(buildValues?.[BUILD_REFS.velkhanaAegis], 3);
     const blastExploitLevel = boundedLevel(buildValues?.[BUILD_REFS.blastExploit], 5);
+    const morphAttackBoostLevel = boundedLevel(
+      buildValues?.[BUILD_REFS.morphAttackBoost],
+      3,
+    );
     const meditationUptime = boundedNumber(uptimeValues?.[UPTIME_REFS.meditation], 0, 1);
     const buildupBoostUptime = boundedNumber(
       uptimeValues?.[UPTIME_REFS.buildupBoost] ?? 1,
@@ -278,6 +326,10 @@
       boundedNumber(uptimeValues?.[UPTIME_REFS.blastExploitExpectedProcs], 0, 20),
     );
     const averageBlastStacks = averageBlastExploitStacks(expectedBlastProcs);
+    const supportsMorphAttacks = MORPH_ATTACK_WEAPON_TYPES.has(weaponValues?.E7);
+    const morphAttackDamageShare = supportsMorphAttacks
+      ? boundedNumber(uptimeValues?.[UPTIME_REFS.morphAttackDamageShare] ?? 0.25, 0, 1)
+      : 0;
 
     return {
       velkhanaAegis:
@@ -285,8 +337,23 @@
       meditation: MEDITATION_BONUSES[meditationLevel] * meditationUptime,
       blastExploit: BLAST_EXPLOIT_ATTACK_PER_STACK[blastExploitLevel] * averageBlastStacks,
       buildupBoost: buildupBoostUptime,
+      morphAttackBoostDamage: supportsMorphAttacks
+        ? MORPH_ATTACK_BOOST_DAMAGE[morphAttackBoostLevel]
+        : 0,
+      morphAttackBoostAffinity: supportsMorphAttacks
+        ? MORPH_ATTACK_BOOST_AFFINITY[morphAttackBoostLevel]
+        : 0,
+      morphAttackDamageShare,
       averageBlastStacks,
     };
+  }
+
+  function blendMorphAttackDamage(nonMorphResult, fullMorphResult, damageShare) {
+    if (typeof nonMorphResult !== "number" || typeof fullMorphResult !== "number") {
+      return fullMorphResult;
+    }
+    const boundedShare = boundedNumber(damageShare, 0, 1);
+    return nonMorphResult + boundedShare * (fullMorphResult - nonMorphResult);
   }
 
   global.PHASK_SKILL_EXTENSIONS = Object.freeze({
@@ -299,6 +366,7 @@
     installSchema,
     prepareSheets,
     calculateScenarioModifiers,
+    blendMorphAttackDamage,
     averageBlastExploitStacks,
   });
 })(globalThis);

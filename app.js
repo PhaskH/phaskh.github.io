@@ -1116,9 +1116,10 @@ function applyScenario(engine, build, weapon) {
     writeCell(engine, calculatorSheetName(), field.ref, state.uptimeValues[field.ref]);
   }
 
+  let modifiers = null;
   if (state.extensionStatus?.enabled) {
     const extensions = window.PHASK_SKILL_EXTENSIONS;
-    const modifiers = extensions.calculateScenarioModifiers(
+    modifiers = extensions.calculateScenarioModifiers(
       build.values,
       weapon.values,
       state.uptimeValues,
@@ -1147,7 +1148,73 @@ function applyScenario(engine, build, weapon) {
       extensions.targetCells.buildupBoost,
       modifiers.buildupBoost,
     );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.morphAttackBoostDamage,
+      modifiers.morphAttackBoostDamage,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.morphAttackBoostAffinity,
+      modifiers.morphAttackBoostAffinity,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.morphAttackDamageShare,
+      modifiers.morphAttackDamageShare,
+    );
   }
+
+  return modifiers;
+}
+
+function calculateScenarioEffectiveDamage(engine, build, weapon) {
+  const modifiers = applyScenario(engine, build, weapon);
+  const fullMorphResult = readCell(engine, calculatorSheetName(), state.data.resultCell);
+  if (
+    !modifiers ||
+    modifiers.morphAttackDamageShare <= 0 ||
+    (modifiers.morphAttackBoostDamage === 0 && modifiers.morphAttackBoostAffinity === 0)
+  ) {
+    return fullMorphResult;
+  }
+
+  const extensions = window.PHASK_SKILL_EXTENSIONS;
+  writeCell(
+    engine,
+    extensions.extensionSheet,
+    extensions.targetCells.morphAttackBoostDamage,
+    0,
+  );
+  writeCell(
+    engine,
+    extensions.extensionSheet,
+    extensions.targetCells.morphAttackBoostAffinity,
+    0,
+  );
+  const nonMorphResult = readCell(engine, calculatorSheetName(), state.data.resultCell);
+
+  writeCell(
+    engine,
+    extensions.extensionSheet,
+    extensions.targetCells.morphAttackBoostDamage,
+    modifiers.morphAttackBoostDamage,
+  );
+  writeCell(
+    engine,
+    extensions.extensionSheet,
+    extensions.targetCells.morphAttackBoostAffinity,
+    modifiers.morphAttackBoostAffinity,
+  );
+
+  return extensions.blendMorphAttackDamage(
+    nonMorphResult,
+    fullMorphResult,
+    modifiers.morphAttackDamageShare,
+  );
 }
 
 function getBuildLabels(build, weapon) {
@@ -1185,9 +1252,8 @@ function calculateSelectedScenario() {
   }
 
   const engine = createEngine();
-  applyScenario(engine, build, weapon);
   return {
-    h12: readCell(engine, calculatorSheetName(), state.data.resultCell),
+    h12: calculateScenarioEffectiveDamage(engine, build, weapon),
   };
 }
 
@@ -1198,7 +1264,7 @@ window.__mhnDebugScenario = function __mhnDebugScenario() {
     return null;
   }
   const engine = createEngine();
-  applyScenario(engine, build, weapon);
+  const effectiveDamage = calculateScenarioEffectiveDamage(engine, build, weapon);
   const refs = [
     "H12",
     "BO71",
@@ -1218,7 +1284,10 @@ window.__mhnDebugScenario = function __mhnDebugScenario() {
     "AX87",
     "AX88",
   ];
-  return Object.fromEntries(refs.map((ref) => [ref, readCell(engine, calculatorSheetName(), ref)]));
+  return {
+    ...Object.fromEntries(refs.map((ref) => [ref, readCell(engine, calculatorSheetName(), ref)])),
+    H12: effectiveDamage,
+  };
 };
 
 function renderCalculatorSelectors() {
@@ -2405,10 +2474,9 @@ function openRiftComparison() {
   }
   const variants = generatedVariants
     .map((variant) => {
-      applyScenario(engine, build, variant.weapon);
       return {
         ...variant,
-        h12: readCell(engine, calculatorSheetName(), state.data.resultCell),
+        h12: calculateScenarioEffectiveDamage(engine, build, variant.weapon),
         isSaved: isRiftVariantSaved(weapon, variant),
       };
     })
@@ -2491,8 +2559,11 @@ function openBuildWeaponComparison() {
   const results = {};
   for (const weapon of weaponsToCompare) {
     for (const build of buildsToCompare) {
-      applyScenario(engine, build, weapon);
-      results[buildMatrixKey(build.id, weapon.id)] = readCell(engine, calculatorSheetName(), state.data.resultCell);
+      results[buildMatrixKey(build.id, weapon.id)] = calculateScenarioEffectiveDamage(
+        engine,
+        build,
+        weapon,
+      );
     }
   }
 
