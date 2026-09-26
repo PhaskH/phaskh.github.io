@@ -155,6 +155,18 @@ select {
   font-size: 0.9rem;
 }
 
+.uptime-preset-quick-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.uptime-preset-quick-select select {
+  width: min(240px, 45vw);
+}
+
 .weapon-library-shell {
   display: flex;
   flex-direction: column;
@@ -378,6 +390,43 @@ button.weapon-library-type.active {
 
 .uptime-actions-row {
   margin-bottom: 14px;
+}
+
+.uptime-preset-manager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.uptime-preset-actions,
+.uptime-preset-feedback {
+  grid-column: 1 / -1;
+}
+
+.uptime-preset-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.uptime-preset-actions button {
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 0.84rem;
+}
+
+.uptime-preset-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.uptime-preset-feedback {
+  min-height: 1em;
+  color: #ffb4b8;
+  font-size: 0.82rem;
 }
 
 .day-mode-section {
@@ -1046,6 +1095,17 @@ button.danger:hover {
   font-weight: 600;
 }
 
+.transfer-summary-list {
+  margin: -4px 0 0;
+  padding-left: 22px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.transfer-summary-list li + li {
+  margin-top: 3px;
+}
+
 .transfer-textarea {
   width: 100%;
   min-height: 220px;
@@ -1221,6 +1281,19 @@ button.danger:hover {
 
   .calculator-layout {
     grid-template-columns: 1fr;
+  }
+
+  .uptime-preset-manager {
+    grid-template-columns: 1fr;
+  }
+
+  .uptime-preset-quick-select {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .uptime-preset-quick-select select {
+    width: min(100%, 280px);
   }
 
   .weapon-library-toolbar {

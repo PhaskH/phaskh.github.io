@@ -5,6 +5,8 @@ const STORAGE_KEYS = {
   selectedWeaponId: "mhn_selected_weapon_v2",
   uptimes: "mhn_uptimes_v2",
   dayMode: "mhn_day_mode_v2",
+  uptimePresets: "mhn_uptime_presets_v1",
+  activeUptimePreset: "mhn_active_uptime_preset_v1",
 };
 
 const PREVIOUS_STORAGE_KEYS = {
@@ -23,7 +25,9 @@ const LEGACY_STORAGE_KEYS = {
   uptimes: "mhn_uptimes_v1",
 };
 
-const EXPORT_FORMAT_VERSION = 2;
+const EXPORT_FORMAT_VERSION = 3;
+const SEMANTIC_EXPORT_FORMAT_VERSION = 2;
+const DEFAULT_UPTIME_PRESET_ID = "defaults";
 
 const LEGACY_BUILD_KEYS = [
   "elementalAttack",
@@ -197,6 +201,8 @@ const state = {
   uptimeDraft: null,
   dayMode: false,
   dayModeDraft: null,
+  uptimePresets: [],
+  activeUptimePresetId: null,
   weaponLibraryType: "all",
   weaponLibraryAttribute: "all",
   weaponLibraryQuery: "",
@@ -601,6 +607,9 @@ function exportAppData() {
       sheetVersion: state.data?.sheetVersion ?? "unknown",
       builds: state.builds.map(serializeBuild),
       weapons: state.weapons.map(serializeWeapon),
+      uptimePresets: state.uptimePresets.map(serializeUptimePreset),
+      currentUptimes: serializeUptimeSnapshot(uptimeSnapshot()),
+      activeUptimePresetName: currentUptimePresetName(),
     },
     null,
     0,
@@ -663,6 +672,116 @@ function normalizeBuildUptimes(values, { source = "current", warnings = [] } = {
     context,
   );
   return currentValuesFromSemantic(semanticValues, state.uptimeFields, warnings, context);
+}
+
+function uptimeSnapshot(values = state.uptimeValues, dayMode = state.dayMode) {
+  return {
+    values: { ...buildDefaultUptimeValues(), ...values },
+    dayMode: Boolean(dayMode),
+  };
+}
+
+function defaultUptimeSnapshot() {
+  return uptimeSnapshot(buildDefaultUptimeValues(), false);
+}
+
+function serializeUptimeSnapshot(snapshot) {
+  return {
+    uptimes: semanticValuesFromCurrent(snapshot.values, state.uptimeFields),
+    dayMode: Boolean(snapshot.dayMode),
+  };
+}
+
+function normalizeUptimeSnapshot(item, warnings = [], context = "Uptime preset") {
+  const rawUptimes = item?.uptimes ?? item?.values ?? {};
+  const semanticValues = semanticValuesFromInput(
+    rawUptimes,
+    state.uptimeFields,
+    fieldRefToKeyMap(state.uptimeFields),
+    warnings,
+    context,
+  );
+  return uptimeSnapshot(
+    {
+      ...buildDefaultUptimeValues(),
+      ...currentValuesFromSemantic(semanticValues, state.uptimeFields, warnings, context),
+    },
+    item?.dayMode,
+  );
+}
+
+function serializeUptimePreset(preset) {
+  return {
+    name: preset.name,
+    ...serializeUptimeSnapshot(preset),
+  };
+}
+
+function serializeStoredUptimePreset(preset) {
+  return {
+    id: preset.id,
+    ...serializeUptimePreset(preset),
+  };
+}
+
+function normalizeUptimePreset(item, warnings = []) {
+  const snapshot = normalizeUptimeSnapshot(item, warnings, `Uptime preset "${item?.name ?? "Imported"}"`);
+  return {
+    id: item?.id ? String(item.id) : makeId(),
+    name: String(item?.name ?? "").trim(),
+    ...snapshot,
+  };
+}
+
+function uptimeSnapshotsEqual(left, right) {
+  return stableStringify(serializeUptimeSnapshot(left)) === stableStringify(serializeUptimeSnapshot(right));
+}
+
+function getUptimePresetById(id) {
+  return state.uptimePresets.find((preset) => preset.id === id) ?? null;
+}
+
+function getUptimePresetSnapshot(id) {
+  if (id === DEFAULT_UPTIME_PRESET_ID) {
+    return defaultUptimeSnapshot();
+  }
+  return getUptimePresetById(id);
+}
+
+function currentUptimePresetName() {
+  if (state.activeUptimePresetId === DEFAULT_UPTIME_PRESET_ID) {
+    return "Defaults";
+  }
+  return getUptimePresetById(state.activeUptimePresetId)?.name ?? null;
+}
+
+function presetNameKey(name) {
+  return String(name).trim().toLocaleLowerCase();
+}
+
+function validatePresetName(name, excludedPresetId = null) {
+  const trimmed = String(name).trim();
+  if (!trimmed) {
+    return "Enter a preset name.";
+  }
+  if (presetNameKey(trimmed) === presetNameKey("Defaults")) {
+    return '"Defaults" is reserved for the built-in preset.';
+  }
+  const duplicate = state.uptimePresets.find(
+    (preset) => preset.id !== excludedPresetId && presetNameKey(preset.name) === presetNameKey(trimmed),
+  );
+  return duplicate ? "A preset with that name already exists." : "";
+}
+
+function importedPresetName(name, usedNames) {
+  const base = String(name).trim() || "Imported Preset";
+  let candidate = `${base} (Imported)`;
+  let suffix = 2;
+  while (usedNames.has(presetNameKey(candidate)) || presetNameKey(candidate) === presetNameKey("Defaults")) {
+    candidate = `${base} (Imported ${suffix})`;
+    suffix += 1;
+  }
+  return candidate;
 }
 
 function normalizeImportedBuild(item, warnings = [], source = "legacy") {
@@ -783,6 +902,27 @@ function loadUptimesForCurrentVersion() {
     normalizeBuildUptimes,
     "uptime",
   );
+}
+
+function loadUptimePresets() {
+  const usedNames = new Set([presetNameKey("Defaults")]);
+  const warnings = [];
+  const presets = [];
+  for (const item of loadStoredItems(STORAGE_KEYS.uptimePresets)) {
+    const preset = normalizeUptimePreset(item, warnings);
+    if (!preset.name) {
+      continue;
+    }
+    if (usedNames.has(presetNameKey(preset.name))) {
+      preset.name = importedPresetName(preset.name, usedNames);
+    }
+    usedNames.add(presetNameKey(preset.name));
+    presets.push(preset);
+  }
+  if (warnings.length) {
+    console.warn("Some uptime preset fields could not be loaded:", warnings);
+  }
+  return presets;
 }
 
 function stableStringify(value) {
@@ -930,6 +1070,40 @@ function persistUptimes() {
     STORAGE_KEYS.uptimes,
     JSON.stringify(semanticValuesFromCurrent(state.uptimeValues, state.uptimeFields)),
   );
+}
+
+function persistUptimePresets() {
+  saveStoredItems(STORAGE_KEYS.uptimePresets, state.uptimePresets.map(serializeStoredUptimePreset));
+}
+
+function persistActiveUptimePreset() {
+  saveStoredValue(STORAGE_KEYS.activeUptimePreset, state.activeUptimePresetId ?? "");
+}
+
+function persistCurrentUptimeState() {
+  persistUptimes();
+  saveStoredValue(STORAGE_KEYS.dayMode, String(state.dayMode));
+  persistActiveUptimePreset();
+}
+
+function updateActivePresetForCurrentUptimes() {
+  const preset = getUptimePresetSnapshot(state.activeUptimePresetId);
+  if (!preset || !uptimeSnapshotsEqual(uptimeSnapshot(), preset)) {
+    state.activeUptimePresetId = null;
+  }
+}
+
+function applyUptimePreset(id) {
+  const preset = getUptimePresetSnapshot(id);
+  if (!preset) {
+    return false;
+  }
+  state.uptimeValues = { ...preset.values };
+  state.dayMode = Boolean(preset.dayMode);
+  state.activeUptimePresetId = id;
+  persistCurrentUptimeState();
+  renderAll();
+  return true;
 }
 
 function setAllBuildsCompareEnabled(compareEnabled) {
@@ -1356,6 +1530,25 @@ function renderCalculatorActions() {
   });
 }
 
+function uptimePresetOptions() {
+  const selectedId = state.activeUptimePresetId;
+  const customOption = selectedId
+    ? ""
+    : '<option value="custom" selected>Custom / Modified</option>';
+  const userOptions = state.uptimePresets
+    .map(
+      (preset) =>
+        `<option value="${escapeHtml(preset.id)}" ${preset.id === selectedId ? "selected" : ""}>${escapeHtml(preset.name)}</option>`,
+    )
+    .join("");
+  return `
+    <option value="${DEFAULT_UPTIME_PRESET_ID}" ${selectedId === DEFAULT_UPTIME_PRESET_ID ? "selected" : ""}>Defaults</option>
+    ${state.uptimePresets.length ? '<option disabled>──────────</option>' : ""}
+    ${userOptions}
+    ${customOption}
+  `;
+}
+
 function renderSelectionActions() {
   els.selectionActions.innerHTML = `
     <div class="selection-actions-row">
@@ -1363,6 +1556,10 @@ function renderSelectionActions() {
       <div class="selection-actions-help">Select the builds and weapons you want to compare below, then click the button.</div>
     </div>
     <div class="selection-actions-row">
+      <label class="uptime-preset-quick-select">
+        <span>Uptime preset</span>
+        <select id="uptime-preset-select">${uptimePresetOptions()}</select>
+      </label>
       <button id="view-edit-uptimes" type="button">View/Edit Uptimes</button>
       <button id="open-weapon-library" type="button">Weapon Library</button>
     </div>
@@ -1371,6 +1568,14 @@ function renderSelectionActions() {
     .querySelector("#compare-build-weapon-matrix")
     .addEventListener("click", () => {
       openBuildWeaponComparison();
+    });
+  els.selectionActions
+    .querySelector("#uptime-preset-select")
+    .addEventListener("change", (event) => {
+      if (event.target.value === "custom") {
+        return;
+      }
+      applyUptimePreset(event.target.value);
     });
   els.selectionActions
     .querySelector("#view-edit-uptimes")
@@ -1745,6 +1950,19 @@ function openUptimesModal() {
   renderUptimesModal();
 }
 
+function commitUptimeDraft(activePresetId = state.activeUptimePresetId) {
+  state.uptimeValues = { ...state.uptimeDraft };
+  state.dayMode = Boolean(state.dayModeDraft);
+  state.activeUptimePresetId = activePresetId;
+  updateActivePresetForCurrentUptimes();
+  persistCurrentUptimeState();
+}
+
+function refreshUptimeModal() {
+  renderAll();
+  openUptimesModal();
+}
+
 function renderUptimeField(field) {
   const minValue = getUptimeMinValue(field);
   const maxValue = getUptimeMaxValue(field);
@@ -1772,9 +1990,25 @@ function renderUptimesModal() {
     title: "View/Edit Uptimes",
     mode: "uptime",
     content: `
+    <div class="uptime-preset-manager">
+      <label class="field">
+        <span>Preset</span>
+        <select id="uptime-preset-modal-select">${uptimePresetOptions()}</select>
+      </label>
+      <label class="field">
+        <span>Preset Name</span>
+        <input id="uptime-preset-name" type="text" maxlength="80" value="${escapeHtml(getUptimePresetById(state.activeUptimePresetId)?.name ?? "")}" placeholder="Enter a custom preset name" />
+      </label>
+      <div class="uptime-preset-actions">
+        <button type="button" id="save-uptime-preset">Save as New</button>
+        <button type="button" id="update-uptime-preset" class="secondary" ${getUptimePresetById(state.activeUptimePresetId) ? "" : "disabled"}>Update Preset</button>
+        <button type="button" id="rename-uptime-preset" class="secondary" ${getUptimePresetById(state.activeUptimePresetId) ? "" : "disabled"}>Rename</button>
+        <button type="button" id="delete-uptime-preset" class="danger" ${getUptimePresetById(state.activeUptimePresetId) ? "" : "disabled"}>Delete</button>
+      </div>
+      <div id="uptime-preset-feedback" class="uptime-preset-feedback"></div>
+    </div>
     <div class="editor-actions-row uptime-actions-row">
       <button type="button" id="save-uptimes">Save Values</button>
-      <button class="secondary" type="button" id="revert-uptimes">Revert to Defaults</button>
       <button class="secondary" type="button" id="discard-uptimes">Discard</button>
     </div>
     <div class="uptime-list">
@@ -1802,6 +2036,84 @@ function renderUptimesModal() {
   const modalWindow = els.riftModal.querySelector(".modal-window");
   modalWindow?.classList.toggle("modal-window-uptime-day-mode", state.dayModeDraft);
 
+  const presetNameInput = els.riftModalContent.querySelector("#uptime-preset-name");
+  const presetFeedback = els.riftModalContent.querySelector("#uptime-preset-feedback");
+  const selectedUserPreset = () => getUptimePresetById(state.activeUptimePresetId);
+  const showPresetError = (message) => {
+    presetFeedback.textContent = message;
+  };
+
+  els.riftModalContent.querySelector("#uptime-preset-modal-select").addEventListener("change", (event) => {
+    if (event.target.value !== "custom" && applyUptimePreset(event.target.value)) {
+      openUptimesModal();
+    }
+  });
+
+  els.riftModalContent.querySelector("#save-uptime-preset").addEventListener("click", () => {
+    const name = presetNameInput.value.trim();
+    const validationError = validatePresetName(name);
+    if (validationError) {
+      showPresetError(validationError);
+      return;
+    }
+    const preset = {
+      id: makeId(),
+      name,
+      ...uptimeSnapshot(state.uptimeDraft, state.dayModeDraft),
+    };
+    state.uptimePresets.push(preset);
+    state.activeUptimePresetId = preset.id;
+    persistUptimePresets();
+    commitUptimeDraft(preset.id);
+    refreshUptimeModal();
+  });
+
+  els.riftModalContent.querySelector("#update-uptime-preset").addEventListener("click", () => {
+    const preset = selectedUserPreset();
+    if (!preset) {
+      showPresetError("Defaults cannot be modified. Save a new preset instead.");
+      return;
+    }
+    Object.assign(preset, uptimeSnapshot(state.uptimeDraft, state.dayModeDraft));
+    persistUptimePresets();
+    commitUptimeDraft(preset.id);
+    refreshUptimeModal();
+  });
+
+  els.riftModalContent.querySelector("#rename-uptime-preset").addEventListener("click", () => {
+    const preset = selectedUserPreset();
+    if (!preset) {
+      showPresetError("Defaults cannot be renamed.");
+      return;
+    }
+    const name = presetNameInput.value.trim();
+    const validationError = validatePresetName(name, preset.id);
+    if (validationError) {
+      showPresetError(validationError);
+      return;
+    }
+    preset.name = name;
+    persistUptimePresets();
+    renderAll();
+    renderUptimesModal();
+  });
+
+  els.riftModalContent.querySelector("#delete-uptime-preset").addEventListener("click", () => {
+    const preset = selectedUserPreset();
+    if (!preset) {
+      showPresetError("Defaults cannot be deleted.");
+      return;
+    }
+    if (!window.confirm(`Delete uptime preset "${preset.name}"?`)) {
+      return;
+    }
+    state.uptimePresets = state.uptimePresets.filter((item) => item.id !== preset.id);
+    state.activeUptimePresetId = null;
+    persistUptimePresets();
+    persistActiveUptimePreset();
+    refreshUptimeModal();
+  });
+
   els.riftModalContent.querySelector("#day-mode").addEventListener("change", (event) => {
     state.dayModeDraft = event.target.checked;
     modalWindow?.classList.toggle("modal-window-uptime-day-mode", state.dayModeDraft);
@@ -1825,20 +2137,11 @@ function renderUptimesModal() {
   });
 
   els.riftModalContent.querySelector("#save-uptimes").addEventListener("click", () => {
-    state.uptimeValues = { ...state.uptimeDraft };
-    state.dayMode = state.dayModeDraft;
-    persistUptimes();
-    saveStoredValue(STORAGE_KEYS.dayMode, String(state.dayMode));
+    commitUptimeDraft();
     state.uptimeDraft = null;
     state.dayModeDraft = null;
     closeModal();
     renderAll();
-  });
-
-  els.riftModalContent.querySelector("#revert-uptimes").addEventListener("click", () => {
-    state.uptimeDraft = buildDefaultUptimeValues();
-    state.dayModeDraft = false;
-    renderUptimesModal();
   });
 
   els.riftModalContent.querySelector("#discard-uptimes").addEventListener("click", () => {
@@ -2620,22 +2923,58 @@ function openBuildWeaponComparison() {
   renderBuildWeaponComparison();
 }
 
-function openExportModal(payload = exportAppData(), description = "Copy this string and keep it somewhere safe. It contains all currently stored builds and weapons.") {
-  let exportSummary = "Exporting: 0 builds, 0 weapons";
+function transferContents(parsed) {
+  return {
+    builds: Array.isArray(parsed?.builds) ? parsed.builds.length : 0,
+    weapons: Array.isArray(parsed?.weapons) ? parsed.weapons.length : 0,
+    presets: Array.isArray(parsed?.uptimePresets) ? parsed.uptimePresets.length : 0,
+    hasCurrentUptimes: Boolean(parsed?.currentUptimes),
+  };
+}
+
+function countLabel(count, singular) {
+  return `${count} ${singular}${count === 1 ? "" : "s"}`;
+}
+
+function transferSummaryMarkup(parsed, heading, importing = false) {
+  const contents = transferContents(parsed);
+  return `
+    <div class="transfer-summary">${escapeHtml(heading)}</div>
+    <ul class="transfer-summary-list">
+      <li>${countLabel(contents.builds, "build")}</li>
+      <li>${countLabel(contents.weapons, "weapon")}</li>
+      <li>${countLabel(contents.presets, "uptime preset")}</li>
+      <li>${
+        contents.hasCurrentUptimes
+          ? importing
+            ? "Current uptime settings included and will replace the current settings"
+            : "Current uptime settings included"
+          : "Current uptime settings not included"
+      }</li>
+    </ul>
+  `;
+}
+
+function openExportModal(
+  payload = exportAppData(),
+  {
+    title = "Export Full Backup",
+    description = "Includes all builds, weapons, current uptimes, and uptime presets.",
+  } = {},
+) {
+  let exportSummary = "";
   try {
     const parsed = JSON.parse(payload);
-    const buildCount = Array.isArray(parsed?.builds) ? parsed.builds.length : 0;
-    const weaponCount = Array.isArray(parsed?.weapons) ? parsed.weapons.length : 0;
-    exportSummary = `Exporting: ${buildCount} builds, ${weaponCount} weapons`;
+    exportSummary = transferSummaryMarkup(parsed, "This export contains:");
   } catch {}
 
   openModal({
-    title: "Export Data",
+    title,
     mode: "medium",
     content: `
     <div class="transfer-copy">
       <p class="comparison-intro">${escapeHtml(description)}</p>
-      <div class="transfer-summary">${escapeHtml(exportSummary)}</div>
+      ${exportSummary}
       <textarea class="transfer-textarea" id="export-payload" readonly></textarea>
       <div class="transfer-actions">
         <button type="button" id="copy-export-payload">Copy</button>
@@ -2656,80 +2995,181 @@ function openExportModal(payload = exportAppData(), description = "Copy this str
   });
 }
 
+function importUptimePresets(rawPresets, warnings) {
+  const usedNames = new Set([presetNameKey("Defaults")]);
+  const presetByName = new Map();
+  const importedPresets = [];
+  let skippedPresets = 0;
+  let renamedPresets = 0;
+
+  presetByName.set(presetNameKey("Defaults"), { id: DEFAULT_UPTIME_PRESET_ID, ...defaultUptimeSnapshot() });
+  state.uptimePresets.forEach((preset) => {
+    usedNames.add(presetNameKey(preset.name));
+    presetByName.set(presetNameKey(preset.name), preset);
+  });
+
+  const importedNameToId = new Map();
+  for (const rawPreset of Array.isArray(rawPresets) ? rawPresets : []) {
+    const preset = normalizeUptimePreset(rawPreset, warnings);
+    const originalName = preset.name || "Imported Preset";
+    const originalKey = presetNameKey(originalName);
+    const existing = presetByName.get(originalKey);
+    if (existing && uptimeSnapshotsEqual(existing, preset)) {
+      skippedPresets += 1;
+      importedNameToId.set(originalKey, existing.id);
+      continue;
+    }
+    if (existing || originalKey === presetNameKey("Defaults")) {
+      preset.name = importedPresetName(originalName, usedNames);
+      renamedPresets += 1;
+    } else {
+      preset.name = originalName;
+    }
+    preset.id = makeId();
+    usedNames.add(presetNameKey(preset.name));
+    presetByName.set(presetNameKey(preset.name), preset);
+    importedNameToId.set(originalKey, preset.id);
+    importedPresets.push(preset);
+  }
+
+  return { importedPresets, skippedPresets, renamedPresets, importedNameToId };
+}
+
+function performImport(parsed) {
+  const numericFormatVersion = Number(parsed?.formatVersion);
+  const importSource = numericFormatVersion >= SEMANTIC_EXPORT_FORMAT_VERSION ? "semantic" : "legacy";
+  const importWarnings = [];
+  const existingBuildFingerprints = new Set(state.builds.map(buildImportFingerprint));
+  const existingWeaponFingerprints = new Set(state.weapons.map(weaponImportFingerprint));
+  const importedBuilds = [];
+  const importedWeapons = [];
+
+  for (const rawBuild of Array.isArray(parsed.builds) ? parsed.builds : []) {
+    const normalizedBuild = normalizeImportedBuild(rawBuild, importWarnings, importSource);
+    const fingerprint = buildImportFingerprint(normalizedBuild);
+    if (!existingBuildFingerprints.has(fingerprint)) {
+      existingBuildFingerprints.add(fingerprint);
+      importedBuilds.push(normalizedBuild);
+    }
+  }
+
+  for (const rawWeapon of Array.isArray(parsed.weapons) ? parsed.weapons : []) {
+    const normalizedWeapon = normalizeImportedWeapon(rawWeapon, importWarnings, importSource);
+    const fingerprint = weaponImportFingerprint(normalizedWeapon);
+    if (!existingWeaponFingerprints.has(fingerprint)) {
+      existingWeaponFingerprints.add(fingerprint);
+      importedWeapons.push(normalizedWeapon);
+    }
+  }
+
+  const presetResult = importUptimePresets(parsed.uptimePresets, importWarnings);
+  state.builds = [...state.builds, ...importedBuilds];
+  state.weapons = [...state.weapons, ...importedWeapons];
+  state.uptimePresets = [...state.uptimePresets, ...presetResult.importedPresets];
+
+  let importedCurrentUptimes = false;
+  if (parsed.currentUptimes && typeof parsed.currentUptimes === "object") {
+    const snapshot = normalizeUptimeSnapshot(parsed.currentUptimes, importWarnings, "Current uptimes");
+    state.uptimeValues = snapshot.values;
+    state.dayMode = snapshot.dayMode;
+    const activeNameKey = presetNameKey(parsed.activeUptimePresetName ?? "");
+    if (activeNameKey === presetNameKey("Defaults")) {
+      state.activeUptimePresetId = DEFAULT_UPTIME_PRESET_ID;
+    } else {
+      state.activeUptimePresetId =
+        presetResult.importedNameToId.get(activeNameKey) ??
+        state.uptimePresets.find((preset) => presetNameKey(preset.name) === activeNameKey)?.id ??
+        null;
+    }
+    updateActivePresetForCurrentUptimes();
+    importedCurrentUptimes = true;
+  }
+
+  persistBuilds();
+  persistWeapons();
+  persistUptimePresets();
+  persistCurrentUptimeState();
+  renderAll();
+
+  const notes = [
+    `Imported ${countLabel(importedBuilds.length, "build")}, ${countLabel(importedWeapons.length, "weapon")}, and ${countLabel(presetResult.importedPresets.length, "uptime preset")}.`,
+  ];
+  if (importedCurrentUptimes) {
+    notes.push("Current uptime settings were restored.");
+  }
+  if (presetResult.skippedPresets) {
+    notes.push(`${countLabel(presetResult.skippedPresets, "identical preset")} skipped.`);
+  }
+  if (presetResult.renamedPresets) {
+    notes.push(
+      `${countLabel(presetResult.renamedPresets, "conflicting preset")} imported with ${presetResult.renamedPresets === 1 ? "a new name" : "new names"}.`,
+    );
+  }
+  if (importSource === "legacy") {
+    notes.push("Legacy data was converted.");
+  }
+  if (importWarnings.length) {
+    notes.push(`Warning: these fields could not be imported: ${importWarnings.join(", ")}.`);
+  }
+  return notes.join(" ");
+}
+
 function openImportModal() {
   openModal({
     title: "Import Data",
     mode: "medium",
     content: `
     <div class="transfer-copy">
-      <p class="comparison-intro">Paste an exported string below. Imported builds and weapons will be added to the current data.</p>
+      <p class="comparison-intro">Paste an exported string below. You will review its contents before anything is imported.</p>
       <textarea class="transfer-textarea" id="import-payload" placeholder="Paste export string here"></textarea>
+      <div id="import-summary"></div>
       <div class="transfer-actions">
-        <button type="button" id="submit-import-payload">Import</button>
+        <button type="button" id="submit-import-payload">Review Import</button>
       </div>
       <div class="transfer-feedback" id="transfer-feedback"></div>
     </div>
   `,
   });
-  els.riftModalContent.querySelector("#submit-import-payload").addEventListener("click", () => {
-    const payload = els.riftModalContent.querySelector("#import-payload").value.trim();
-    const feedback = els.riftModalContent.querySelector("#transfer-feedback");
+
+  const input = els.riftModalContent.querySelector("#import-payload");
+  const button = els.riftModalContent.querySelector("#submit-import-payload");
+  const summary = els.riftModalContent.querySelector("#import-summary");
+  const feedback = els.riftModalContent.querySelector("#transfer-feedback");
+  let reviewedPayload = null;
+  let reviewedData = null;
+
+  input.addEventListener("input", () => {
+    reviewedPayload = null;
+    reviewedData = null;
+    button.textContent = "Review Import";
+    summary.innerHTML = "";
+    feedback.textContent = "";
+  });
+
+  button.addEventListener("click", () => {
+    const payload = input.value.trim();
     if (!payload) {
       feedback.textContent = "Paste an export string first.";
       return;
     }
+    if (payload !== reviewedPayload) {
+      try {
+        reviewedData = JSON.parse(payload);
+        reviewedPayload = payload;
+        summary.innerHTML = transferSummaryMarkup(reviewedData, "This import contains:", true);
+        button.textContent = "Confirm Import";
+        feedback.textContent = "Review the contents above, then confirm the import.";
+      } catch {
+        feedback.textContent = "Import failed. Check that the pasted string is valid JSON.";
+      }
+      return;
+    }
 
     try {
-      const parsed = JSON.parse(payload);
-      const importSource = parsed?.formatVersion === EXPORT_FORMAT_VERSION ? "semantic" : "legacy";
-      const importWarnings = [];
-      const existingBuildFingerprints = new Set(state.builds.map(buildImportFingerprint));
-      const existingWeaponFingerprints = new Set(state.weapons.map(weaponImportFingerprint));
-      const importedBuilds = [];
-      const importedWeapons = [];
-
-      if (Array.isArray(parsed.builds)) {
-        for (const rawBuild of parsed.builds) {
-          const normalizedBuild = normalizeImportedBuild(rawBuild, importWarnings, importSource);
-          const fingerprint = buildImportFingerprint(normalizedBuild);
-          if (existingBuildFingerprints.has(fingerprint)) {
-            continue;
-          }
-          existingBuildFingerprints.add(fingerprint);
-          importedBuilds.push(normalizedBuild);
-        }
-      }
-
-      if (Array.isArray(parsed.weapons)) {
-        for (const rawWeapon of parsed.weapons) {
-          const normalizedWeapon = normalizeImportedWeapon(rawWeapon, importWarnings, importSource);
-          const fingerprint = weaponImportFingerprint(normalizedWeapon);
-          if (existingWeaponFingerprints.has(fingerprint)) {
-            continue;
-          }
-          existingWeaponFingerprints.add(fingerprint);
-          importedWeapons.push(normalizedWeapon);
-        }
-      }
-
-      if (!importedBuilds.length && !importedWeapons.length) {
-        feedback.textContent = importWarnings.length
-          ? `No new builds or weapons were imported. Warning: these fields could not be imported: ${importWarnings.join(", ")}.`
-          : "No new builds or weapons were imported.";
-        return;
-      }
-
-      state.builds = [...state.builds, ...importedBuilds];
-      state.weapons = [...state.weapons, ...importedWeapons];
-      persistBuilds();
-      persistWeapons();
-      renderAll();
-      const migrationNote = importSource === "legacy" ? " Legacy v1 data was converted." : "";
-      const warningNote = importWarnings.length
-        ? ` Warning: these fields could not be imported: ${importWarnings.join(", ")}.`
-        : "";
-      feedback.textContent = `Imported ${importedBuilds.length} builds and ${importedWeapons.length} weapons.${migrationNote}${warningNote}`;
-    } catch {
+      feedback.textContent = performImport(reviewedData);
+      button.disabled = true;
+    } catch (error) {
+      console.error(error);
       feedback.textContent = "Import failed. Check that the pasted string is a valid export.";
     }
   });
@@ -2964,7 +3404,10 @@ function wireGlobalEvents() {
     const builds = state.builds.filter((build) => build.compareEnabled !== false);
     openExportModal(
       exportScopedData({ builds, weapons: [] }),
-      "Copy this string to export only the selected builds.",
+      {
+        title: "Export Selected Builds",
+        description: "Exports only the selected builds. Uptimes and uptime presets are not included.",
+      },
     );
   });
 
@@ -2972,7 +3415,10 @@ function wireGlobalEvents() {
     const weapons = state.weapons.filter((weapon) => weapon.compareEnabled !== false);
     openExportModal(
       exportScopedData({ builds: [], weapons }),
-      "Copy this string to export only the selected weapons.",
+      {
+        title: "Export Selected Weapons",
+        description: "Exports only the selected weapons. Uptimes and uptime presets are not included.",
+      },
     );
   });
 
@@ -3051,7 +3497,17 @@ async function init() {
     ...loadUptimesForCurrentVersion(),
   };
   state.dayMode = loadStoredValue(STORAGE_KEYS.dayMode) === "true";
-  persistUptimes();
+  state.uptimePresets = loadUptimePresets();
+  const storedActiveUptimePreset = loadStoredValue(STORAGE_KEYS.activeUptimePreset);
+  const storedActiveSnapshot = getUptimePresetSnapshot(storedActiveUptimePreset);
+  state.activeUptimePresetId =
+    storedActiveSnapshot && uptimeSnapshotsEqual(uptimeSnapshot(), storedActiveSnapshot)
+      ? storedActiveUptimePreset
+      : uptimeSnapshotsEqual(uptimeSnapshot(), defaultUptimeSnapshot())
+        ? DEFAULT_UPTIME_PRESET_ID
+        : null;
+  persistUptimePresets();
+  persistCurrentUptimeState();
 
   if (!state.builds.length) {
     state.builds = [buildDefaultBuild()];
