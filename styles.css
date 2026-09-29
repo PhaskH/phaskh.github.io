@@ -691,11 +691,24 @@ button.danger:hover {
 }
 
 .library-item-name {
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  padding: 6px 8px;
   font-weight: 600;
+  text-align: left;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.library-item-name:hover,
+.library-item-name[aria-current="true"] {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .library-item-main {
@@ -713,9 +726,9 @@ button.danger:hover {
 }
 
 .library-item-check input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  min-height: 16px;
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
   margin: 0;
   padding: 0;
 }
@@ -726,26 +739,10 @@ button.danger:hover {
   margin-top: 4px;
 }
 
-.library-item-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex: 0 0 auto;
-  gap: 6px;
-  flex-wrap: nowrap;
-}
-
 .library-reorder-actions {
   display: inline-flex;
   flex: 0 0 auto;
   gap: 4px;
-}
-
-.library-item-actions > button {
-  min-height: 38px;
-  padding: 0 10px;
-  border-radius: 8px;
-  white-space: nowrap;
 }
 
 .library-reorder-button {
@@ -763,6 +760,68 @@ button.danger:hover {
   opacity: 0.38;
   cursor: not-allowed;
   background: transparent;
+}
+
+.library-manager-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.library-manager-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.library-manager-item.selected {
+  border-color: var(--accent);
+}
+
+.library-manager-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.library-manager-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.library-manager-actions > button {
+  min-height: 38px;
+  padding: 0 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.library-undo {
+  position: sticky;
+  top: 48px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(83, 179, 125, 0.55);
+  border-radius: 8px;
+  background: #183126;
+  color: #b9e8cb;
+}
+
+.library-undo button {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 5px 12px;
 }
 
 .editor-form {
@@ -976,6 +1035,20 @@ button.danger:hover {
 
 .modal-window.modal-window-medium {
   width: min(760px, 100%);
+}
+
+.modal-window.modal-window-manager {
+  width: min(760px, 100%);
+}
+
+.modal-window.modal-window-manager > .panel-header {
+  position: sticky;
+  top: -18px;
+  z-index: 3;
+  margin: -18px -18px 16px;
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
 }
 
 .modal-window.modal-window-uptime {
@@ -1340,16 +1413,17 @@ button.danger:hover {
   }
 
   .library-controls {
-    overflow-x: auto;
-    padding-bottom: 2px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .library-controls button {
+    width: 100%;
     padding: 0 8px;
   }
 
   .library-shortcut-select {
-    width: 86px;
+    width: 100%;
     padding: 0 6px;
   }
 
@@ -1357,16 +1431,42 @@ button.danger:hover {
     gap: 6px;
   }
 
-  .library-item-actions {
-    gap: 4px;
-  }
-
-  .library-item-actions > button {
-    padding: 0 8px;
+  .library-item-name {
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .library-reorder-actions {
     gap: 3px;
+  }
+
+  .modal-overlay {
+    align-items: stretch;
+    padding: 8px;
+  }
+
+  .modal-window.modal-window-manager {
+    width: 100%;
+    max-height: calc(100dvh - 16px);
+    border-radius: 8px;
+  }
+
+  .library-manager-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .library-manager-actions {
+    display: grid;
+    grid-template-columns: auto minmax(72px, 1fr) minmax(72px, 1fr);
+  }
+
+  .library-manager-actions > button {
+    width: 100%;
   }
 
   .editor-row,

@@ -57,6 +57,7 @@
           </div>
           <div class="library-controls">
             <button id="new-build" type="button">New</button>
+            <button id="manage-builds" type="button">Manage</button>
             <button id="select-all-builds" type="button">All</button>
             <button id="deselect-all-builds" type="button">None</button>
             <button id="export-selected-builds" type="button">Export</button>
@@ -70,6 +71,7 @@
           </div>
           <div class="library-controls">
             <button id="new-weapon" type="button">New</button>
+            <button id="manage-weapons" type="button">Manage</button>
             <button id="select-all-weapons" type="button">All</button>
             <button id="deselect-all-weapons" type="button">None</button>
             <button id="export-selected-weapons" type="button">Export</button>
@@ -99,7 +101,7 @@
     </div>
 
     <div class="modal-overlay hidden" id="rift-modal">
-      <div class="modal-window">
+      <div class="modal-window" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="panel-header">
           <h2 id="modal-title">Rift Combinations</h2>
           <button class="modal-close-button" id="close-rift-modal" type="button" aria-label="Close">X</button>

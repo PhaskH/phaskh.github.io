@@ -135,6 +135,7 @@ const LEGACY_UPTIME_REF_TO_KEY = Object.freeze({
 const MODAL_MODE_CLASSES = [
   "modal-window-compact",
   "modal-window-medium",
+  "modal-window-manager",
   "modal-window-uptime",
   "modal-window-uptime-day-mode",
 ];
@@ -168,14 +169,17 @@ const WEAPON_LIBRARY_ATTRIBUTE_LABELS = Object.freeze({
 });
 
 const LIBRARY_ACTION_HANDLERS = {
-  "edit-build": (id) => editBuild(id),
-  "delete-build": (id) => deleteBuild(id),
+  "select-build": (id) => selectLibraryItem("builds", id),
+  "select-weapon": (id) => selectLibraryItem("weapons", id),
+  "edit-build": (id) => editLibraryItem("builds", id),
+  "delete-build": (id) => deleteLibraryItemWithUndo("builds", id),
   "move-build-up": (id) => moveBuild(id, -1),
   "move-build-down": (id) => moveBuild(id, 1),
-  "edit-weapon": (id) => editWeapon(id),
-  "delete-weapon": (id) => deleteWeapon(id),
+  "edit-weapon": (id) => editLibraryItem("weapons", id),
+  "delete-weapon": (id) => deleteLibraryItemWithUndo("weapons", id),
   "move-weapon-up": (id) => moveWeapon(id, -1),
   "move-weapon-down": (id) => moveWeapon(id, 1),
+  "undo-library-delete": () => undoLibraryDelete(),
 };
 
 const COMPARE_COLLECTION_BY_LIST_ID = {
@@ -206,6 +210,9 @@ const state = {
   weaponLibraryType: "all",
   weaponLibraryAttribute: "all",
   weaponLibraryQuery: "",
+  libraryManagerType: null,
+  libraryUndo: null,
+  modalReturnFocus: null,
 };
 
 const els = {
@@ -220,9 +227,11 @@ const els = {
   selectionActions: document.getElementById("selection-actions"),
   skillSummaryList: document.getElementById("skill-summary-list"),
   newBuild: document.getElementById("new-build"),
+  manageBuilds: document.getElementById("manage-builds"),
   selectAllBuilds: document.getElementById("select-all-builds"),
   deselectAllBuilds: document.getElementById("deselect-all-builds"),
   newWeapon: document.getElementById("new-weapon"),
+  manageWeapons: document.getElementById("manage-weapons"),
   selectAllWeapons: document.getElementById("select-all-weapons"),
   deselectAllWeapons: document.getElementById("deselect-all-weapons"),
   selectWeaponType: document.getElementById("select-weapon-type"),
@@ -2190,15 +2199,7 @@ function renderSkillSummary() {
     .join("");
 }
 
-function renderLibraryList(
-  targetEl,
-  items,
-  selectedId,
-  editHandlerName,
-  deleteHandlerName,
-  moveUpHandlerName,
-  moveDownHandlerName,
-) {
+function renderLibraryList(targetEl, items, selectedId, itemType) {
   if (!items.length) {
     targetEl.innerHTML = `<div class="empty-state">Nothing saved yet.</div>`;
     return;
@@ -2206,23 +2207,16 @@ function renderLibraryList(
 
   targetEl.innerHTML = items
     .map(
-      (item, index) => {
+      (item) => {
         const escapedName = escapeHtml(item.name);
         return `
         <div class="library-item ${item.id === selectedId ? "selected" : ""}">
           <div class="library-item-main">
-            <label class="library-item-check">
+            <label class="library-item-check" title="Include in comparisons">
               <input type="checkbox" data-action="toggle-compare" data-id="${item.id}" ${item.compareEnabled !== false ? "checked" : ""} />
+              <span class="visually-hidden">Include ${escapedName} in comparisons</span>
             </label>
-            <div class="library-item-name">${escapedName}</div>
-          </div>
-          <div class="library-item-actions">
-            <div class="library-reorder-actions">
-              <button class="secondary library-reorder-button" type="button" data-action="${moveUpHandlerName}" data-id="${item.id}" aria-label="Move ${escapedName} up" title="Move up" ${index === 0 ? "disabled" : ""}>↑</button>
-              <button class="secondary library-reorder-button" type="button" data-action="${moveDownHandlerName}" data-id="${item.id}" aria-label="Move ${escapedName} down" title="Move down" ${index === items.length - 1 ? "disabled" : ""}>↓</button>
-            </div>
-            <button class="secondary" type="button" data-action="${editHandlerName}" data-id="${item.id}">Edit</button>
-            <button class="danger" type="button" data-action="${deleteHandlerName}" data-id="${item.id}">Del</button>
+            <button class="library-item-name" type="button" data-action="select-${itemType}" data-id="${item.id}" ${item.id === selectedId ? 'aria-current="true"' : ""}>${escapedName}</button>
           </div>
         </div>
       `;
@@ -2232,27 +2226,11 @@ function renderLibraryList(
 }
 
 function renderBuildList() {
-  renderLibraryList(
-    els.buildList,
-    state.builds,
-    state.selectedBuildId,
-    "edit-build",
-    "delete-build",
-    "move-build-up",
-    "move-build-down",
-  );
+  renderLibraryList(els.buildList, state.builds, state.selectedBuildId, "build");
 }
 
 function renderWeaponList() {
-  renderLibraryList(
-    els.weaponList,
-    state.weapons,
-    state.selectedWeaponId,
-    "edit-weapon",
-    "delete-weapon",
-    "move-weapon-up",
-    "move-weapon-down",
-  );
+  renderLibraryList(els.weaponList, state.weapons, state.selectedWeaponId, "weapon");
 }
 
 function renderBuildForm() {
@@ -2494,6 +2472,7 @@ function moveBuild(id, direction) {
   state.builds = reordered;
   persistBuilds();
   renderAll();
+  refreshLibraryManager();
 }
 
 function moveWeapon(id, direction) {
@@ -2505,6 +2484,7 @@ function moveWeapon(id, direction) {
   state.weapons = reordered;
   persistWeapons();
   renderAll();
+  refreshLibraryManager();
 }
 
 function saveBuildDraft() {
@@ -2664,6 +2644,189 @@ function deleteWeapon(id) {
   }
   persistWeapons();
   renderAll();
+}
+
+function libraryManagerConfig(type) {
+  if (type === "builds") {
+    return {
+      singular: "build",
+      title: "Manage Builds",
+      items: state.builds,
+      selectedId: state.selectedBuildId,
+      editAction: "edit-build",
+      deleteAction: "delete-build",
+      moveUpAction: "move-build-up",
+      moveDownAction: "move-build-down",
+    };
+  }
+
+  return {
+    singular: "weapon",
+    title: "Manage Weapons",
+    items: state.weapons,
+    selectedId: state.selectedWeaponId,
+    editAction: "edit-weapon",
+    deleteAction: "delete-weapon",
+    moveUpAction: "move-weapon-up",
+    moveDownAction: "move-weapon-down",
+  };
+}
+
+function renderLibraryManager() {
+  const type = state.libraryManagerType;
+  if (!type) {
+    return;
+  }
+
+  const config = libraryManagerConfig(type);
+  const undo = state.libraryUndo?.type === type ? state.libraryUndo : null;
+  const rows = config.items
+    .map((item, index) => {
+      const escapedName = escapeHtml(item.name);
+      return `
+        <div class="library-manager-item ${item.id === config.selectedId ? "selected" : ""}" role="listitem">
+          <div class="library-manager-name">${escapedName}</div>
+          <div class="library-manager-actions">
+            <div class="library-reorder-actions">
+              <button class="secondary library-reorder-button" type="button" data-action="${config.moveUpAction}" data-id="${item.id}" aria-label="Move ${escapedName} up" title="Move up" ${index === 0 ? "disabled" : ""}>↑</button>
+              <button class="secondary library-reorder-button" type="button" data-action="${config.moveDownAction}" data-id="${item.id}" aria-label="Move ${escapedName} down" title="Move down" ${index === config.items.length - 1 ? "disabled" : ""}>↓</button>
+            </div>
+            <button class="secondary" type="button" data-action="${config.editAction}" data-id="${item.id}">Edit</button>
+            <button class="danger" type="button" data-action="${config.deleteAction}" data-id="${item.id}">Delete</button>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
+  openModal({
+    title: config.title,
+    mode: "manager",
+    content: `
+      ${undo ? `
+        <div class="library-undo" role="status" aria-live="polite">
+          <span>${escapeHtml(undo.item.name)} deleted.</span>
+          <button type="button" data-action="undo-library-delete">Undo</button>
+        </div>
+      ` : ""}
+      <div class="library-manager-list" role="list" aria-label="Saved ${config.singular}s">
+        ${rows}
+      </div>
+    `,
+  });
+}
+
+function openLibraryManager(type, returnFocus) {
+  state.libraryManagerType = type;
+  state.libraryUndo = null;
+  state.modalReturnFocus = returnFocus;
+  renderLibraryManager();
+}
+
+function refreshLibraryManager() {
+  if (state.libraryManagerType) {
+    renderLibraryManager();
+  }
+}
+
+function selectLibraryItem(type, id) {
+  if (type === "builds" && getBuildById(id)) {
+    state.selectedBuildId = id;
+    saveStoredValue(STORAGE_KEYS.selectedBuildId, id);
+  } else if (type === "weapons" && getWeaponById(id)) {
+    state.selectedWeaponId = id;
+    saveStoredValue(STORAGE_KEYS.selectedWeaponId, id);
+  } else {
+    return;
+  }
+
+  renderCalculatorSelectors();
+  renderResultGrid();
+  renderCalculatorActions();
+  renderSkillSummary();
+  renderBuildList();
+  renderWeaponList();
+}
+
+function editLibraryItem(type, id) {
+  state.modalReturnFocus = null;
+  closeModal();
+  if (type === "builds") {
+    editBuild(id);
+  } else {
+    editWeapon(id);
+  }
+}
+
+function deleteLibraryItemWithUndo(type, id) {
+  const config = libraryManagerConfig(type);
+  const index = config.items.findIndex((item) => item.id === id);
+  if (index < 0) {
+    return;
+  }
+
+  state.libraryUndo = {
+    type,
+    item: deepClone(config.items[index]),
+    index,
+    previousSelectedId: config.selectedId,
+    previousEditingId: type === "builds" ? state.editingBuildId : state.editingWeaponId,
+    previousDraft: deepClone(type === "builds" ? state.buildDraft : state.weaponDraft),
+    replacementId: null,
+  };
+
+  const wasOnlyItem = config.items.length === 1;
+  if (type === "builds") {
+    deleteBuild(id);
+    if (wasOnlyItem) {
+      state.libraryUndo.replacementId = state.builds[0]?.id ?? null;
+    }
+  } else {
+    deleteWeapon(id);
+    if (wasOnlyItem) {
+      state.libraryUndo.replacementId = state.weapons[0]?.id ?? null;
+    }
+  }
+  renderLibraryManager();
+}
+
+function undoLibraryDelete() {
+  const undo = state.libraryUndo;
+  if (!undo) {
+    return;
+  }
+
+  const collection = undo.type === "builds" ? state.builds : state.weapons;
+  const withoutReplacement = undo.replacementId
+    ? collection.filter((item) => item.id !== undo.replacementId)
+    : [...collection];
+  if (!withoutReplacement.some((item) => item.id === undo.item.id)) {
+    withoutReplacement.splice(Math.min(undo.index, withoutReplacement.length), 0, undo.item);
+  }
+
+  if (undo.type === "builds") {
+    state.builds = withoutReplacement;
+    state.selectedBuildId = undo.previousSelectedId;
+    if (undo.previousEditingId === undo.item.id) {
+      state.editingBuildId = undo.previousEditingId;
+      state.buildDraft = undo.previousDraft;
+    }
+    persistBuilds();
+    saveStoredValue(STORAGE_KEYS.selectedBuildId, state.selectedBuildId);
+  } else {
+    state.weapons = withoutReplacement;
+    state.selectedWeaponId = undo.previousSelectedId;
+    if (undo.previousEditingId === undo.item.id) {
+      state.editingWeaponId = undo.previousEditingId;
+      state.weaponDraft = undo.previousDraft;
+    }
+    persistWeapons();
+    saveStoredValue(STORAGE_KEYS.selectedWeaponId, state.selectedWeaponId);
+  }
+
+  state.libraryUndo = null;
+  renderAll();
+  renderLibraryManager();
 }
 
 function renderAll() {
@@ -3291,12 +3454,17 @@ function openModal({ title, content, mode = null }) {
 }
 
 function closeModal() {
+  const returnFocus = state.modalReturnFocus;
   state.matrixComparison = null;
   state.uptimeDraft = null;
   state.dayModeDraft = null;
+  state.libraryManagerType = null;
+  state.libraryUndo = null;
+  state.modalReturnFocus = null;
   setModalMode();
   els.riftModal.classList.add("hidden");
   els.riftModalContent.innerHTML = "";
+  requestAnimationFrame(() => returnFocus?.focus());
 }
 
 function escapeHtml(value) {
@@ -3366,6 +3534,10 @@ function wireGlobalEvents() {
     scrollEditorIntoView(els.buildForm);
   });
 
+  els.manageBuilds.addEventListener("click", (event) => {
+    openLibraryManager("builds", event.currentTarget);
+  });
+
   els.selectAllBuilds.addEventListener("click", () => {
     setAllBuildsCompareEnabled(true);
   });
@@ -3380,6 +3552,10 @@ function wireGlobalEvents() {
     renderWeaponForm();
     renderWeaponList();
     scrollEditorIntoView(els.weaponForm);
+  });
+
+  els.manageWeapons.addEventListener("click", (event) => {
+    openLibraryManager("weapons", event.currentTarget);
   });
 
   els.selectAllWeapons.addEventListener("click", () => {
@@ -3443,6 +3619,12 @@ function wireGlobalEvents() {
     }
 
     handleCompareToggle(checkbox);
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !els.riftModal.classList.contains("hidden")) {
+      closeModal();
+    }
   });
 
   window.addEventListener("resize", () => {
