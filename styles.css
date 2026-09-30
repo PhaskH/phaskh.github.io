@@ -572,6 +572,32 @@ button.weapon-library-type.active {
   font-weight: 700;
 }
 
+.reactive-damage-result {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.reactive-damage-result strong {
+  color: var(--text);
+}
+
+.reactive-damage-kb {
+  display: inline-block;
+  margin: 0 2px;
+  vertical-align: middle;
+}
+
+.reactive-damage-kb select {
+  width: 64px;
+  min-height: 32px;
+  padding: 4px 22px 4px 8px;
+  font-size: 0.84rem;
+}
+
 .field {
   display: flex;
   flex-direction: column;

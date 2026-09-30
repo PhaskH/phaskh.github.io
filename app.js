@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   dayMode: "mhn_day_mode_v2",
   uptimePresets: "mhn_uptime_presets_v1",
   activeUptimePreset: "mhn_active_uptime_preset_v1",
+  reactiveDamageKb: "mhn_reactive_damage_kb_v1",
 };
 
 const PREVIOUS_STORAGE_KEYS = {
@@ -209,6 +210,7 @@ const state = {
   dayModeDraft: null,
   uptimePresets: [],
   activeUptimePresetId: null,
+  reactiveDamageKb: 60,
   weaponLibraryType: "all",
   weaponLibraryAttribute: "all",
   weaponLibraryQuery: "",
@@ -1454,9 +1456,36 @@ function calculateSelectedScenario() {
   }
 
   const engine = createEngine();
-  return {
-    h12: calculateScenarioEffectiveDamage(engine, build, weapon),
-  };
+  const h12 = calculateScenarioEffectiveDamage(engine, build, weapon);
+  const extensions = window.PHASK_SKILL_EXTENSIONS;
+  const reactiveSkill = extensions?.getReactiveDamageSkill(build.values, weapon.values);
+  let reactiveDamage = null;
+  if (reactiveSkill) {
+    const workbookDamageBonus = extensions.reactiveDamageBonusCells.reduce((total, ref) => {
+      const value = Number(readCell(engine, "Backyard", ref));
+      return total + (Number.isFinite(value) ? value : 0);
+    }, 0);
+    const meditationBonus = state.extensionStatus?.enabled
+      ? Number(
+          readCell(
+            engine,
+            extensions.extensionSheet,
+            extensions.targetCells.meditation,
+          ),
+        )
+      : 0;
+    reactiveDamage = {
+      ...reactiveSkill,
+      damage: extensions.calculateReactiveDamage(
+        readCell(engine, "Backyard", "BC2"),
+        workbookDamageBonus + (Number.isFinite(meditationBonus) ? meditationBonus : 0),
+        reactiveSkill,
+        state.reactiveDamageKb,
+      ),
+    };
+  }
+
+  return { h12, reactiveDamage };
 }
 
 window.__mhnDebugScenario = function __mhnDebugScenario() {
@@ -1520,14 +1549,44 @@ function renderResultGrid() {
   const extensionWarning = state.extensionStatus?.error
     ? `<div class="calculation-warning">${escapeHtml(state.extensionStatus.error)} Local skill extensions are disabled until their workbook adapter is updated.</div>`
     : "";
+  const reactiveDamage = result.reactiveDamage;
+  const reactiveDamageMarkup = reactiveDamage
+    ? `<div class="reactive-damage-result">
+        <strong>${escapeHtml(reactiveDamage.damage.toLocaleString("en-US"))}</strong>
+        expected ${escapeHtml(reactiveDamage.label)} Lv ${escapeHtml(reactiveDamage.level)} damage against a
+        <label class="reactive-damage-kb">
+          <span class="visually-hidden">Monster attack knockback value</span>
+          <select id="reactive-damage-kb" aria-label="Monster attack knockback value">
+            ${window.PHASK_SKILL_EXTENSIONS.reactiveDamageKbValues
+              .map(
+                (kb) =>
+                  `<option value="${kb}" ${kb === state.reactiveDamageKb ? "selected" : ""}>${kb}</option>`,
+              )
+              .join("")}
+          </select>
+        </label>
+        KB monster attack
+      </div>`
+    : "";
 
   els.resultGrid.innerHTML = `
     <div class="result-card">
       <div class="label">Effective Damage</div>
       <div class="value">${escapeHtml(formatResult(result.h12))}</div>
+      ${reactiveDamageMarkup}
     </div>
     ${extensionWarning}
   `;
+
+  els.resultGrid.querySelector("#reactive-damage-kb")?.addEventListener("change", (event) => {
+    const kb = Number(event.target.value);
+    if (!window.PHASK_SKILL_EXTENSIONS.reactiveDamageKbValues.includes(kb)) {
+      return;
+    }
+    state.reactiveDamageKb = kb;
+    saveStoredValue(STORAGE_KEYS.reactiveDamageKb, String(kb));
+    renderResultGrid();
+  });
 }
 
 function renderCalculatorActions() {
@@ -3871,6 +3930,13 @@ async function init() {
     ...loadUptimesForCurrentVersion(),
   };
   state.dayMode = loadStoredValue(STORAGE_KEYS.dayMode) === "true";
+  const storedReactiveDamageKbValue = loadStoredValue(STORAGE_KEYS.reactiveDamageKb);
+  const storedReactiveDamageKb = Number(storedReactiveDamageKbValue);
+  state.reactiveDamageKb =
+    storedReactiveDamageKbValue !== null &&
+    extensionSystem?.reactiveDamageKbValues.includes(storedReactiveDamageKb)
+      ? storedReactiveDamageKb
+      : 60;
   state.uptimePresets = loadUptimePresets();
   const storedActiveUptimePreset = loadStoredValue(STORAGE_KEYS.activeUptimePreset);
   const storedActiveSnapshot = getUptimePresetSnapshot(storedActiveUptimePreset);

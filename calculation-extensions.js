@@ -12,6 +12,8 @@
     velkhanaAegis: "PX_VELKHANA_AEGIS",
     blastExploit: "PX_BLAST_EXPLOIT",
     morphAttackBoost: "PX_MORPH_ATTACK_BOOST",
+    reflection: "PX_REFLECTION",
+    retaliation: "PX_RETALIATION",
   });
 
   const UPTIME_REFS = Object.freeze({
@@ -44,9 +46,58 @@
     "Charge Blade (Power)",
     "Charge Blade (Impact)",
   ]);
+  const REFLECTION_WEAPON_TYPES = new Set([
+    "Sword & Shield",
+    "Greatsword",
+    "Lance",
+    "Charge Blade (Power)",
+    "Charge Blade (Impact)",
+    "Gunlance",
+    "Heavy Bowgun",
+  ]);
+  const RETALIATION_WEAPON_TYPES = new Set(["Hammer", "Longsword", "Switch Axe"]);
+  const REFLECTION_BASE_MOTION_VALUES = Object.freeze([0, 20, 35, 55, 70, 90]);
+  const RETALIATION_BASE_MOTION_VALUES = Object.freeze([0, 30, 60, 100, 150, 200]);
+  const REACTIVE_DAMAGE_KB_VALUES = Object.freeze([
+    0, 15, 20, 25, 30, 35, 40, 45, 50, 60, 80, 100,
+  ]);
+  // Generic damage bonuses that can affect a non-elemental, explosive bonus hit.
+  // Attack-type, motion-specific, status-buildup, and part-damage rows are excluded.
+  const REACTIVE_DAMAGE_BONUS_CELLS = Object.freeze([
+    "AK6",
+    "AK7",
+    "AK8",
+    "AK9",
+    "AK10",
+    "AK11",
+    "AK12",
+    "AK15",
+    "AK16",
+    "AK17",
+    "AK18",
+    "AK19",
+    "AK20",
+    "AK23",
+  ]);
   const BLAST_THRESHOLD_GROWTH = 1.3;
 
   const BUILD_FIELDS = Object.freeze([
+    {
+      ref: BUILD_REFS.reflection,
+      key: "reflection",
+      label: "Reflection",
+      options: ["0", "1", "2", "3", "4", "5"],
+      defaultValue: 0,
+      extension: true,
+    },
+    {
+      ref: BUILD_REFS.retaliation,
+      key: "retaliation",
+      label: "Retaliation",
+      options: ["0", "1", "2", "3", "4", "5"],
+      defaultValue: 0,
+      extension: true,
+    },
     {
       ref: BUILD_REFS.blastExploit,
       key: "blastExploit",
@@ -83,6 +134,18 @@
 
   const UPTIME_FIELDS = Object.freeze([
     {
+      ref: UPTIME_REFS.critCapableDamageShare,
+      key: "critCapableDamageShare",
+      label: "Crit-Capable Dmg Share",
+      defaultValue: 1,
+      displayScale: 100,
+      minValue: 0,
+      maxValue: 100,
+      step: 0.1,
+      defaultFeedback: "Using Phask default",
+      extension: true,
+    },
+    {
       ref: UPTIME_REFS.buildupBoost,
       key: "buildupBoostUptime",
       label: "Buildup Boost",
@@ -100,18 +163,6 @@
       key: "meditationUptime",
       label: "Meditation",
       defaultValue: 0.95,
-      displayScale: 100,
-      minValue: 0,
-      maxValue: 100,
-      step: 0.1,
-      defaultFeedback: "Using Phask default",
-      extension: true,
-    },
-    {
-      ref: UPTIME_REFS.critCapableDamageShare,
-      key: "critCapableDamageShare",
-      label: "Crit-Capable Dmg Share",
-      defaultValue: 1,
       displayScale: 100,
       minValue: 0,
       maxValue: 100,
@@ -399,6 +450,44 @@
     return nonMorphResult + boundedShare * (fullMorphResult - nonMorphResult);
   }
 
+  function getReactiveDamageSkill(buildValues, weaponValues) {
+    const weaponType = String(weaponValues?.E7 ?? "");
+    if (REFLECTION_WEAPON_TYPES.has(weaponType)) {
+      const level = boundedLevel(buildValues?.[BUILD_REFS.reflection], 5);
+      return level
+        ? {
+            key: "reflection",
+            label: "Reflection",
+            level,
+            baseMotionValue: REFLECTION_BASE_MOTION_VALUES[level],
+          }
+        : null;
+    }
+    if (RETALIATION_WEAPON_TYPES.has(weaponType)) {
+      const level = boundedLevel(buildValues?.[BUILD_REFS.retaliation], 5);
+      return level
+        ? {
+            key: "retaliation",
+            label: "Retaliation",
+            level,
+            baseMotionValue: RETALIATION_BASE_MOTION_VALUES[level],
+          }
+        : null;
+    }
+    return null;
+  }
+
+  function calculateReactiveDamage(rawAttack, additiveDamageBonus, skill, monsterKb) {
+    const attack = Math.max(0, Number(rawAttack));
+    const damageBonus = Math.max(0, Number(additiveDamageBonus));
+    const kb = boundedNumber(monsterKb, 0, 100);
+    if (!skill || !Number.isFinite(attack) || !Number.isFinite(damageBonus)) {
+      return null;
+    }
+    const motionValue = skill.baseMotionValue + Math.trunc(kb);
+    return Math.floor(attack * (1 + damageBonus) * (motionValue / 100) * 1.3);
+  }
+
   global.PHASK_SKILL_EXTENSIONS = Object.freeze({
     extensionSheet: EXTENSION_SHEET,
     supportedSheetVersion: SUPPORTED_SHEET_VERSION,
@@ -411,5 +500,9 @@
     calculateScenarioModifiers,
     blendMorphAttackDamage,
     averageBlastExploitStacks,
+    reactiveDamageKbValues: REACTIVE_DAMAGE_KB_VALUES,
+    reactiveDamageBonusCells: REACTIVE_DAMAGE_BONUS_CELLS,
+    getReactiveDamageSkill,
+    calculateReactiveDamage,
   });
 })(globalThis);
