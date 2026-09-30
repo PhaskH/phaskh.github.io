@@ -136,6 +136,7 @@ const MODAL_MODE_CLASSES = [
   "modal-window-compact",
   "modal-window-medium",
   "modal-window-manager",
+  "modal-window-rift",
   "modal-window-uptime",
   "modal-window-uptime-day-mode",
 ];
@@ -199,6 +200,7 @@ const state = {
   buildDraft: null,
   weaponDraft: null,
   matrixComparison: null,
+  riftComparison: null,
   buildEditorColumnCount: 1,
   uptimeFields: [],
   uptimeValues: {},
@@ -2940,10 +2942,15 @@ function isRiftVariantSaved(baseWeapon, variant) {
 }
 
 function markRiftVariantSaved(button) {
-  button.textContent = "Saved";
-  button.disabled = true;
-  button.classList.add("rift-save-button-saved");
-  button.closest(".rift-result-item")?.classList.add("rift-result-item-saved");
+  const variantIndex = button.dataset.riftVariantIndex;
+  els.riftModalContent
+    .querySelectorAll(`[data-rift-variant-index="${variantIndex}"]`)
+    .forEach((saveButton) => {
+      saveButton.textContent = "Saved";
+      saveButton.disabled = true;
+      saveButton.classList.add("rift-save-button-saved");
+      saveButton.closest(".rift-result-item")?.classList.add("rift-result-item-saved");
+    });
 }
 
 function saveRiftVariant(baseWeapon, variant, button) {
@@ -2962,14 +2969,216 @@ function saveRiftVariant(baseWeapon, variant, button) {
   markRiftVariantSaved(button);
 }
 
-function openRiftComparison() {
-  const build = getBuildById(state.selectedBuildId);
-  const weapon = getWeaponById(state.selectedWeaponId);
-  if (!build || !weapon || !weapon.isRift) {
+function riftResultKey(variantIndex, buildId) {
+  return `${variantIndex}::${buildId}`;
+}
+
+function riftScopeBuilds(comparison) {
+  const buildIds = comparison.scope === "selected"
+    ? comparison.selectedBuildIds
+    : [comparison.currentBuildId];
+  return buildIds.map((id) => getBuildById(id)).filter(Boolean);
+}
+
+function bestRiftResult(comparison, buildId) {
+  return comparison.variants.reduce((best, variant) => {
+    const value = comparison.results[riftResultKey(variant.index, buildId)];
+    return typeof value === "number" && (!Number.isFinite(best) || value > best) ? value : best;
+  }, Number.NEGATIVE_INFINITY);
+}
+
+function sortedRiftVariants(comparison, buildId) {
+  return [...comparison.variants].sort((left, right) => {
+    const leftValue = comparison.results[riftResultKey(left.index, buildId)];
+    const rightValue = comparison.results[riftResultKey(right.index, buildId)];
+    const numericLeft = typeof leftValue === "number" ? leftValue : Number.NEGATIVE_INFINITY;
+    const numericRight = typeof rightValue === "number" ? rightValue : Number.NEGATIVE_INFINITY;
+    return numericRight - numericLeft || left.index - right.index;
+  });
+}
+
+function riftRelativeResult(value, bestValue) {
+  if (typeof value !== "number" || !Number.isFinite(bestValue) || bestValue === 0) {
+    return { percent: Number.NaN, label: "-" };
+  }
+  const percent = ((value - bestValue) / bestValue) * 100;
+  return {
+    percent,
+    label: Math.abs(percent) < 0.000001 ? "100.00%" : formatSignedPercent(percent),
+  };
+}
+
+function riftSaveButtonMarkup(variant) {
+  return `<button class="secondary rift-save-button ${variant.isSaved ? "rift-save-button-saved" : ""}" type="button" data-rift-variant-index="${variant.index}" ${variant.isSaved ? "disabled" : ""}>${variant.isSaved ? "Saved" : "Save Weapon"}</button>`;
+}
+
+function renderRiftComparison() {
+  const comparison = state.riftComparison;
+  if (!comparison) {
     return;
   }
 
-  const engine = createEngine();
+  const weapon = getWeaponById(comparison.weaponId);
+  const builds = riftScopeBuilds(comparison);
+  if (!weapon || !builds.length) {
+    closeModal();
+    return;
+  }
+
+  if (!builds.some((build) => build.id === comparison.rankBuildId)) {
+    comparison.rankBuildId = builds[0].id;
+  }
+  if (!builds.some((build) => build.id === comparison.mobileBuildId)) {
+    comparison.mobileBuildId = comparison.rankBuildId;
+  }
+
+  const rankedVariants = sortedRiftVariants(comparison, comparison.rankBuildId);
+  const mobileVariants = sortedRiftVariants(comparison, comparison.mobileBuildId);
+  const bestByBuild = Object.fromEntries(
+    builds.map((build) => [build.id, bestRiftResult(comparison, build.id)]),
+  );
+  const selectedScopeDisabled = comparison.selectedBuildIds.length === 0;
+  const scopeControls = `
+    <div class="rift-comparison-toolbar">
+      <div class="rift-scope-control" role="group" aria-label="Build comparison scope">
+        <button type="button" class="rift-scope-button ${comparison.scope === "current" ? "active" : "secondary"}" data-rift-scope="current" aria-pressed="${comparison.scope === "current"}">Current Build</button>
+        <button type="button" class="rift-scope-button ${comparison.scope === "selected" ? "active" : "secondary"}" data-rift-scope="selected" aria-pressed="${comparison.scope === "selected"}" ${selectedScopeDisabled ? "disabled" : ""}>Selected Builds (${comparison.selectedBuildIds.length})</button>
+      </div>
+      ${builds.length > 1 ? `
+        <label class="rift-rank-control rift-desktop-only">
+          <span>Rank by</span>
+          <select id="rift-rank-build">
+            ${builds.map((build) => `<option value="${build.id}" ${build.id === comparison.rankBuildId ? "selected" : ""}>${escapeHtml(build.name)}</option>`).join("")}
+          </select>
+        </label>
+      ` : ""}
+    </div>
+  `;
+
+  const headerCells = builds
+    .map((build) => `<th scope="col" class="comparison-header-cell" title="${escapeHtml(build.name)}"><span class="comparison-header-cell-text">${escapeHtml(build.name)}</span></th>`)
+    .join("");
+  const desktopRows = rankedVariants
+    .map((variant) => {
+      const cells = builds
+        .map((build) => {
+          const value = comparison.results[riftResultKey(variant.index, build.id)];
+          const relative = riftRelativeResult(value, bestByBuild[build.id]);
+          const isBest = relative.label === "100.00%";
+          return `
+            <td>
+              <div class="rift-comparison-cell ${isBest ? "is-best" : ""}" style="background:${isBest ? "rgba(83, 179, 125, 0.18)" : getDeltaBackground(relative.percent)};">
+                <span class="comparison-dps">${escapeHtml(formatResult(value))}</span>
+                <span class="comparison-delta">${escapeHtml(relative.label)}</span>
+              </div>
+            </td>
+          `;
+        })
+        .join("");
+      return `
+        <tr class="rift-comparison-row">
+          <th scope="row" class="comparison-header-row" title="${escapeHtml(variant.label || "No bonus")}">
+            <span class="comparison-header-row-text">${escapeHtml(variant.label || "No bonus")}</span>
+            <span class="rift-combination-sequence">${escapeHtml(variant.upgradeSequence || "No node upgrades")}</span>
+          </th>
+          ${cells}
+          <td class="rift-save-cell">${riftSaveButtonMarkup(variant)}</td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  const mobileBuild = builds.find((build) => build.id === comparison.mobileBuildId) ?? builds[0];
+  const mobileBest = bestByBuild[mobileBuild.id];
+  const mobileCards = mobileVariants
+    .map((variant) => {
+      const value = comparison.results[riftResultKey(variant.index, mobileBuild.id)];
+      const relative = riftRelativeResult(value, mobileBest);
+      const isBest = relative.label === "100.00%";
+      return `
+        <div class="rift-result-item ${variant.isSaved ? "rift-result-item-saved" : ""}" style="background:${isBest ? "rgba(83, 179, 125, 0.18)" : getDeltaBackground(relative.percent)};">
+          <div>
+            <div>${escapeHtml(variant.label || "No bonus")}</div>
+            <div class="rift-result-label">${escapeHtml(variant.upgradeSequence || "No node upgrades")}</div>
+          </div>
+          <div class="rift-result-actions">
+            <div class="rift-result-value-block">
+              <div class="rift-result-value">${escapeHtml(formatResult(value))}</div>
+              <div class="rift-result-relative">${escapeHtml(relative.label)}</div>
+            </div>
+            ${riftSaveButtonMarkup(variant)}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
+  openModal({
+    title: "Rift Combinations",
+    mode: "rift",
+    content: `
+      <div class="rift-context"><span class="rift-context-label">Weapon:</span> ${escapeHtml(weapon.name)}</div>
+      ${scopeControls}
+      <div class="rift-desktop-results comparison-table-wrap">
+        <table class="comparison-table rift-comparison-table">
+          <thead><tr><th scope="col" class="comparison-corner">Combination</th>${headerCells}<th scope="col" class="rift-save-heading">Save</th></tr></thead>
+          <tbody>${desktopRows}</tbody>
+        </table>
+      </div>
+      <div class="rift-mobile-results">
+        ${builds.length > 1 ? `
+          <label class="rift-mobile-build-select">
+            <span>Build</span>
+            <select id="rift-mobile-build">
+              ${builds.map((build) => `<option value="${build.id}" ${build.id === mobileBuild.id ? "selected" : ""}>${escapeHtml(build.name)}</option>`).join("")}
+            </select>
+          </label>
+        ` : `<div class="rift-mobile-build-name">${escapeHtml(mobileBuild.name)}</div>`}
+        <div class="rift-results">${mobileCards}</div>
+      </div>
+    `,
+  });
+
+  els.riftModalContent.querySelectorAll("[data-rift-scope]").forEach((button) => {
+    button.addEventListener("click", () => {
+      comparison.scope = button.dataset.riftScope;
+      const nextBuilds = riftScopeBuilds(comparison);
+      comparison.rankBuildId = nextBuilds.some((build) => build.id === comparison.currentBuildId)
+        ? comparison.currentBuildId
+        : nextBuilds[0].id;
+      comparison.mobileBuildId = comparison.rankBuildId;
+      renderRiftComparison();
+    });
+  });
+  els.riftModalContent.querySelector("#rift-rank-build")?.addEventListener("change", (event) => {
+    comparison.rankBuildId = event.target.value;
+    renderRiftComparison();
+  });
+  els.riftModalContent.querySelector("#rift-mobile-build")?.addEventListener("change", (event) => {
+    comparison.mobileBuildId = event.target.value;
+    renderRiftComparison();
+  });
+  els.riftModalContent.querySelectorAll("[data-rift-variant-index]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const variant = comparison.variants.find(
+        (item) => item.index === Number(button.dataset.riftVariantIndex),
+      );
+      if (!variant) {
+        return;
+      }
+      variant.isSaved = true;
+      saveRiftVariant(weapon, variant, button);
+    });
+  });
+}
+
+function openRiftComparison() {
+  const currentBuild = getBuildById(state.selectedBuildId);
+  const weapon = getWeaponById(state.selectedWeaponId);
+  if (!currentBuild || !weapon || !weapon.isRift) {
+    return;
+  }
+
   const generatedVariants = generateRiftVariants(weapon);
   if (!generatedVariants.length) {
     openModal({
@@ -2979,69 +3188,45 @@ function openRiftComparison() {
     });
     return;
   }
-  const variants = generatedVariants
-    .map((variant) => {
-      return {
-        ...variant,
-        h12: calculateScenarioEffectiveDamage(engine, build, variant.weapon),
-        isSaved: isRiftVariantSaved(weapon, variant),
-      };
-    })
-    .sort((a, b) => {
-      const av = typeof a.h12 === "number" ? a.h12 : -Infinity;
-      const bv = typeof b.h12 === "number" ? b.h12 : -Infinity;
-      return bv - av;
-    });
-  const topValue = variants.find((variant) => typeof variant.h12 === "number")?.h12;
 
-  openModal({
-    title: "Rift Combinations",
-    mode: "compact",
-    content: `
-    <div class="rift-context">
-      <div><span class="rift-context-label">Build:</span> ${escapeHtml(build.name)} <span class="rift-context-separator">|</span> <span class="rift-context-label">Weapon:</span> ${escapeHtml(weapon.name)}</div>
-    </div>
-    <div class="rift-results">
-      ${variants
-        .map(
-          (variant, index) => {
-            const relativePercent =
-              typeof variant.h12 === "number" && typeof topValue === "number" && topValue !== 0
-                ? ((variant.h12 - topValue) / topValue) * 100
-                : Number.NaN;
-            const relativeLabel =
-              index === 0 && typeof variant.h12 === "number" ? "100.00%" : formatSignedPercent(relativePercent);
+  const selectedBuilds = state.builds.filter((build) => build.compareEnabled !== false);
+  const buildsToCalculate = [...selectedBuilds];
+  if (!buildsToCalculate.some((build) => build.id === currentBuild.id)) {
+    buildsToCalculate.push(currentBuild);
+  }
 
-            return `
-            <div class="rift-result-item ${variant.isSaved ? "rift-result-item-saved" : ""}">
-              <div>
-                <div>${escapeHtml(variant.label || "No bonus")}</div>
-                <div class="rift-result-label">${escapeHtml(variant.upgradeSequence || "attack, attack, attack")}</div>
-              </div>
-              <div class="rift-result-actions">
-                <div class="rift-result-value-block">
-                  <div class="rift-result-value">${escapeHtml(formatResult(variant.h12))}</div>
-                  <div class="rift-result-relative">${escapeHtml(relativeLabel)}</div>
-                </div>
-                <button class="secondary rift-save-button ${variant.isSaved ? "rift-save-button-saved" : ""}" type="button" data-rift-variant-index="${index}" ${variant.isSaved ? "disabled" : ""}>${variant.isSaved ? "Saved" : "Save Weapon"}</button>
-              </div>
-            </div>
-          `;
-          },
-        )
-        .join("")}
-    </div>
-  `,
-  });
-  els.riftModalContent.querySelectorAll("[data-rift-variant-index]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const variant = variants[Number(button.dataset.riftVariantIndex)];
-      if (!variant) {
-        return;
-      }
-      saveRiftVariant(weapon, variant, button);
-    });
-  });
+  const engine = createEngine();
+  const results = {};
+  const variants = generatedVariants.map((variant, index) => ({
+    ...variant,
+    index,
+    isSaved: isRiftVariantSaved(weapon, variant),
+  }));
+  for (const variant of variants) {
+    for (const build of buildsToCalculate) {
+      results[riftResultKey(variant.index, build.id)] = calculateScenarioEffectiveDamage(
+        engine,
+        build,
+        variant.weapon,
+      );
+    }
+  }
+
+  const useSelectedBuilds = selectedBuilds.length > 1;
+  const initialBuildId = selectedBuilds.some((build) => build.id === currentBuild.id)
+    ? currentBuild.id
+    : selectedBuilds[0]?.id ?? currentBuild.id;
+  state.riftComparison = {
+    weaponId: weapon.id,
+    currentBuildId: currentBuild.id,
+    selectedBuildIds: selectedBuilds.map((build) => build.id),
+    scope: useSelectedBuilds ? "selected" : "current",
+    rankBuildId: useSelectedBuilds ? initialBuildId : currentBuild.id,
+    mobileBuildId: useSelectedBuilds ? initialBuildId : currentBuild.id,
+    variants,
+    results,
+  };
+  renderRiftComparison();
 }
 
 function buildMatrixKey(buildId, weaponId) {
@@ -3456,6 +3641,7 @@ function openModal({ title, content, mode = null }) {
 function closeModal() {
   const returnFocus = state.modalReturnFocus;
   state.matrixComparison = null;
+  state.riftComparison = null;
   state.uptimeDraft = null;
   state.dayModeDraft = null;
   state.libraryManagerType = null;
