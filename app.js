@@ -1347,6 +1347,12 @@ function applyScenario(engine, build, weapon) {
     writeCell(
       engine,
       extensions.extensionSheet,
+      extensions.targetCells.critCapableDamageShare,
+      modifiers.critCapableDamageShare,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
       extensions.targetCells.morphAttackBoostDamage,
       modifiers.morphAttackBoostDamage,
     );

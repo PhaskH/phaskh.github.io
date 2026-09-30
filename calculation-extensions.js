@@ -16,6 +16,7 @@
 
   const UPTIME_REFS = Object.freeze({
     buildupBoost: "PX_BUILDUP_BOOST_UPTIME",
+    critCapableDamageShare: "PX_CRIT_CAPABLE_DAMAGE_SHARE",
     meditation: "PX_MEDITATION_UPTIME",
     morphAttackDamageShare: "PX_MORPH_ATTACK_DAMAGE_SHARE",
     blastExploitExpectedProcs: "PX_BLAST_EXPLOIT_PROCS",
@@ -30,6 +31,7 @@
     morphAttackBoostAffinity: "B7",
     morphAttackDamageShare: "B8",
     buildupBoostOverrideEnabled: "B9",
+    critCapableDamageShare: "B10",
   });
 
   const MEDITATION_BONUSES = Object.freeze([0, 0.1, 0.15, 0.2, 0.25, 0.35]);
@@ -98,6 +100,18 @@
       key: "meditationUptime",
       label: "Meditation",
       defaultValue: 0.95,
+      displayScale: 100,
+      minValue: 0,
+      maxValue: 100,
+      step: 0.1,
+      defaultFeedback: "Using Phask default",
+      extension: true,
+    },
+    {
+      ref: UPTIME_REFS.critCapableDamageShare,
+      key: "critCapableDamageShare",
+      label: "Crit-Capable Dmg Share",
+      defaultValue: 1,
       displayScale: 100,
       minValue: 0,
       maxValue: 100,
@@ -194,6 +208,24 @@
           extended:
             "=max(-1,min(1,$AO$5+$AO$7+$AO$8+AO9+AO10+AO11+PhaskExtensions!$B$7))",
         }),
+        Object.freeze({
+          sheet: "Backyard",
+          row: 20,
+          column: 49,
+          label: "negative critical probability",
+          original: "=SUMIF($AX$3:$AY$9,0.75,$AX$12:$AY$18)",
+          extended:
+            "=SUMIF($AX$3:$AY$9,0.75,$AX$12:$AY$18)*PhaskExtensions!$B$10",
+        }),
+        Object.freeze({
+          sheet: "Backyard",
+          row: 22,
+          column: 49,
+          label: "positive critical probability",
+          original: "=SUMIF($AX$3:$AY$9,1.25,$AX$12:$AY$18)",
+          extended:
+            "=SUMIF($AX$3:$AY$9,1.25,$AX$12:$AY$18)*PhaskExtensions!$B$10",
+        }),
       ]),
     }),
   });
@@ -278,6 +310,7 @@
       ["Morph Attack Boost affinity", 0],
       ["Morph Attack damage share", 0.25],
       ["Buildup Boost override enabled", 0],
+      ["Crit-capable damage share", 1],
     ];
 
     return sheets;
@@ -325,6 +358,11 @@
       0,
       1,
     );
+    const critCapableDamageShare = boundedNumber(
+      uptimeValues?.[UPTIME_REFS.critCapableDamageShare] ?? 1,
+      0,
+      1,
+    );
     const expectedBlastProcs = Math.round(
       boundedNumber(uptimeValues?.[UPTIME_REFS.blastExploitExpectedProcs], 0, 20),
     );
@@ -341,6 +379,7 @@
       blastExploit: BLAST_EXPLOIT_ATTACK_PER_STACK[blastExploitLevel] * averageBlastStacks,
       buildupBoost: buildupBoostUptime,
       buildupBoostOverrideEnabled: options.buildupBoostOverrideEnabled ? 1 : 0,
+      critCapableDamageShare,
       morphAttackBoostDamage: supportsMorphAttacks
         ? MORPH_ATTACK_BOOST_DAMAGE[morphAttackBoostLevel]
         : 0,
