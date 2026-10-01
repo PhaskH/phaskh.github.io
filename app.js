@@ -2314,6 +2314,7 @@ function renderLibraryList(targetEl, items, selectedId, itemType) {
             </label>
             <button class="library-item-name" type="button" data-action="select-${itemType}" data-id="${item.id}" ${item.id === selectedId ? 'aria-current="true"' : ""}>${escapedName}</button>
           </div>
+          <button class="secondary library-item-edit" type="button" data-action="edit-${itemType}" data-id="${item.id}" aria-label="Edit ${escapedName}" title="Edit ${escapedName}">Edit</button>
         </div>
       `;
       },

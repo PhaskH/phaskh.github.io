@@ -759,6 +759,14 @@ button.danger:hover {
   padding: 0;
 }
 
+.library-item-edit {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+}
+
 .library-item-meta {
   color: var(--muted);
   font-size: 0.84rem;
@@ -1567,6 +1575,11 @@ button.danger:hover {
     overflow-wrap: anywhere;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+  }
+
+  .library-item-edit {
+    min-width: 48px;
+    padding: 6px 8px;
   }
 
   .library-reorder-actions {
