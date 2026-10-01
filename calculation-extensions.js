@@ -12,6 +12,8 @@
     velkhanaAegis: "PX_VELKHANA_AEGIS",
     blastExploit: "PX_BLAST_EXPLOIT",
     morphAttackBoost: "PX_MORPH_ATTACK_BOOST",
+    criticalRangeBoost: "PX_CRITICAL_RANGE_BOOST",
+    chargeStock: "PX_CHARGE_STOCK",
     reflection: "PX_REFLECTION",
     retaliation: "PX_RETALIATION",
   });
@@ -22,6 +24,8 @@
     meditation: "PX_MEDITATION_UPTIME",
     morphAttackDamageShare: "PX_MORPH_ATTACK_DAMAGE_SHARE",
     blastExploitExpectedProcs: "PX_BLAST_EXPLOIT_PROCS",
+    criticalRangeDamageShare: "PX_CRITICAL_RANGE_DAMAGE_SHARE",
+    chargeAttackDamageShare: "E28",
   });
 
   const TARGET_CELLS = Object.freeze({
@@ -36,6 +40,8 @@
     critCapableDamageShare: "B10",
     insectGlaiveEnabled: "B11",
     insectGlaiveStatusModifier: "B12",
+    criticalRangeBoost: "B13",
+    chargeStock: "B14",
   });
 
   // KreaTV1 3.6.4 has no native Insect Glaive type. Keep this adapter isolated so
@@ -51,6 +57,22 @@
   const BLAST_EXPLOIT_ATTACK_PER_STACK = Object.freeze([0, 30, 60, 90, 120, 150]);
   const MORPH_ATTACK_BOOST_DAMAGE = Object.freeze([0, 0.3, 0.5, 0.8]);
   const MORPH_ATTACK_BOOST_AFFINITY = Object.freeze([0, 0.6, 0.7, 0.8]);
+  const CRITICAL_RANGE_BOOST_DAMAGE = Object.freeze([0, 0.1, 0.15, 0.25, 0.3, 0.4]);
+  const CHARGE_STOCK_DAMAGE = Object.freeze([0, 0, 0.1, 0.25]);
+  const CRITICAL_RANGE_BOOST_WEAPON_TYPES = new Set([
+    "Bow",
+    "Light Bowgun",
+    "Heavy Bowgun",
+  ]);
+  // Restrict this to player-confirmed weapons. Add more only after their
+  // charge-tagged attacks have been verified in game.
+  const CHARGE_STOCK_WEAPON_TYPES = new Set([
+    "Bow",
+    "Hammer",
+    "Greatsword",
+    "Charge Blade (Power)",
+    "Charge Blade (Impact)",
+  ]);
   const MORPH_ATTACK_WEAPON_TYPES = new Set([
     "Switch Axe",
     "Charge Blade (Power)",
@@ -114,6 +136,22 @@
       extension: true,
     },
     {
+      ref: BUILD_REFS.criticalRangeBoost,
+      key: "criticalRangeBoost",
+      label: "Critical Range Boost",
+      options: ["0", "1", "2", "3", "4", "5"],
+      defaultValue: 0,
+      extension: true,
+    },
+    {
+      ref: BUILD_REFS.chargeStock,
+      key: "chargeStock",
+      label: "Charge Stock",
+      options: ["0", "1", "2", "3"],
+      defaultValue: 0,
+      extension: true,
+    },
+    {
       ref: BUILD_REFS.blastExploit,
       key: "blastExploit",
       label: "Blast Exploit",
@@ -153,6 +191,18 @@
       key: "critCapableDamageShare",
       label: "Crit-Capable Dmg Share",
       defaultValue: 1,
+      displayScale: 100,
+      minValue: 0,
+      maxValue: 100,
+      step: 0.1,
+      defaultFeedback: "Using Phask default",
+      extension: true,
+    },
+    {
+      ref: UPTIME_REFS.criticalRangeDamageShare,
+      key: "criticalRangeDamageShare",
+      label: "Critical Range Dmg Share",
+      defaultValue: 0.9,
       displayScale: 100,
       minValue: 0,
       maxValue: 100,
@@ -263,7 +313,7 @@
           original:
             "=$AK$2+$AK$3+$AK$4+$AK$5+$AK$6+$AK$7+$AK$8+$AK$9+$AK$10+$AK$11+$AK$12+$AK$13+$AK$14+$AK$15+$AK$16+$AK$17+$AK$18+$AK$19+$AK$20+$AK$21+$AK$22+$AK$23+$AK$24+AK27",
           extended:
-            "=$AK$2+$AK$3+$AK$4+$AK$5+$AK$6+$AK$7+$AK$8+$AK$9+$AK$10+$AK$11+$AK$12+$AK$13+$AK$14+$AK$15+$AK$16+$AK$17+$AK$18+$AK$19+$AK$20+$AK$21+$AK$22+$AK$23+$AK$24+AK27+PhaskExtensions!$B$3+PhaskExtensions!$B$6",
+            "=$AK$2+$AK$3+$AK$4+$AK$5+$AK$6+$AK$7+$AK$8+$AK$9+$AK$10+$AK$11+$AK$12+$AK$13+$AK$14+$AK$15+$AK$16+$AK$17+$AK$18+$AK$19+$AK$20+$AK$21+$AK$22+$AK$23+$AK$24+AK27+PhaskExtensions!$B$3+PhaskExtensions!$B$6+PhaskExtensions!$B$13+PhaskExtensions!$B$14",
         }),
         Object.freeze({
           sheet: "Backyard",
@@ -369,6 +419,13 @@
       ...copyFields(UPTIME_FIELDS).filter((field) => !existingUptimeKeys.has(field.key)),
     ];
 
+    const chargedAttackShareField = data.uptimeFields.find(
+      (field) => field.key === "chargeMaster" || field.ref === UPTIME_REFS.chargeAttackDamageShare,
+    );
+    if (chargedAttackShareField) {
+      chargedAttackShareField.label = "Charged Attack Dmg Share";
+    }
+
     const weaponTypeField = (data.weaponFields ?? []).find(
       (field) => field.ref === "E7" || field.key === "weaponType",
     );
@@ -408,6 +465,8 @@
       ["Crit-capable damage share", 1],
       ["Insect Glaive adapter enabled", 0],
       ["Insect Glaive status modifier", INSECT_GLAIVE_ADAPTER.statusModifier],
+      ["Critical Range Boost", 0],
+      ["Charge Stock", 0],
     ];
 
     return sheets;
@@ -459,6 +518,11 @@
       buildValues?.[BUILD_REFS.morphAttackBoost],
       3,
     );
+    const criticalRangeBoostLevel = boundedLevel(
+      buildValues?.[BUILD_REFS.criticalRangeBoost],
+      5,
+    );
+    const chargeStockLevel = boundedLevel(buildValues?.[BUILD_REFS.chargeStock], 3);
     const meditationUptime = boundedNumber(uptimeValues?.[UPTIME_REFS.meditation], 0, 1);
     const buildupBoostUptime = boundedNumber(
       uptimeValues?.[UPTIME_REFS.buildupBoost] ?? 0.333,
@@ -473,6 +537,24 @@
     const expectedBlastProcs = Math.round(
       boundedNumber(uptimeValues?.[UPTIME_REFS.blastExploitExpectedProcs], 0, 20),
     );
+    const supportsCriticalRangeBoost = CRITICAL_RANGE_BOOST_WEAPON_TYPES.has(
+      weaponValues?.E7,
+    );
+    const criticalRangeDamageShare = supportsCriticalRangeBoost
+      ? boundedNumber(
+          uptimeValues?.[UPTIME_REFS.criticalRangeDamageShare] ?? 0.9,
+          0,
+          1,
+        )
+      : 0;
+    const supportsChargeStock = CHARGE_STOCK_WEAPON_TYPES.has(weaponValues?.E7);
+    const chargeAttackDamageShare = supportsChargeStock
+      ? boundedNumber(
+          uptimeValues?.[UPTIME_REFS.chargeAttackDamageShare] ?? 0.75,
+          0,
+          1,
+        )
+      : 0;
     const averageBlastStacks = averageBlastExploitStacks(expectedBlastProcs);
     const insectGlaiveEnabled = isInsectGlaive(weaponValues?.E7);
     const supportsMorphAttacks = MORPH_ATTACK_WEAPON_TYPES.has(weaponValues?.E7);
@@ -495,6 +577,11 @@
         ? MORPH_ATTACK_BOOST_AFFINITY[morphAttackBoostLevel]
         : 0,
       morphAttackDamageShare,
+      criticalRangeBoost:
+        CRITICAL_RANGE_BOOST_DAMAGE[criticalRangeBoostLevel] * criticalRangeDamageShare,
+      criticalRangeDamageShare,
+      chargeStock: CHARGE_STOCK_DAMAGE[chargeStockLevel] * chargeAttackDamageShare,
+      chargeAttackDamageShare,
       averageBlastStacks,
       insectGlaiveEnabled: insectGlaiveEnabled ? 1 : 0,
       insectGlaiveStatusModifier: INSECT_GLAIVE_ADAPTER.statusModifier,

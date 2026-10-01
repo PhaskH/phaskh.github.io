@@ -1388,6 +1388,18 @@ function applyScenario(engine, build, weapon) {
       extensions.targetCells.insectGlaiveStatusModifier,
       modifiers.insectGlaiveStatusModifier,
     );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.criticalRangeBoost,
+      modifiers.criticalRangeBoost,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.chargeStock,
+      modifiers.chargeStock,
+    );
   }
 
   return modifiers;
