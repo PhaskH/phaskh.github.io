@@ -152,6 +152,7 @@ const WEAPON_LIBRARY_TYPE_MAP = Object.freeze({
   Lance: "Lance",
   Gunlance: "Gunlance",
   SwitchAxe: "Switch Axe",
+  InsectGlaive: "Insect Glaive",
   LightBowgun: "Light Bowgun",
   HeavyBowgun: "Heavy Bowgun",
   Bow: "Bow",
@@ -1291,6 +1292,8 @@ function getWeaponById(id) {
 }
 
 function applyScenario(engine, build, weapon) {
+  const extensions = window.PHASK_SKILL_EXTENSIONS;
+  const extensionsEnabled = Boolean(state.extensionStatus?.enabled && extensions);
   for (const field of state.data.buildFields) {
     if (field.extension) {
       continue;
@@ -1298,7 +1301,11 @@ function applyScenario(engine, build, weapon) {
     writeCell(engine, calculatorSheetName(), field.ref, build.values[field.ref]);
   }
   for (const field of state.data.weaponFields) {
-    writeCell(engine, calculatorSheetName(), field.ref, weapon.values[field.ref]);
+    const value =
+      field.ref === "E7" && extensionsEnabled
+        ? extensions.getWorkbookWeaponType(weapon.values[field.ref])
+        : weapon.values[field.ref];
+    writeCell(engine, calculatorSheetName(), field.ref, value);
   }
   for (const field of state.uptimeFields) {
     if (field.extension) {
@@ -1308,8 +1315,7 @@ function applyScenario(engine, build, weapon) {
   }
 
   let modifiers = null;
-  if (state.extensionStatus?.enabled) {
-    const extensions = window.PHASK_SKILL_EXTENSIONS;
+  if (extensionsEnabled) {
     modifiers = extensions.calculateScenarioModifiers(
       build.values,
       weapon.values,
@@ -1369,6 +1375,18 @@ function applyScenario(engine, build, weapon) {
       extensions.extensionSheet,
       extensions.targetCells.morphAttackDamageShare,
       modifiers.morphAttackDamageShare,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.insectGlaiveEnabled,
+      modifiers.insectGlaiveEnabled,
+    );
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.insectGlaiveStatusModifier,
+      modifiers.insectGlaiveStatusModifier,
     );
   }
 
@@ -1671,7 +1689,6 @@ function getWeaponLibraryEntries() {
     : [];
   return weapons.filter(
     (weapon) =>
-      weapon.weaponTypeKey !== "InsectGlaive" &&
       (weapon.weaponTypeKey === "ChargeBlade" || WEAPON_LIBRARY_TYPE_MAP[weapon.weaponTypeKey]),
   );
 }
@@ -1905,7 +1922,7 @@ function renderWeaponLibraryResults() {
 function renderWeaponLibrary() {
   const entries = getWeaponLibraryEntries();
   const typeMetadata = (window.WEAPON_LIBRARY?.weaponTypes ?? []).filter(
-    (type) => type.key !== "InsectGlaive" && entries.some((weapon) => weapon.weaponTypeKey === type.key),
+    (type) => entries.some((weapon) => weapon.weaponTypeKey === type.key),
   );
   const attributeTypes = Object.keys(WEAPON_LIBRARY_ATTRIBUTE_LABELS).filter((type) =>
     entries.some((weapon) => weapon.attribute?.type === type),

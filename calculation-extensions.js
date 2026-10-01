@@ -34,6 +34,16 @@
     morphAttackDamageShare: "B8",
     buildupBoostOverrideEnabled: "B9",
     critCapableDamageShare: "B10",
+    insectGlaiveEnabled: "B11",
+    insectGlaiveStatusModifier: "B12",
+  });
+
+  // KreaTV1 3.6.4 has no native Insect Glaive type. Keep this adapter isolated so
+  // it can be removed when upstream support arrives; see the developer guide.
+  const INSECT_GLAIVE_ADAPTER = Object.freeze({
+    weaponType: "Insect Glaive",
+    upstreamProxy: "Dual Blades",
+    statusModifier: 0.85,
   });
 
   const MEDITATION_BONUSES = Object.freeze([0, 0.1, 0.15, 0.2, 0.25, 0.35]);
@@ -55,7 +65,12 @@
     "Gunlance",
     "Heavy Bowgun",
   ]);
-  const RETALIATION_WEAPON_TYPES = new Set(["Hammer", "Longsword", "Switch Axe"]);
+  const RETALIATION_WEAPON_TYPES = new Set([
+    "Hammer",
+    "Longsword",
+    "Switch Axe",
+    INSECT_GLAIVE_ADAPTER.weaponType,
+  ]);
   const REFLECTION_BASE_MOTION_VALUES = Object.freeze([0, 20, 35, 55, 70, 90]);
   const RETALIATION_BASE_MOTION_VALUES = Object.freeze([0, 30, 60, 100, 150, 200]);
   const REACTIVE_DAMAGE_KB_VALUES = Object.freeze([
@@ -277,6 +292,25 @@
           extended:
             "=SUMIF($AX$3:$AY$9,1.25,$AX$12:$AY$18)*PhaskExtensions!$B$10",
         }),
+        Object.freeze({
+          sheet: "Backyard",
+          row: 7,
+          column: 1,
+          label: "weapon status modifier",
+          original: "=index(Status!$B$3:$B$16,match($B$7,Status!$A$3:$A$16,0))",
+          extended:
+            "=if(PhaskExtensions!$B$11,PhaskExtensions!$B$12,index(Status!$B$3:$B$16,match($B$7,Status!$A$3:$A$16,0)))",
+        }),
+        Object.freeze({
+          sheet: "Backyard",
+          row: 3,
+          column: 11,
+          label: "Morph Boost weapon compatibility",
+          original:
+            "=index(Weapons!$D$3:$D$16,match($B$7,Weapons!$A$3:$A$16,0))",
+          extended:
+            "=if(PhaskExtensions!$B$11,FALSE(),index(Weapons!$D$3:$D$16,match($B$7,Weapons!$A$3:$A$16,0)))",
+        }),
       ]),
     }),
   });
@@ -334,6 +368,16 @@
       ...(data.uptimeFields ?? []),
       ...copyFields(UPTIME_FIELDS).filter((field) => !existingUptimeKeys.has(field.key)),
     ];
+
+    const weaponTypeField = (data.weaponFields ?? []).find(
+      (field) => field.ref === "E7" || field.key === "weaponType",
+    );
+    if (
+      Array.isArray(weaponTypeField?.options) &&
+      !weaponTypeField.options.includes(INSECT_GLAIVE_ADAPTER.weaponType)
+    ) {
+      weaponTypeField.options.push(INSECT_GLAIVE_ADAPTER.weaponType);
+    }
   }
 
   function prepareSheets(sheets, sheetVersion) {
@@ -362,6 +406,8 @@
       ["Morph Attack damage share", 0.25],
       ["Buildup Boost override enabled", 0],
       ["Crit-capable damage share", 1],
+      ["Insect Glaive adapter enabled", 0],
+      ["Insect Glaive status modifier", INSECT_GLAIVE_ADAPTER.statusModifier],
     ];
 
     return sheets;
@@ -395,6 +441,16 @@
     return stackGrantingProcs - stackActivationEffort / estimatedFightEffort;
   }
 
+  function isInsectGlaive(weaponType) {
+    return String(weaponType ?? "") === INSECT_GLAIVE_ADAPTER.weaponType;
+  }
+
+  function getWorkbookWeaponType(weaponType) {
+    return isInsectGlaive(weaponType)
+      ? INSECT_GLAIVE_ADAPTER.upstreamProxy
+      : weaponType;
+  }
+
   function calculateScenarioModifiers(buildValues, weaponValues, uptimeValues, options = {}) {
     const meditationLevel = boundedLevel(buildValues?.[BUILD_REFS.meditation], 5);
     const velkhanaAegisLevel = boundedLevel(buildValues?.[BUILD_REFS.velkhanaAegis], 3);
@@ -418,6 +474,7 @@
       boundedNumber(uptimeValues?.[UPTIME_REFS.blastExploitExpectedProcs], 0, 20),
     );
     const averageBlastStacks = averageBlastExploitStacks(expectedBlastProcs);
+    const insectGlaiveEnabled = isInsectGlaive(weaponValues?.E7);
     const supportsMorphAttacks = MORPH_ATTACK_WEAPON_TYPES.has(weaponValues?.E7);
     const morphAttackDamageShare = supportsMorphAttacks
       ? boundedNumber(uptimeValues?.[UPTIME_REFS.morphAttackDamageShare] ?? 0.25, 0, 1)
@@ -439,6 +496,8 @@
         : 0,
       morphAttackDamageShare,
       averageBlastStacks,
+      insectGlaiveEnabled: insectGlaiveEnabled ? 1 : 0,
+      insectGlaiveStatusModifier: INSECT_GLAIVE_ADAPTER.statusModifier,
     };
   }
 
@@ -494,10 +553,13 @@
     buildRefs: BUILD_REFS,
     uptimeRefs: UPTIME_REFS,
     targetCells: TARGET_CELLS,
+    insectGlaiveAdapter: INSECT_GLAIVE_ADAPTER,
     initialize,
     installSchema,
     prepareSheets,
     calculateScenarioModifiers,
+    isInsectGlaive,
+    getWorkbookWeaponType,
     blendMorphAttackDamage,
     averageBlastExploitStacks,
     reactiveDamageKbValues: REACTIVE_DAMAGE_KB_VALUES,
