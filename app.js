@@ -1860,28 +1860,13 @@ function isLibraryVariantSaved(weapon, useRiftMaximum = false) {
 }
 
 function selectWeaponFromLibraryForArmor(weapon, useRiftMaximum = false) {
-  let savedWeapon = findSavedLibraryVariant(weapon, useRiftMaximum);
-  if (!savedWeapon) {
-    savedWeapon = buildWeaponFromLibrary(weapon, useRiftMaximum);
-    state.weapons = [...state.weapons, savedWeapon];
-  } else if (!savedWeapon.libraryId) {
-    savedWeapon.libraryId = weapon.id;
-    savedWeapon.libraryVariant = getLibraryVariantKey(weapon, useRiftMaximum);
+  if (!state.armorBuildDraft) {
+    return;
   }
-  persistWeapons();
-
-  state.selectedWeaponId = savedWeapon.id;
-  saveStoredValue(STORAGE_KEYS.selectedWeaponId, state.selectedWeaponId);
-  if (state.armorBuildDraft) {
-    state.armorBuildDraft.weaponId = savedWeapon.id;
-  }
+  const savedWeapon = findSavedLibraryVariant(weapon, useRiftMaximum);
+  state.armorBuildDraft.weaponId = savedWeapon?.id ?? null;
+  state.armorBuildDraft.pendingWeapon = buildWeaponFromLibrary(weapon, useRiftMaximum);
   state.weaponLibraryReturnToArmor = false;
-  renderCalculatorSelectors();
-  renderResultGrid();
-  renderCalculatorActions();
-  renderSkillSummary();
-  renderWeaponList();
-  renderWeaponTypeShortcut();
   renderArmorLibrary();
 }
 
@@ -2139,6 +2124,7 @@ function openWeaponLibrary({ returnToArmor = false } = {}) {
 function createArmorBuildDraft() {
   return {
     weaponId: getWeaponById(state.selectedWeaponId)?.id ?? null,
+    pendingWeapon: null,
     pieces: Object.fromEntries(ARMOR_PARTS.map((part) => [part, null])),
   };
 }
@@ -2211,7 +2197,10 @@ function getFilteredArmorEntries() {
 }
 
 function getArmorDraftWeapon() {
-  return getWeaponById(state.armorBuildDraft?.weaponId);
+  return (
+    state.armorBuildDraft?.pendingWeapon ??
+    getWeaponById(state.armorBuildDraft?.weaponId)
+  );
 }
 
 function getArmorDraftWeaponSkills() {
@@ -2642,10 +2631,31 @@ function renderArmorDriftPicker() {
 
 function clearArmorBuildDraft() {
   const weaponId = state.armorBuildDraft?.weaponId ?? null;
+  const pendingWeapon = state.armorBuildDraft?.pendingWeapon ?? null;
   state.armorBuildDraft = createArmorBuildDraft();
   state.armorBuildDraft.weaponId = weaponId;
+  state.armorBuildDraft.pendingWeapon = pendingWeapon;
   state.armorDriftPicker = null;
   renderArmorLibrary();
+}
+
+function commitArmorDraftWeapon() {
+  const pendingWeapon = state.armorBuildDraft?.pendingWeapon;
+  if (!pendingWeapon) {
+    return getWeaponById(state.armorBuildDraft?.weaponId);
+  }
+
+  const fingerprint = weaponImportFingerprint(pendingWeapon);
+  const savedWeapon = state.weapons.find(
+    (weapon) => weaponImportFingerprint(weapon) === fingerprint,
+  );
+  if (savedWeapon) {
+    return savedWeapon;
+  }
+
+  state.weapons = [...state.weapons, pendingWeapon];
+  persistWeapons();
+  return pendingWeapon;
 }
 
 function transferArmorBuildToEditor() {
@@ -2667,7 +2677,7 @@ function transferArmorBuildToEditor() {
     }
   }
 
-  const weapon = getArmorDraftWeapon();
+  const weapon = commitArmorDraftWeapon();
   if (weapon) {
     state.selectedWeaponId = weapon.id;
     saveStoredValue(STORAGE_KEYS.selectedWeaponId, weapon.id);
@@ -2728,6 +2738,7 @@ function wireArmorLibraryEvents() {
   });
   els.riftModalContent.querySelector("#armor-clear-weapon")?.addEventListener("click", () => {
     state.armorBuildDraft.weaponId = null;
+    state.armorBuildDraft.pendingWeapon = null;
     renderArmorLibrary();
   });
   els.riftModalContent.querySelectorAll("[data-remove-armor-part]").forEach((button) => {
