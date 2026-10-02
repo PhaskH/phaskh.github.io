@@ -10,6 +10,7 @@
     <script src="./data/workbook-data.js"></script>
     <script src="./data/weapon-library-data.js"></script>
     <script src="./data/armor-library-data.js"></script>
+    <script src="./data/changelog-data.js"></script>
     <script src="./calculation-extensions.js"></script>
   </head>
   <body>
@@ -17,7 +18,7 @@
       <header class="app-header">
         <div>
           <h1>MHN eDPS Build Compare v0.3.6.4</h1>
-          <p>Created by Phask, using <a href="https://docs.google.com/spreadsheets/d/1yLecGFBv3Pj9k8FJcfD8LeBjit7oEgDgJitEwYCS36k/edit?usp=sharing" target="_blank" rel="noopener noreferrer">KreaTV1 calc sheet (3.6.4)</a> + Phask's skill extensions, built for #lance & our MHN Community: <a href="https://discord.gg/monsterhunternow" target="_blank" rel="noopener noreferrer">https://discord.gg/monsterhunternow</a></p>
+          <p>Created by Phask, using <a href="https://docs.google.com/spreadsheets/d/1yLecGFBv3Pj9k8FJcfD8LeBjit7oEgDgJitEwYCS36k/edit?usp=sharing" target="_blank" rel="noopener noreferrer">KreaTV1 calc sheet (3.6.4)</a> + Phask's extensions, built for #lance & our MHN Community: <a href="https://discord.gg/monsterhunternow" target="_blank" rel="noopener noreferrer">https://discord.gg/monsterhunternow</a></p>
         </div>
       </header>
 
@@ -96,8 +97,14 @@
         </section>
       </main>
       <footer class="app-footer-actions">
-        <button id="export-data" type="button">Export Full Backup</button>
-        <button id="import-data" type="button">Import</button>
+        <div class="footer-buttons">
+          <button id="export-data" type="button">Export Full Backup</button>
+          <button id="import-data" type="button">Import</button>
+        </div>
+        <div class="footer-meta">
+          <a id="open-change-log" href="#change-log">Change Log</a>
+          <p class="footer-disclaimer">Unofficial fan-made tool. Not affiliated with, sponsored by, or endorsed by Capcom or Scopely Explore. Monster Hunter Now and related names and characters are the property of their respective owners.</p>
+        </div>
       </footer>
     </div>
 

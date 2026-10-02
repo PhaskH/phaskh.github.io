@@ -138,6 +138,7 @@ const MODAL_MODE_CLASSES = [
   "modal-window-compact",
   "modal-window-medium",
   "modal-window-manager",
+  "modal-window-changelog",
   "modal-window-rift",
   "modal-window-armor",
   "modal-window-uptime",
@@ -263,6 +264,7 @@ const els = {
   exportSelectedWeapons: document.getElementById("export-selected-weapons"),
   exportData: document.getElementById("export-data"),
   importData: document.getElementById("import-data"),
+  openChangeLog: document.getElementById("open-change-log"),
   riftModal: document.getElementById("rift-modal"),
   modalTitle: document.getElementById("modal-title"),
   closeRiftModal: document.getElementById("close-rift-modal"),
@@ -4564,6 +4566,34 @@ function closeModal() {
   requestAnimationFrame(() => returnFocus?.focus());
 }
 
+function openChangeLog() {
+  const entries = Array.isArray(window.CHANGELOG_DATA) ? window.CHANGELOG_DATA : [];
+  const groupedEntries = new Map();
+
+  entries.forEach((entry) => {
+    if (!groupedEntries.has(entry.date)) {
+      groupedEntries.set(entry.date, []);
+    }
+    groupedEntries.get(entry.date).push(entry);
+  });
+
+  const content = entries.length
+    ? `<div class="change-log">${Array.from(groupedEntries, ([date, dateEntries]) => `
+        <section class="change-log-date">
+          <h3>${escapeHtml(date)}</h3>
+          <ul>${dateEntries.map((entry) => `
+            <li class="change-log-entry">
+              ${escapeHtml(entry.summary)}
+              <a href="https://github.com/PhaskH/phaskh.github.io/commit/${encodeURIComponent(entry.commit)}" target="_blank" rel="noopener noreferrer" aria-label="View commit ${escapeHtml(entry.commit.slice(0, 7))} on GitHub">${escapeHtml(entry.commit.slice(0, 7))} ↗</a>
+            </li>`).join("")}
+          </ul>
+        </section>`).join("")}</div>`
+    : '<p class="empty-message">No change log entries are available.</p>';
+
+  state.modalReturnFocus = els.openChangeLog;
+  openModal({ title: "Change Log", content, mode: "changelog" });
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -4701,6 +4731,11 @@ function wireGlobalEvents() {
 
   els.importData.addEventListener("click", () => {
     openImportModal();
+  });
+
+  els.openChangeLog.addEventListener("click", (event) => {
+    event.preventDefault();
+    openChangeLog();
   });
 
   document.body.addEventListener("click", (event) => {
