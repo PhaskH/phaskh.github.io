@@ -2,6 +2,21 @@
 // Dates use America/Phoenix calendar dates; commit links are built from each full hash.
 window.CHANGELOG_DATA = Object.freeze([
   {
+    date: "October 2, 2026",
+    commit: "dd383897ec76825f49aff621174b9346c8e2b5be",
+    summary: "Changed Armor Library weapon selection so weapons are saved with builds only when needed, without being added immediately.",
+  },
+  {
+    date: "October 2, 2026",
+    commit: "6b30730046b3874871b12a33c7999116184e0ac8",
+    summary: "Widened the Builds and Weapons panels to make better use of horizontal space.",
+  },
+  {
+    date: "October 2, 2026",
+    commit: "a9077f2d4ff39e676af2cccf39d29b7fd9639da0",
+    summary: "Added the fan-project disclaimer footer and the linked, scrollable Change Log dialog.",
+  },
+  {
     date: "October 1, 2026",
     commit: "e9d51a29061cee3e6f3093d4d3811ecce2398688",
     summary: "Armor Library slots now filter the available armor to the matching body part.",
