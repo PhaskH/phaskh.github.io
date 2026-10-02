@@ -466,6 +466,26 @@ button.weapon-library-type.active {
   gap: 7px;
 }
 
+.armor-selected-slot[data-filter-armor-part] {
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.armor-selected-slot[data-filter-armor-part]:hover {
+  border-color: rgba(79, 140, 255, 0.55);
+  background: rgba(79, 140, 255, 0.055);
+}
+
+.armor-selected-slot[data-filter-armor-part]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.armor-selected-slot-filter-active {
+  border-color: var(--accent);
+  background: rgba(79, 140, 255, 0.1);
+}
+
 .armor-selected-slot-empty {
   display: flex;
   align-items: center;

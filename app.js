@@ -2419,9 +2419,11 @@ function renderSelectedWeaponCard() {
 function renderArmorSelectedSlot(part) {
   const selection = state.armorBuildDraft?.pieces?.[part];
   const armor = getArmorEntry(selection?.armorId);
+  const active = state.armorLibraryPart === part;
+  const filterAttributes = `data-filter-armor-part="${escapeHtml(part)}" tabindex="0" role="button" aria-pressed="${active}" aria-label="${active ? "Show all armor parts" : `Filter armor by ${part}`}"`;
   if (!armor) {
     return `
-      <section class="armor-selected-slot armor-selected-slot-empty">
+      <section class="armor-selected-slot armor-selected-slot-empty ${active ? "armor-selected-slot-filter-active" : ""}" ${filterAttributes}>
         <div class="armor-slot-label">${escapeHtml(part)}</div>
         <div>Empty</div>
       </section>
@@ -2431,7 +2433,7 @@ function renderArmorSelectedSlot(part) {
   const skills = getArmorFinalSkills(armor);
   const slotCount = getArmorFinalDriftsmeltSlots(armor);
   return `
-    <section class="armor-selected-slot">
+    <section class="armor-selected-slot ${active ? "armor-selected-slot-filter-active" : ""}" ${filterAttributes}>
       <div class="armor-selected-heading">
         <div>
           <span class="armor-slot-label">${escapeHtml(part)}</span>
@@ -2695,7 +2697,27 @@ function wireArmorLibraryEvents() {
   });
   els.riftModalContent.querySelector("#armor-library-part")?.addEventListener("change", (event) => {
     state.armorLibraryPart = event.target.value;
-    renderArmorLibraryResults();
+    syncArmorPartFilterUi();
+  });
+  els.riftModalContent.querySelectorAll("[data-filter-armor-part]").forEach((slot) => {
+    const togglePartFilter = () => {
+      const part = slot.dataset.filterArmorPart;
+      state.armorLibraryPart = state.armorLibraryPart === part ? "all" : part;
+      syncArmorPartFilterUi();
+    };
+    slot.addEventListener("click", (event) => {
+      if (event.target.closest("button, input, select, a")) {
+        return;
+      }
+      togglePartFilter();
+    });
+    slot.addEventListener("keydown", (event) => {
+      if (event.target !== slot || (event.key !== "Enter" && event.key !== " ")) {
+        return;
+      }
+      event.preventDefault();
+      togglePartFilter();
+    });
   });
   els.riftModalContent.querySelector("#armor-clear-build")?.addEventListener("click", clearArmorBuildDraft);
   els.riftModalContent.querySelector("#armor-save-build")?.addEventListener("click", transferArmorBuildToEditor);
@@ -2748,6 +2770,23 @@ function wireArmorLibraryEvents() {
     renderArmorDriftPickerOptions();
   });
   renderArmorDriftPickerOptions();
+}
+
+function syncArmorPartFilterUi() {
+  const partSelect = els.riftModalContent.querySelector("#armor-library-part");
+  if (partSelect) {
+    partSelect.value = state.armorLibraryPart;
+  }
+  els.riftModalContent.querySelectorAll("[data-filter-armor-part]").forEach((slot) => {
+    const active = slot.dataset.filterArmorPart === state.armorLibraryPart;
+    slot.classList.toggle("armor-selected-slot-filter-active", active);
+    slot.setAttribute("aria-pressed", String(active));
+    slot.setAttribute(
+      "aria-label",
+      active ? "Show all armor parts" : `Filter armor by ${slot.dataset.filterArmorPart}`,
+    );
+  });
+  renderArmorLibraryResults();
 }
 
 function renderArmorLibrary() {
