@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
   uptimePresets: "mhn_uptime_presets_v1",
   activeUptimePreset: "mhn_active_uptime_preset_v1",
   reactiveDamageKb: "mhn_reactive_damage_kb_v1",
+  pinnedBuildSkills: "mhn_pinned_build_skills_v1",
 };
 
 const PREVIOUS_STORAGE_KEYS = {
@@ -138,6 +139,7 @@ const MODAL_MODE_CLASSES = [
   "modal-window-medium",
   "modal-window-manager",
   "modal-window-rift",
+  "modal-window-armor",
   "modal-window-uptime",
   "modal-window-uptime-day-mode",
 ];
@@ -169,6 +171,15 @@ const WEAPON_LIBRARY_ATTRIBUTE_LABELS = Object.freeze({
   paralysis: "Paralysis",
   sleep: "Sleep",
   blast: "Blast",
+});
+
+const ARMOR_PARTS = Object.freeze(["Head", "Chest", "Arms", "Waist", "Legs"]);
+
+const ARMOR_SKILL_KEY_ALIASES = Object.freeze({
+  "normal/element ammo boost": "normEleAmmoBoost",
+  "solidarity (pumpkin hunt)": "solidarity",
+  "solidarity (new year 2026)": "solidarity",
+  "sweltering summer 2025": "sweltingSummer",
 });
 
 const LIBRARY_ACTION_HANDLERS = {
@@ -212,9 +223,17 @@ const state = {
   uptimePresets: [],
   activeUptimePresetId: null,
   reactiveDamageKb: 60,
+  pinnedBuildSkillKeys: new Set(),
   weaponLibraryType: "all",
   weaponLibraryAttribute: "all",
   weaponLibraryQuery: "",
+  weaponLibraryReturnToArmor: false,
+  armorLibrary: null,
+  armorLibraryQuery: "",
+  armorLibraryOrigin: "all",
+  armorLibraryPart: "all",
+  armorBuildDraft: null,
+  armorDriftPicker: null,
   libraryManagerType: null,
   libraryUndo: null,
   modalReturnFocus: null,
@@ -312,12 +331,36 @@ function getBuildEditorColumnCount() {
   return Math.max(1, Math.floor((gridWidth + gap) / (minColumnWidth + gap)));
 }
 
-function sortBuildFieldsAlphabetically(fields, labels) {
+function buildFieldKey(field) {
+  return field.key ?? field.ref;
+}
+
+function sortBuildFields(fields, labels) {
   return [...fields].sort((left, right) => {
+    const leftPinned = state.pinnedBuildSkillKeys.has(buildFieldKey(left));
+    const rightPinned = state.pinnedBuildSkillKeys.has(buildFieldKey(right));
+    if (leftPinned !== rightPinned) {
+      return leftPinned ? -1 : 1;
+    }
     const leftLabel = String(labels[left.ref] ?? left.labelRef);
     const rightLabel = String(labels[right.ref] ?? right.labelRef);
     return leftLabel.localeCompare(rightLabel, undefined, { sensitivity: "base" });
   });
+}
+
+function togglePinnedBuildSkill(ref) {
+  const field = state.data.buildFields.find((item) => item.ref === ref);
+  if (!field) {
+    return;
+  }
+  const key = buildFieldKey(field);
+  if (state.pinnedBuildSkillKeys.has(key)) {
+    state.pinnedBuildSkillKeys.delete(key);
+  } else {
+    state.pinnedBuildSkillKeys.add(key);
+  }
+  saveStoredItems(STORAGE_KEYS.pinnedBuildSkills, [...state.pinnedBuildSkillKeys]);
+  renderBuildForm();
 }
 
 function orderBuildFieldsByVisibleColumn(fields) {
@@ -1667,7 +1710,10 @@ function renderSelectionActions() {
         <select id="uptime-preset-select">${uptimePresetOptions()}</select>
       </label>
       <button id="view-edit-uptimes" type="button">View/Edit Uptimes</button>
+    </div>
+    <div class="selection-actions-row selection-actions-library-row">
       <button id="open-weapon-library" type="button">Weapon Library</button>
+      <button id="open-armor-library" type="button">Armor Library</button>
     </div>
   `;
   els.selectionActions
@@ -1692,6 +1738,11 @@ function renderSelectionActions() {
     .querySelector("#open-weapon-library")
     .addEventListener("click", () => {
       openWeaponLibrary();
+    });
+  els.selectionActions
+    .querySelector("#open-armor-library")
+    .addEventListener("click", () => {
+      openArmorLibrary();
     });
 }
 
@@ -1781,27 +1832,62 @@ function buildWeaponFromLibrary(weapon, useRiftMaximum = false) {
   };
 }
 
-function isLibraryVariantSaved(weapon, useRiftMaximum = false) {
+function findSavedLibraryVariant(weapon, useRiftMaximum = false) {
   const variant = getLibraryVariantKey(weapon, useRiftMaximum);
   const candidate = buildWeaponFromLibrary(weapon, useRiftMaximum);
-  if (
-    state.weapons.some(
-      (saved) =>
-        saved.libraryId === weapon.id &&
-        saved.libraryVariant === variant &&
-        Boolean(saved.isRift) === Boolean(candidate.isRift) &&
-        stableStringify(saved.values) === stableStringify(candidate.values),
-    )
-  ) {
-    return true;
+  const exact = state.weapons.find(
+    (saved) =>
+      saved.libraryId === weapon.id &&
+      saved.libraryVariant === variant &&
+      Boolean(saved.isRift) === Boolean(candidate.isRift) &&
+      stableStringify(saved.values) === stableStringify(candidate.values),
+  );
+  if (exact) {
+    return exact;
   }
   const candidateFingerprint = weaponImportFingerprint(candidate);
-  return state.weapons.some(
-    (saved) => weaponImportFingerprint(saved) === candidateFingerprint,
+  return (
+    state.weapons.find(
+      (saved) => weaponImportFingerprint(saved) === candidateFingerprint,
+    ) ?? null
   );
 }
 
+function isLibraryVariantSaved(weapon, useRiftMaximum = false) {
+  return Boolean(findSavedLibraryVariant(weapon, useRiftMaximum));
+}
+
+function selectWeaponFromLibraryForArmor(weapon, useRiftMaximum = false) {
+  let savedWeapon = findSavedLibraryVariant(weapon, useRiftMaximum);
+  if (!savedWeapon) {
+    savedWeapon = buildWeaponFromLibrary(weapon, useRiftMaximum);
+    state.weapons = [...state.weapons, savedWeapon];
+  } else if (!savedWeapon.libraryId) {
+    savedWeapon.libraryId = weapon.id;
+    savedWeapon.libraryVariant = getLibraryVariantKey(weapon, useRiftMaximum);
+  }
+  persistWeapons();
+
+  state.selectedWeaponId = savedWeapon.id;
+  saveStoredValue(STORAGE_KEYS.selectedWeaponId, state.selectedWeaponId);
+  if (state.armorBuildDraft) {
+    state.armorBuildDraft.weaponId = savedWeapon.id;
+  }
+  state.weaponLibraryReturnToArmor = false;
+  renderCalculatorSelectors();
+  renderResultGrid();
+  renderCalculatorActions();
+  renderSkillSummary();
+  renderWeaponList();
+  renderWeaponTypeShortcut();
+  renderArmorLibrary();
+}
+
 function addWeaponFromLibrary(weapon, useRiftMaximum, button) {
+  if (state.weaponLibraryReturnToArmor) {
+    selectWeaponFromLibraryForArmor(weapon, useRiftMaximum);
+    return;
+  }
   if (isLibraryVariantSaved(weapon, useRiftMaximum)) {
     button.textContent = "Added";
     button.disabled = true;
@@ -1882,6 +1968,7 @@ function renderWeaponLibraryResults() {
       const riftLevel = getLibraryRiftLevel(weapon);
       const baseSaved = isLibraryVariantSaved(weapon, false);
       const riftSaved = riftLevel ? isLibraryVariantSaved(weapon, true) : false;
+      const selectingForArmor = state.weaponLibraryReturnToArmor;
       const attributeLabel = WEAPON_LIBRARY_ATTRIBUTE_LABELS[weapon.attribute?.type] ?? "Raw";
       const attributeMarkup =
         weapon.attribute?.category === "raw"
@@ -1892,7 +1979,7 @@ function renderWeaponLibraryResults() {
         .join(" · ");
       const originName = weapon.monster ?? weapon.series?.name ?? "Unknown";
       return `
-        <article class="weapon-library-card ${baseSaved && (!riftLevel || riftSaved) ? "weapon-library-card-added" : ""}">
+        <article class="weapon-library-card ${!selectingForArmor && baseSaved && (!riftLevel || riftSaved) ? "weapon-library-card-added" : ""}">
           <div class="weapon-library-card-header">
             <div>
               <h3>${escapeHtml(originName)} ${escapeHtml(weapon.weaponType)}</h3>
@@ -1907,11 +1994,11 @@ function renderWeaponLibraryResults() {
           </div>
           <div class="weapon-library-skill">${escapeHtml(skills || "No equipment skill")}</div>
           <div class="weapon-library-card-actions ${riftLevel ? "weapon-library-card-actions-rift" : ""}">
-            ${riftLevel ? `<span class="weapon-library-add-label">Add G10.5:</span>` : ""}
-            <button class="${baseSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="base" aria-label="${escapeHtml(riftLevel ? `Add ${weapon.name} at G10.5, Rift level 0` : `Add ${weapon.name} at G10.5`)}" ${baseSaved ? "disabled" : ""}>${baseSaved ? "Added" : riftLevel ? "Rift 0" : "Add G10.5"}</button>
+            ${riftLevel ? `<span class="weapon-library-add-label">${selectingForArmor ? "Select G10.5:" : "Add G10.5:"}</span>` : ""}
+            <button class="${!selectingForArmor && baseSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="base" aria-label="${escapeHtml(selectingForArmor ? `Select ${weapon.name} at G10.5${riftLevel ? ", Rift level 0" : ""}` : riftLevel ? `Add ${weapon.name} at G10.5, Rift level 0` : `Add ${weapon.name} at G10.5`)}" ${!selectingForArmor && baseSaved ? "disabled" : ""}>${selectingForArmor ? riftLevel ? "Rift 0" : "Select" : baseSaved ? "Added" : riftLevel ? "Rift 0" : "Add G10.5"}</button>
             ${
               riftLevel
-                ? `<button class="${riftSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="rift" aria-label="${escapeHtml(`Add ${weapon.name} at G10.5, Rift level ${riftLevel}`)}" ${riftSaved ? "disabled" : ""}>${riftSaved ? "Added" : `Rift ${riftLevel}`}</button>`
+                ? `<button class="${!selectingForArmor && riftSaved ? "weapon-library-add-saved" : ""}" type="button" data-library-id="${escapeHtml(weapon.id)}" data-library-variant="rift" aria-label="${escapeHtml(`${selectingForArmor ? "Select" : "Add"} ${weapon.name} at G10.5, Rift level ${riftLevel}`)}" ${!selectingForArmor && riftSaved ? "disabled" : ""}>${selectingForArmor ? `Rift ${riftLevel}` : riftSaved ? "Added" : `Rift ${riftLevel}`}</button>`
                 : ""
             }
           </div>
@@ -1944,6 +2031,7 @@ function renderWeaponLibrary() {
     title: "Weapon Library",
     content: `
       <div class="weapon-library-shell">
+        ${state.weaponLibraryReturnToArmor ? `<div class="weapon-library-context"><button id="weapon-library-back-to-armor" class="secondary" type="button">Back to Armor</button><span>Select a weapon to include its equipment skill in the armor build.</span></div>` : ""}
         <div class="weapon-library-filter-bar">
           <div class="weapon-library-toolbar">
             <label class="weapon-library-search">
@@ -1995,6 +2083,12 @@ function renderWeaponLibrary() {
   });
 
   const search = els.riftModalContent.querySelector("#weapon-library-search");
+  els.riftModalContent
+    .querySelector("#weapon-library-back-to-armor")
+    ?.addEventListener("click", () => {
+      state.weaponLibraryReturnToArmor = false;
+      renderArmorLibrary();
+    });
   search.addEventListener("input", () => {
     state.weaponLibraryQuery = search.value;
     renderWeaponLibraryResults();
@@ -2027,7 +2121,8 @@ function renderWeaponLibrary() {
   requestAnimationFrame(() => search.focus());
 }
 
-function openWeaponLibrary() {
+function openWeaponLibrary({ returnToArmor = false } = {}) {
+  state.weaponLibraryReturnToArmor = returnToArmor;
   if (!window.WEAPON_LIBRARY) {
     openModal({
       title: "Weapon Library",
@@ -2037,6 +2132,680 @@ function openWeaponLibrary() {
     return;
   }
   renderWeaponLibrary();
+}
+
+function createArmorBuildDraft() {
+  return {
+    weaponId: getWeaponById(state.selectedWeaponId)?.id ?? null,
+    pieces: Object.fromEntries(ARMOR_PARTS.map((part) => [part, null])),
+  };
+}
+
+function getArmorEntries() {
+  return Array.isArray(state.armorLibrary?.armor) ? state.armorLibrary.armor : [];
+}
+
+function getArmorEntry(id) {
+  return getArmorEntries().find((armor) => armor.id === id) ?? null;
+}
+
+function getArmorSkillDefinition(id) {
+  return (state.armorLibrary?.skills ?? []).find((skill) => skill.id === id) ?? null;
+}
+
+function getArmorFinalSkills(armor) {
+  const levels = new Map();
+  for (const unlock of armor?.skillUnlocks ?? []) {
+    const current = levels.get(unlock.skill) ?? 0;
+    levels.set(unlock.skill, Math.max(current, Number(unlock.level) || 0));
+  }
+  return [...levels.entries()]
+    .map(([id, level]) => ({
+      id,
+      name: getArmorSkillDefinition(id)?.name ?? id,
+      level,
+    }))
+    .sort((left, right) => left.name.localeCompare(right.name));
+}
+
+function getArmorFinalDriftsmeltSlots(armor) {
+  return Math.max(0, ...(armor?.driftsmeltUnlocks ?? []).map((unlock) => Number(unlock.slots) || 0));
+}
+
+function getArmorOrigin(armor) {
+  return armor.monster ?? armor.set ?? "Unknown";
+}
+
+function getArmorOriginOptions() {
+  return [...new Set(getArmorEntries().map(getArmorOrigin))].sort((left, right) =>
+    left.localeCompare(right),
+  );
+}
+
+function getFilteredArmorEntries() {
+  const query = state.armorLibraryQuery.trim().toLocaleLowerCase();
+  return getArmorEntries().filter((armor) => {
+    if (state.armorLibraryOrigin !== "all" && getArmorOrigin(armor) !== state.armorLibraryOrigin) {
+      return false;
+    }
+    if (state.armorLibraryPart !== "all" && armor.part !== state.armorLibraryPart) {
+      return false;
+    }
+    if (!query) {
+      return true;
+    }
+    const searchable = [
+      armor.name,
+      armor.set,
+      armor.monster,
+      armor.part,
+      ...getArmorFinalSkills(armor).map((skill) => skill.name),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLocaleLowerCase();
+    return searchable.includes(query);
+  });
+}
+
+function getArmorDraftWeapon() {
+  return getWeaponById(state.armorBuildDraft?.weaponId);
+}
+
+function getArmorDraftWeaponSkills() {
+  const savedWeapon = getArmorDraftWeapon();
+  const libraryWeapon = savedWeapon?.libraryId ? getLibraryEntry(savedWeapon.libraryId) : null;
+  return (libraryWeapon?.skills ?? []).map((skill) => ({
+    id: skill.id,
+    name: skill.name,
+    level: Number(skill.level) || 0,
+  }));
+}
+
+function normalizeArmorSkillName(value) {
+  return String(value ?? "")
+    .toLocaleLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function findBuildFieldForArmorSkill(skillName, weapon) {
+  const lowerName = String(skillName).toLocaleLowerCase();
+  const aliasKey = ARMOR_SKILL_KEY_ALIASES[lowerName];
+  if (aliasKey) {
+    return state.data.buildFields.find((field) => field.key === aliasKey) ?? null;
+  }
+
+  const attackMatch = /^(fire|water|thunder|ice|dragon|poison|paralysis|sleep|blast) attack$/i.exec(
+    skillName,
+  );
+  if (attackMatch) {
+    if (String(weapon?.values?.E5 ?? "").toLocaleLowerCase() !== attackMatch[1].toLocaleLowerCase()) {
+      return null;
+    }
+    return state.data.buildFields.find((field) => field.key === "elementalAttack") ?? null;
+  }
+
+  const advancedAttackMatch = /^advanced (fire|water|thunder|ice|dragon) attack$/i.exec(skillName);
+  if (advancedAttackMatch) {
+    if (
+      String(weapon?.values?.E5 ?? "").toLocaleLowerCase() !==
+      advancedAttackMatch[1].toLocaleLowerCase()
+    ) {
+      return null;
+    }
+    return state.data.buildFields.find((field) => field.key === "advancedElementalAttack") ?? null;
+  }
+
+  const vitalMatch = /^vital (fire|water|thunder|ice|dragon)$/i.exec(skillName);
+  if (vitalMatch) {
+    if (String(weapon?.values?.E5 ?? "").toLocaleLowerCase() !== vitalMatch[1].toLocaleLowerCase()) {
+      return null;
+    }
+    return state.data.buildFields.find((field) => field.key === "vitalElement") ?? null;
+  }
+
+  const normalizedName = normalizeArmorSkillName(skillName);
+  return (
+    state.data.buildFields.find(
+      (field) => normalizeArmorSkillName(field.key ?? field.ref) === normalizedName,
+    ) ?? null
+  );
+}
+
+function getNumericBuildFieldMaximum(field) {
+  const levels = (field?.options ?? [])
+    .map((option) => Number(option))
+    .filter((option) => Number.isFinite(option));
+  const numericMaximum = levels.length ? Math.max(...levels) : Number.NEGATIVE_INFINITY;
+  if (numericMaximum > 0) {
+    return numericMaximum;
+  }
+  if ((field?.options ?? []).some((option) => /player|event/i.test(String(option)))) {
+    return 4;
+  }
+  return Number.POSITIVE_INFINITY;
+}
+
+function getTransferredSkillValue(field, skillName, total) {
+  const level = Math.max(0, Math.min(total, getNumericBuildFieldMaximum(field)));
+  if (field.key === "solidarity") {
+    return `${Math.min(4, Math.max(1, level))} Event`;
+  }
+  if (field.key === "huntersUnity") {
+    return `${Math.min(4, Math.max(1, level))} Player`;
+  }
+  return level;
+}
+
+function addArmorSkillTotal(totals, skill, source) {
+  if (!skill?.name || !(Number(skill.level) > 0)) {
+    return;
+  }
+  const current = totals.get(skill.name) ?? {
+    name: skill.name,
+    total: 0,
+    armor: 0,
+    driftsmelt: 0,
+    weapon: 0,
+  };
+  current.total += Number(skill.level);
+  current[source] += Number(skill.level);
+  totals.set(skill.name, current);
+}
+
+function getArmorBuildSkillSummary() {
+  const totals = new Map();
+  for (const part of ARMOR_PARTS) {
+    const selection = state.armorBuildDraft?.pieces?.[part];
+    const armor = getArmorEntry(selection?.armorId);
+    for (const skill of getArmorFinalSkills(armor)) {
+      addArmorSkillTotal(totals, skill, "armor");
+    }
+    for (const drift of selection?.drifts ?? []) {
+      if (drift) {
+        addArmorSkillTotal(totals, { name: drift.name, level: 1 }, "driftsmelt");
+      }
+    }
+  }
+  for (const skill of getArmorDraftWeaponSkills()) {
+    addArmorSkillTotal(totals, skill, "weapon");
+  }
+
+  const weapon = getArmorDraftWeapon();
+  const calculated = [];
+  const notCalculated = [];
+  for (const item of totals.values()) {
+    const field = findBuildFieldForArmorSkill(item.name, weapon);
+    if (!field) {
+      notCalculated.push(item);
+      continue;
+    }
+    calculated.push({
+      ...item,
+      field,
+      transferredValue: getTransferredSkillValue(field, item.name, item.total),
+      displayLevel: Math.min(item.total, getNumericBuildFieldMaximum(field)),
+    });
+  }
+
+  const sorter = (left, right) =>
+    Number(right.displayLevel ?? right.total) - Number(left.displayLevel ?? left.total) ||
+    left.name.localeCompare(right.name);
+  calculated.sort(sorter);
+  notCalculated.sort(sorter);
+  return { calculated, notCalculated };
+}
+
+function armorSkillSourceLabel(skill) {
+  const sources = [];
+  if (skill.armor) sources.push(`Armor ${skill.armor}`);
+  if (skill.driftsmelt) sources.push(`Driftsmelt ${skill.driftsmelt}`);
+  if (skill.weapon) sources.push(`Weapon ${skill.weapon}`);
+  return sources.join(" · ");
+}
+
+function armorSkillSummaryRow(skill, muted = false) {
+  const level = muted ? skill.total : skill.displayLevel;
+  return `
+    <div class="armor-summary-skill ${muted ? "armor-summary-skill-muted" : ""}">
+      <div><span>${escapeHtml(skill.name)}</span><small>${escapeHtml(armorSkillSourceLabel(skill))}</small></div>
+      <strong>Lv ${escapeHtml(level)}</strong>
+    </div>
+  `;
+}
+
+function renderArmorBuildSummary() {
+  const { calculated, notCalculated } = getArmorBuildSkillSummary();
+  if (!calculated.length && !notCalculated.length) {
+    return `<div class="armor-summary-empty">Select armor to see its combined skills.</div>`;
+  }
+  return `
+    <div class="armor-summary-list">
+      ${calculated.map((skill) => armorSkillSummaryRow(skill)).join("")}
+      ${
+        notCalculated.length
+          ? `<div class="armor-summary-separator"><span>Not calculated</span></div>${notCalculated
+              .map((skill) => armorSkillSummaryRow(skill, true))
+              .join("")}`
+          : ""
+      }
+    </div>
+  `;
+}
+
+function renderSelectedWeaponCard() {
+  const weapon = getArmorDraftWeapon();
+  const skills = getArmorDraftWeaponSkills();
+  return `
+    <section class="armor-selected-weapon">
+      <div class="armor-selected-heading">
+        <div><span class="armor-slot-label">Selected Weapon</span><strong>${escapeHtml(weapon?.name ?? "No weapon selected")}</strong></div>
+        <div class="armor-selected-weapon-actions">
+          <button id="armor-choose-weapon" class="secondary" type="button">${weapon ? "Change" : "Choose"}</button>
+          ${weapon ? `<button id="armor-clear-weapon" class="secondary" type="button">Clear</button>` : ""}
+        </div>
+      </div>
+      <div class="armor-selected-detail">${escapeHtml(
+        weapon
+          ? skills.length
+            ? skills.map((skill) => `${skill.name} Lv${skill.level}`).join(" · ")
+            : "No linked equipment skill"
+          : "Weapon skills will not be included.",
+      )}</div>
+    </section>
+  `;
+}
+
+function renderArmorSelectedSlot(part) {
+  const selection = state.armorBuildDraft?.pieces?.[part];
+  const armor = getArmorEntry(selection?.armorId);
+  if (!armor) {
+    return `
+      <section class="armor-selected-slot armor-selected-slot-empty">
+        <div class="armor-slot-label">${escapeHtml(part)}</div>
+        <div>Empty</div>
+      </section>
+    `;
+  }
+
+  const skills = getArmorFinalSkills(armor);
+  const slotCount = getArmorFinalDriftsmeltSlots(armor);
+  return `
+    <section class="armor-selected-slot">
+      <div class="armor-selected-heading">
+        <div>
+          <span class="armor-slot-label">${escapeHtml(part)}</span>
+          <strong>${escapeHtml(armor.name)}</strong>
+        </div>
+        <button class="armor-remove-piece secondary" type="button" data-remove-armor-part="${escapeHtml(part)}" aria-label="Remove ${escapeHtml(armor.name)}">Clear</button>
+      </div>
+      <div class="armor-selected-detail">${escapeHtml(getArmorOrigin(armor))} · ${skills
+        .map((skill) => `${escapeHtml(skill.name)} Lv${escapeHtml(skill.level)}`)
+        .join(" · ")}</div>
+      ${
+        slotCount
+          ? `<div class="armor-drift-slots"><span>Driftsmelt</span>${Array.from(
+              { length: slotCount },
+              (_, index) => {
+                const drift = selection.drifts?.[index];
+                return drift
+                  ? `<div class="armor-drift-choice"><button type="button" data-drift-part="${escapeHtml(part)}" data-drift-index="${index}"><strong>${escapeHtml(drift.name)} +1</strong><small>${escapeHtml(drift.stoneName)}</small></button><button class="armor-drift-clear" type="button" data-clear-drift-part="${escapeHtml(part)}" data-clear-drift-index="${index}" aria-label="Clear ${escapeHtml(drift.name)}">×</button></div>`
+                  : `<button class="armor-drift-empty" type="button" data-drift-part="${escapeHtml(part)}" data-drift-index="${index}">+ Select skill</button>`;
+              },
+            ).join("")}</div>`
+          : `<div class="armor-no-drift">No Driftsmelt slots</div>`
+      }
+    </section>
+  `;
+}
+
+function renderArmorLibraryResults() {
+  const results = els.riftModalContent.querySelector("#armor-library-results");
+  const count = els.riftModalContent.querySelector("#armor-library-count");
+  if (!results || !count) {
+    return;
+  }
+  const armorEntries = getFilteredArmorEntries();
+  count.textContent = `${armorEntries.length} armor piece${armorEntries.length === 1 ? "" : "s"}`;
+  if (!armorEntries.length) {
+    results.innerHTML = `<div class="weapon-library-empty">No armor matches these filters.</div>`;
+    return;
+  }
+
+  results.innerHTML = armorEntries
+    .map((armor) => {
+      const selected = state.armorBuildDraft?.pieces?.[armor.part]?.armorId === armor.id;
+      const skills = getArmorFinalSkills(armor);
+      const slotCount = getArmorFinalDriftsmeltSlots(armor);
+      return `
+        <article class="weapon-library-card armor-library-card ${selected ? "armor-library-card-selected" : ""}">
+          <div class="weapon-library-card-header">
+            <div>
+              <h3>${escapeHtml(getArmorOrigin(armor))} ${escapeHtml(armor.part)}</h3>
+              <div class="weapon-library-series">${escapeHtml(armor.name)}</div>
+            </div>
+            ${selected ? `<span class="armor-selected-badge">Selected</span>` : ""}
+          </div>
+          <div class="armor-card-skills">${
+            skills.length
+              ? skills
+                  .map(
+                    (skill) =>
+                      `<span class="weapon-library-stat">${escapeHtml(skill.name)} Lv${escapeHtml(skill.level)}</span>`,
+                  )
+                  .join("")
+              : `<span class="weapon-library-skill">No equipment skill</span>`
+          }</div>
+          <div class="armor-card-drift">Driftsmelt slots: <strong>${escapeHtml(slotCount)}</strong></div>
+          <div class="weapon-library-card-actions"><button type="button" data-select-armor-id="${escapeHtml(armor.id)}">${selected ? "Selected" : "Select"}</button></div>
+        </article>
+      `;
+    })
+    .join("");
+
+  results.querySelectorAll("[data-select-armor-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const armor = getArmorEntry(button.dataset.selectArmorId);
+      if (!armor || !state.armorBuildDraft) {
+        return;
+      }
+      state.armorBuildDraft.pieces[armor.part] = {
+        armorId: armor.id,
+        drifts: Array(getArmorFinalDriftsmeltSlots(armor)).fill(null),
+      };
+      renderArmorLibrary();
+    });
+  });
+}
+
+function driftstoneGroupMarkup(groups, label, query) {
+  const matchingGroups = groups
+    .map((stone) => ({
+      ...stone,
+      skills: stone.skills.filter((skill) => skill.name.toLocaleLowerCase().includes(query)),
+    }))
+    .filter((stone) => stone.skills.length);
+  if (!matchingGroups.length) {
+    return "";
+  }
+  return `
+    <section class="armor-drift-group-section">
+      <h4>${escapeHtml(label)}</h4>
+      ${matchingGroups
+        .map(
+          (stone) => `
+            <details class="armor-drift-group" ${query ? "open" : ""}>
+              <summary><span>${escapeHtml(stone.name)}</span><span>${stone.skills.length}</span></summary>
+              <div class="armor-drift-skill-list">
+                ${stone.skills
+                  .map(
+                    (skill) => `
+                      <button type="button" data-drift-skill-id="${escapeHtml(skill.id)}" data-drift-skill-name="${escapeHtml(skill.name)}" data-drift-stone-id="${escapeHtml(stone.id)}" data-drift-stone-name="${escapeHtml(stone.name)}">
+                        <span>${escapeHtml(skill.name)}${skill.featured ? `<small>Featured</small>` : ""}</span>
+                        <span>${escapeHtml(skill.probabilityPercent)}%</span>
+                      </button>
+                    `,
+                  )
+                  .join("")}
+              </div>
+            </details>
+          `,
+        )
+        .join("")}
+    </section>
+  `;
+}
+
+function driftgemGroupMarkup(groups, query) {
+  const matchingGroups = groups.filter((stone) =>
+    stone.skills.some((skill) =>
+      `${stone.name} ${skill.name}`.toLocaleLowerCase().includes(query),
+    ),
+  );
+  if (!matchingGroups.length) {
+    return "";
+  }
+  return `
+    <section class="armor-drift-group-section">
+      <h4>Driftgems</h4>
+      <div class="armor-drift-skill-list armor-driftgem-list">
+        ${matchingGroups
+          .map((stone) => {
+            const skill = stone.skills[0];
+            return `
+              <button type="button" data-drift-skill-id="${escapeHtml(skill.id)}" data-drift-skill-name="${escapeHtml(skill.name)}" data-drift-stone-id="${escapeHtml(stone.id)}" data-drift-stone-name="${escapeHtml(stone.name)}">
+                <span>${escapeHtml(skill.name)}<small>${escapeHtml(stone.name)}</small></span>
+                <span>Guaranteed</span>
+              </button>
+            `;
+          })
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderArmorDriftPickerOptions() {
+  const target = els.riftModalContent.querySelector("#armor-drift-picker-options");
+  if (!target || !state.armorDriftPicker) {
+    return;
+  }
+  const query = state.armorDriftPicker.query.trim().toLocaleLowerCase();
+  const stones = state.armorLibrary?.driftstones ?? [];
+  const markup = [
+    driftstoneGroupMarkup(stones.filter((stone) => stone.type === "standard"), "Standard Driftstones", query),
+    driftstoneGroupMarkup(stones.filter((stone) => stone.type === "common"), "Available from standard Driftstones", query),
+    driftgemGroupMarkup(stones.filter((stone) => stone.type === "driftgem"), query),
+    driftstoneGroupMarkup(stones.filter((stone) => stone.type === "mysterious"), "Mysterious Driftstones", query),
+  ].join("");
+  target.innerHTML = markup || `<div class="armor-summary-empty">No Driftsmelt skills match this search.</div>`;
+  target.querySelectorAll("[data-drift-skill-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const picker = state.armorDriftPicker;
+      const selection = state.armorBuildDraft?.pieces?.[picker.part];
+      if (!selection) {
+        return;
+      }
+      selection.drifts[picker.index] = {
+        id: button.dataset.driftSkillId,
+        name: button.dataset.driftSkillName,
+        stoneId: button.dataset.driftStoneId,
+        stoneName: button.dataset.driftStoneName,
+      };
+      state.armorDriftPicker = null;
+      renderArmorLibrary();
+    });
+  });
+}
+
+function renderArmorDriftPicker() {
+  if (!state.armorDriftPicker) {
+    return "";
+  }
+  return `
+    <div class="armor-drift-picker-backdrop" id="armor-drift-picker-backdrop">
+      <section class="armor-drift-picker" role="dialog" aria-modal="true" aria-labelledby="armor-drift-picker-title">
+        <div class="armor-drift-picker-header">
+          <div><h3 id="armor-drift-picker-title">Select Driftsmelt Skill</h3><p>${escapeHtml(state.armorDriftPicker.part)} slot ${state.armorDriftPicker.index + 1}</p></div>
+          <button id="armor-close-drift-picker" class="secondary" type="button" aria-label="Close Driftsmelt skill picker">Close</button>
+        </div>
+        <label class="armor-drift-search"><span class="visually-hidden">Search Driftsmelt skills</span><input id="armor-drift-search" type="search" value="${escapeHtml(state.armorDriftPicker.query)}" placeholder="Search Driftsmelt skills" /></label>
+        <div id="armor-drift-picker-options" class="armor-drift-picker-options"></div>
+      </section>
+    </div>
+  `;
+}
+
+function clearArmorBuildDraft() {
+  const weaponId = state.armorBuildDraft?.weaponId ?? null;
+  state.armorBuildDraft = createArmorBuildDraft();
+  state.armorBuildDraft.weaponId = weaponId;
+  state.armorDriftPicker = null;
+  renderArmorLibrary();
+}
+
+function transferArmorBuildToEditor() {
+  if (!state.armorBuildDraft) {
+    return;
+  }
+  const build = buildDefaultBuild();
+  build.name = "New Armor Build";
+  const summary = getArmorBuildSkillSummary();
+  for (const skill of summary.calculated) {
+    const current = build.values[skill.field.ref];
+    if (typeof skill.transferredValue === "number" && typeof current === "number") {
+      build.values[skill.field.ref] = Math.min(
+        getNumericBuildFieldMaximum(skill.field),
+        current + skill.transferredValue,
+      );
+    } else {
+      build.values[skill.field.ref] = skill.transferredValue;
+    }
+  }
+
+  const weapon = getArmorDraftWeapon();
+  if (weapon) {
+    state.selectedWeaponId = weapon.id;
+    saveStoredValue(STORAGE_KEYS.selectedWeaponId, weapon.id);
+  }
+  state.editingBuildId = null;
+  state.buildDraft = build;
+  state.armorBuildDraft = null;
+  state.armorDriftPicker = null;
+  state.weaponLibraryReturnToArmor = false;
+  closeModal();
+  renderAll();
+  scrollEditorIntoView(els.buildForm);
+  requestAnimationFrame(() => {
+    const nameInput = els.buildForm.querySelector("#build-name");
+    nameInput?.focus();
+    nameInput?.select();
+  });
+}
+
+function wireArmorLibraryEvents() {
+  const search = els.riftModalContent.querySelector("#armor-library-search");
+  search?.addEventListener("input", () => {
+    state.armorLibraryQuery = search.value;
+    renderArmorLibraryResults();
+  });
+  els.riftModalContent.querySelector("#armor-library-origin")?.addEventListener("change", (event) => {
+    state.armorLibraryOrigin = event.target.value;
+    renderArmorLibraryResults();
+  });
+  els.riftModalContent.querySelector("#armor-library-part")?.addEventListener("change", (event) => {
+    state.armorLibraryPart = event.target.value;
+    renderArmorLibraryResults();
+  });
+  els.riftModalContent.querySelector("#armor-clear-build")?.addEventListener("click", clearArmorBuildDraft);
+  els.riftModalContent.querySelector("#armor-save-build")?.addEventListener("click", transferArmorBuildToEditor);
+  els.riftModalContent.querySelector("#armor-choose-weapon")?.addEventListener("click", () => {
+    openWeaponLibrary({ returnToArmor: true });
+  });
+  els.riftModalContent.querySelector("#armor-clear-weapon")?.addEventListener("click", () => {
+    state.armorBuildDraft.weaponId = null;
+    renderArmorLibrary();
+  });
+  els.riftModalContent.querySelectorAll("[data-remove-armor-part]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.armorBuildDraft.pieces[button.dataset.removeArmorPart] = null;
+      renderArmorLibrary();
+    });
+  });
+  els.riftModalContent.querySelectorAll("[data-drift-part]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.armorDriftPicker = {
+        part: button.dataset.driftPart,
+        index: Number(button.dataset.driftIndex),
+        query: "",
+      };
+      renderArmorLibrary();
+      requestAnimationFrame(() => els.riftModalContent.querySelector("#armor-drift-search")?.focus());
+    });
+  });
+  els.riftModalContent.querySelectorAll("[data-clear-drift-part]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const selection = state.armorBuildDraft.pieces[button.dataset.clearDriftPart];
+      if (selection) {
+        selection.drifts[Number(button.dataset.clearDriftIndex)] = null;
+      }
+      renderArmorLibrary();
+    });
+  });
+  const closeDriftPicker = () => {
+    state.armorDriftPicker = null;
+    renderArmorLibrary();
+  };
+  els.riftModalContent.querySelector("#armor-close-drift-picker")?.addEventListener("click", closeDriftPicker);
+  els.riftModalContent.querySelector("#armor-drift-picker-backdrop")?.addEventListener("click", (event) => {
+    if (event.target.id === "armor-drift-picker-backdrop") {
+      closeDriftPicker();
+    }
+  });
+  const driftSearch = els.riftModalContent.querySelector("#armor-drift-search");
+  driftSearch?.addEventListener("input", () => {
+    state.armorDriftPicker.query = driftSearch.value;
+    renderArmorDriftPickerOptions();
+  });
+  renderArmorDriftPickerOptions();
+}
+
+function renderArmorLibrary() {
+  if (!state.armorBuildDraft) {
+    state.armorBuildDraft = createArmorBuildDraft();
+  }
+  const origins = getArmorOriginOptions();
+  openModal({
+    title: "Armor Library",
+    mode: "armor",
+    content: `
+      <div class="armor-library-shell">
+        <div class="armor-library-filter-bar">
+          <label class="weapon-library-search"><span class="visually-hidden">Search armor</span><input id="armor-library-search" type="search" value="${escapeHtml(state.armorLibraryQuery)}" placeholder="Search armor, monster, set, part, or skill" /></label>
+          <label><span class="visually-hidden">Filter by monster or set</span><select id="armor-library-origin"><option value="all">All monsters and sets</option>${origins
+            .map(
+              (origin) =>
+                `<option value="${escapeHtml(origin)}" ${state.armorLibraryOrigin === origin ? "selected" : ""}>${escapeHtml(origin)}</option>`,
+            )
+            .join("")}</select></label>
+          <label><span class="visually-hidden">Filter by armor part</span><select id="armor-library-part"><option value="all">All armor parts</option>${ARMOR_PARTS.map(
+            (part) =>
+              `<option value="${escapeHtml(part)}" ${state.armorLibraryPart === part ? "selected" : ""}>${escapeHtml(part)}</option>`,
+          ).join("")}</select></label>
+        </div>
+        <div class="armor-library-layout">
+          <aside class="armor-build-panel">
+            <div class="armor-build-actions"><button id="armor-clear-build" class="secondary" type="button">Clear</button><button id="armor-save-build" type="button">Save Build</button></div>
+            ${renderSelectedWeaponCard()}
+            <div class="armor-selected-slots">${ARMOR_PARTS.map(renderArmorSelectedSlot).join("")}</div>
+            <section class="armor-build-summary"><h3>Skill Summary</h3>${renderArmorBuildSummary()}</section>
+          </aside>
+          <section class="armor-results-panel">
+            <div class="weapon-library-summary"><span id="armor-library-count"></span></div>
+            <div class="weapon-library-grid armor-library-grid" id="armor-library-results"></div>
+          </section>
+        </div>
+        ${renderArmorDriftPicker()}
+      </div>
+    `,
+  });
+  wireArmorLibraryEvents();
+  renderArmorLibraryResults();
+}
+
+function openArmorLibrary() {
+  if (!state.armorLibrary) {
+    openModal({
+      title: "Armor Library",
+      mode: "medium",
+      content: `<div class="comparison-intro">The armor catalog could not be loaded.</div>`,
+    });
+    return;
+  }
+  state.weaponLibraryReturnToArmor = false;
+  state.armorBuildDraft = createArmorBuildDraft();
+  state.armorDriftPicker = null;
+  renderArmorLibrary();
 }
 
 function openRiftUnavailableMessage() {
@@ -2340,7 +3109,7 @@ function renderBuildForm() {
   els.buildForm.classList.remove("hidden");
   state.buildEditorColumnCount = getBuildEditorColumnCount();
   const labels = getBuildLabels(state.buildDraft, buildDefaultWeapon());
-  const sortedFields = sortBuildFieldsAlphabetically(state.data.buildFields, labels);
+  const sortedFields = sortBuildFields(state.data.buildFields, labels);
 
   const fieldsMarkup = orderBuildFieldsByVisibleColumn(sortedFields)
     .map((field) => {
@@ -2350,6 +3119,7 @@ function renderBuildForm() {
       const label = labels[field.ref] ?? field.labelRef;
       const value = state.buildDraft.values[field.ref];
       const isActive = Number(value) !== 0;
+      const isPinned = state.pinnedBuildSkillKeys.has(buildFieldKey(field));
       const inputMarkup = field.options
         ? `<select data-build-field="${field.ref}">
             ${field.options
@@ -2362,7 +3132,8 @@ function renderBuildForm() {
         : `<input type="number" step="any" value="${escapeHtml(String(value ?? ""))}" data-build-field="${field.ref}" />`;
 
       return `
-        <div class="editor-row ${isActive ? "editor-row-active" : ""}">
+        <div class="editor-row build-skill-row ${isActive ? "editor-row-active" : ""} ${isPinned ? "build-skill-row-pinned" : ""}">
+          <button class="secondary skill-pin-button" type="button" data-pin-build-field="${field.ref}" aria-label="${isPinned ? "Unpin" : "Pin"} ${escapeHtml(String(label))}" aria-pressed="${isPinned}" title="${isPinned ? "Unpin" : "Pin"} ${escapeHtml(String(label))}"><span class="skill-pin-icon" aria-hidden="true"></span></button>
           <label class="editor-label" for="build-${field.ref}">${escapeHtml(String(label))}</label>
           ${inputMarkup.replace("data-build-field", `id="build-${field.ref}" data-build-field`)}
         </div>
@@ -2400,6 +3171,12 @@ function renderBuildForm() {
     state.editingBuildId = null;
     state.buildDraft = null;
     renderAll();
+  });
+
+  els.buildForm.querySelectorAll("[data-pin-build-field]").forEach((button) => {
+    button.addEventListener("click", () => {
+      togglePinnedBuildSkill(button.dataset.pinBuildField);
+    });
   });
 
   els.buildForm.querySelectorAll("[data-build-field]").forEach((input) => {
@@ -3938,6 +4715,19 @@ async function init() {
     throw new Error("Workbook data failed to load.");
   }
 
+  if (window.ARMOR_LIBRARY) {
+    state.armorLibrary = deepClone(window.ARMOR_LIBRARY);
+  } else {
+    try {
+      const armorResponse = await fetch("./data/armor-library.json");
+      if (armorResponse.ok) {
+        state.armorLibrary = await armorResponse.json();
+      }
+    } catch (error) {
+      console.warn("Armor Library failed to load.", error);
+    }
+  }
+
   const extensionSystem = window.PHASK_SKILL_EXTENSIONS;
   state.extensionStatus = extensionSystem
     ? extensionSystem.initialize(state.data)
@@ -3951,6 +4741,13 @@ async function init() {
   if (!state.extensionStatus.enabled) {
     console.warn(state.extensionStatus.error);
   }
+
+  const validBuildSkillKeys = new Set(state.data.buildFields.map(buildFieldKey));
+  state.pinnedBuildSkillKeys = new Set(
+    loadStoredItems(STORAGE_KEYS.pinnedBuildSkills).filter(
+      (key) => typeof key === "string" && validBuildSkillKeys.has(key),
+    ),
+  );
 
   state.uptimeFields = collectDefaultUptimeFields();
   state.builds = loadBuildsForCurrentVersion();
