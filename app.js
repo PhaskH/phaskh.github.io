@@ -215,6 +215,7 @@ const state = {
   weaponDraft: null,
   matrixComparison: null,
   riftComparison: null,
+  calculatorElementWeakness150: false,
   buildEditorColumnCount: 1,
   uptimeFields: [],
   uptimeValues: {},
@@ -1450,8 +1451,17 @@ function applyScenario(engine, build, weapon) {
   return modifiers;
 }
 
-function calculateScenarioEffectiveDamage(engine, build, weapon) {
+function calculateScenarioEffectiveDamage(engine, build, weapon, options = {}) {
   const modifiers = applyScenario(engine, build, weapon);
+  if (state.extensionStatus?.enabled) {
+    const extensions = window.PHASK_SKILL_EXTENSIONS;
+    writeCell(
+      engine,
+      extensions.extensionSheet,
+      extensions.targetCells.elementWeaknessMultiplier,
+      options.elementWeakness150 ? 1.5 : 1,
+    );
+  }
   const fullMorphResult = readCell(engine, calculatorSheetName(), state.data.resultCell);
   if (
     !modifiers ||
@@ -1531,7 +1541,9 @@ function calculateSelectedScenario() {
   }
 
   const engine = createEngine();
-  const h12 = calculateScenarioEffectiveDamage(engine, build, weapon);
+  const h12 = calculateScenarioEffectiveDamage(engine, build, weapon, {
+    elementWeakness150: state.calculatorElementWeakness150,
+  });
   const extensions = window.PHASK_SKILL_EXTENSIONS;
   const reactiveSkill = extensions?.getReactiveDamageSkill(build.values, weapon.values);
   let reactiveDamage = null;
@@ -1668,10 +1680,17 @@ function renderCalculatorActions() {
   const selectedWeaponId = els.calculatorWeapon.value || state.selectedWeaponId;
   const weapon = getWeaponById(selectedWeaponId);
   const actions = [
+    `<label class="element-weakness-toggle"><input id="calculator-element-weakness" type="checkbox" ${state.calculatorElementWeakness150 ? "checked" : ""} /><span>150% Elemental Weakness</span></label>`,
     `<button id="compare-rift" type="button" class="${weapon?.isRift ? "" : "button-disabled"}">Compare Rift Combinations</button>`,
   ];
 
   els.calculatorActions.innerHTML = actions.join("");
+  els.calculatorActions
+    .querySelector("#calculator-element-weakness")
+    .addEventListener("change", (event) => {
+      state.calculatorElementWeakness150 = event.target.checked;
+      renderResultGrid();
+    });
   els.calculatorActions.querySelector("#compare-rift").addEventListener("click", () => {
     if (weapon?.isRift) {
       openRiftComparison();
@@ -3936,6 +3955,24 @@ function riftSaveButtonMarkup(variant) {
   return `<button class="secondary rift-save-button ${variant.isSaved ? "rift-save-button-saved" : ""}" type="button" data-rift-variant-index="${variant.index}" ${variant.isSaved ? "disabled" : ""}>${variant.isSaved ? "Saved" : "Save Weapon"}</button>`;
 }
 
+function calculateRiftComparisonResults(comparison) {
+  const buildIds = new Set([...comparison.selectedBuildIds, comparison.currentBuildId]);
+  const builds = [...buildIds].map((id) => getBuildById(id)).filter(Boolean);
+  const engine = createEngine();
+  const results = {};
+  for (const variant of comparison.variants) {
+    for (const build of builds) {
+      results[riftResultKey(variant.index, build.id)] = calculateScenarioEffectiveDamage(
+        engine,
+        build,
+        variant.weapon,
+        { elementWeakness150: comparison.elementWeakness150 },
+      );
+    }
+  }
+  comparison.results = results;
+}
+
 function renderRiftComparison() {
   const comparison = state.riftComparison;
   if (!comparison) {
@@ -4041,7 +4078,10 @@ function renderRiftComparison() {
     title: "Rift Combinations",
     mode: "rift",
     content: `
-      <div class="rift-context"><span class="rift-context-label">Weapon:</span> ${escapeHtml(weapon.name)}</div>
+      <div class="rift-context rift-context-with-options">
+        <div class="rift-weapon-context"><span class="rift-context-label">Weapon:</span> ${escapeHtml(weapon.name)}</div>
+        <label class="element-weakness-toggle"><input id="rift-element-weakness" type="checkbox" ${comparison.elementWeakness150 ? "checked" : ""} /><span>150% Elemental Weakness</span></label>
+      </div>
       ${scopeControls}
       <div class="rift-desktop-results comparison-table-wrap">
         <table class="comparison-table rift-comparison-table">
@@ -4061,6 +4101,12 @@ function renderRiftComparison() {
         <div class="rift-results">${mobileCards}</div>
       </div>
     `,
+  });
+
+  els.riftModalContent.querySelector("#rift-element-weakness").addEventListener("change", (event) => {
+    comparison.elementWeakness150 = event.target.checked;
+    calculateRiftComparisonResults(comparison);
+    renderRiftComparison();
   });
 
   els.riftModalContent.querySelectorAll("[data-rift-scope]").forEach((button) => {
@@ -4114,28 +4160,11 @@ function openRiftComparison() {
   }
 
   const selectedBuilds = state.builds.filter((build) => build.compareEnabled !== false);
-  const buildsToCalculate = [...selectedBuilds];
-  if (!buildsToCalculate.some((build) => build.id === currentBuild.id)) {
-    buildsToCalculate.push(currentBuild);
-  }
-
-  const engine = createEngine();
-  const results = {};
   const variants = generatedVariants.map((variant, index) => ({
     ...variant,
     index,
     isSaved: isRiftVariantSaved(weapon, variant),
   }));
-  for (const variant of variants) {
-    for (const build of buildsToCalculate) {
-      results[riftResultKey(variant.index, build.id)] = calculateScenarioEffectiveDamage(
-        engine,
-        build,
-        variant.weapon,
-      );
-    }
-  }
-
   const useSelectedBuilds = selectedBuilds.length > 1;
   const initialBuildId = selectedBuilds.some((build) => build.id === currentBuild.id)
     ? currentBuild.id
@@ -4148,13 +4177,33 @@ function openRiftComparison() {
     rankBuildId: useSelectedBuilds ? initialBuildId : currentBuild.id,
     mobileBuildId: useSelectedBuilds ? initialBuildId : currentBuild.id,
     variants,
-    results,
+    results: {},
+    elementWeakness150: false,
   };
+  calculateRiftComparisonResults(state.riftComparison);
   renderRiftComparison();
 }
 
 function buildMatrixKey(buildId, weaponId) {
   return `${weaponId}::${buildId}`;
+}
+
+function calculateBuildWeaponComparisonResults(comparison) {
+  const builds = comparison.buildIds.map((id) => getBuildById(id)).filter(Boolean);
+  const weapons = comparison.weaponIds.map((id) => getWeaponById(id)).filter(Boolean);
+  const engine = createEngine();
+  const results = {};
+  for (const weapon of weapons) {
+    for (const build of builds) {
+      results[buildMatrixKey(build.id, weapon.id)] = calculateScenarioEffectiveDamage(
+        engine,
+        build,
+        weapon,
+        { elementWeakness150: comparison.elementWeakness150 },
+      );
+    }
+  }
+  comparison.results = results;
 }
 
 function openBuildWeaponComparison() {
@@ -4171,27 +4220,17 @@ function openBuildWeaponComparison() {
     return;
   }
 
-  const engine = createEngine();
-  const results = {};
-  for (const weapon of weaponsToCompare) {
-    for (const build of buildsToCompare) {
-      results[buildMatrixKey(build.id, weapon.id)] = calculateScenarioEffectiveDamage(
-        engine,
-        build,
-        weapon,
-      );
-    }
-  }
-
   state.matrixComparison = {
-    results,
+    results: {},
     buildIds: buildsToCompare.map((build) => build.id),
     weaponIds: weaponsToCompare.map((weapon) => weapon.id),
     referenceBuildId:
       buildsToCompare.find((build) => build.id === state.selectedBuildId)?.id ?? buildsToCompare[0].id,
     referenceWeaponId:
       weaponsToCompare.find((weapon) => weapon.id === state.selectedWeaponId)?.id ?? weaponsToCompare[0].id,
+    elementWeakness150: false,
   };
+  calculateBuildWeaponComparisonResults(state.matrixComparison);
   renderBuildWeaponComparison();
 }
 
@@ -4517,6 +4556,9 @@ function renderBuildWeaponComparison() {
     <div class="comparison-intro">
       Click any cell to use it as the reference. The selected reference shows 100.00%, and all other cells show relative DPS difference against it.
     </div>
+    <div class="comparison-options">
+      <label class="element-weakness-toggle"><input id="matrix-element-weakness" type="checkbox" ${state.matrixComparison.elementWeakness150 ? "checked" : ""} /><span>150% Elemental Weakness</span></label>
+    </div>
     <div class="comparison-table-wrap">
       <table class="comparison-table">
         <thead>
@@ -4539,6 +4581,12 @@ function renderBuildWeaponComparison() {
       state.matrixComparison.referenceWeaponId = button.dataset.matrixWeaponId;
       renderBuildWeaponComparison();
     });
+  });
+
+  els.riftModalContent.querySelector("#matrix-element-weakness").addEventListener("change", (event) => {
+    state.matrixComparison.elementWeakness150 = event.target.checked;
+    calculateBuildWeaponComparisonResults(state.matrixComparison);
+    renderBuildWeaponComparison();
   });
 
 }
@@ -4599,10 +4647,10 @@ function openChangeLog() {
             </li>`).join("")}
           </ul>
         </section>`).join("")}</div>`
-    : '<p class="empty-message">No change log entries are available.</p>';
+    : '<p class="empty-message">No changelog entries are available.</p>';
 
   state.modalReturnFocus = els.openChangeLog;
-  openModal({ title: "Change Log", content, mode: "changelog" });
+  openModal({ title: "Changelog", content, mode: "changelog" });
 }
 
 function escapeHtml(value) {

@@ -14,7 +14,7 @@ window.CHANGELOG_DATA = Object.freeze([
   {
     date: "October 2, 2026",
     commit: "a9077f2d4ff39e676af2cccf39d29b7fd9639da0",
-    summary: "Added the fan-project disclaimer footer and the linked, scrollable Change Log dialog.",
+    summary: "Added the fan-project disclaimer footer and the linked, scrollable Changelog dialog.",
   },
   {
     date: "October 1, 2026",

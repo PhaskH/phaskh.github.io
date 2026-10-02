@@ -42,6 +42,7 @@
     insectGlaiveStatusModifier: "B12",
     criticalRangeBoost: "B13",
     chargeStock: "B14",
+    elementWeaknessMultiplier: "B15",
   });
 
   // KreaTV1 3.6.4 has no native Insect Glaive type. Keep this adapter isolated so
@@ -283,7 +284,7 @@
           original:
             '=if($B$5="Element",((($B$3+$Y$6)*(1+$V$10)+$Y$13)*(1+$V$17)*$B$10),0)',
           extended:
-            '=if($B$5="Element",((($B$3+$Y$6)*(1+$V$10)+$Y$13)*(1+$V$17+PhaskExtensions!$B$2)*$B$10),0)',
+            '=if($B$5="Element",((($B$3+$Y$6)*(1+$V$10)+$Y$13)*(1+$V$17+PhaskExtensions!$B$2)*$B$10*PhaskExtensions!$B$15),0)',
         }),
         Object.freeze({
           sheet: "Backyard",
@@ -293,7 +294,7 @@
           original:
             '=if($B$5="Element",((($B$3+$Y$6)*(1+$V$10+$V$2)+$Y$13)*(1+$V$17)*$B$10),0)',
           extended:
-            '=if($B$5="Element",((($B$3+$Y$6)*(1+$V$10+$V$2)+$Y$13)*(1+$V$17+PhaskExtensions!$B$2)*$B$10),0)',
+            '=if($B$5="Element",((($B$3+$Y$6)*(1+$V$10+$V$2)+$Y$13)*(1+$V$17+PhaskExtensions!$B$2)*$B$10*PhaskExtensions!$B$15),0)',
         }),
         Object.freeze({
           sheet: "Backyard",
@@ -467,6 +468,7 @@
       ["Insect Glaive status modifier", INSECT_GLAIVE_ADAPTER.statusModifier],
       ["Critical Range Boost", 0],
       ["Charge Stock", 0],
+      ["Element weakness multiplier", 1],
     ];
 
     return sheets;

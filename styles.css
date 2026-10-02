@@ -163,6 +163,34 @@ select {
   gap: 10px;
 }
 
+.element-weakness-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.element-weakness-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--accent);
+}
+
+.comparison-options {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .selection-actions-panel {
   padding-top: 14px;
   padding-bottom: 14px;
@@ -1681,6 +1709,21 @@ button.danger:hover {
   font-size: 0.9rem;
 }
 
+.rift-context-with-options {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.rift-weapon-context {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.rift-context-with-options .element-weakness-toggle {
+  flex: 0 0 auto;
+}
+
 .rift-context-label {
   color: var(--text);
 }
@@ -2292,4 +2335,12 @@ button.danger:hover {
     align-items: flex-start;
   }
 
+}
+
+@media (max-width: 520px) {
+  .rift-context-with-options {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
 }
