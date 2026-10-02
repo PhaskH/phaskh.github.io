@@ -3,6 +3,11 @@
 window.CHANGELOG_DATA = Object.freeze([
   {
     date: "October 2, 2026",
+    commit: "9f7367544adb2d09175a3145b3af497dbacc035f",
+    summary: "Added a 150% elemental weakness toggle to the 1:1 calculator, rift comparisons, and build-and-weapon comparison table.",
+  },
+  {
+    date: "October 2, 2026",
     commit: "dd383897ec76825f49aff621174b9346c8e2b5be",
     summary: "Changed Armor Library weapon selection so weapons are saved with builds only when needed, without being added immediately.",
   },
