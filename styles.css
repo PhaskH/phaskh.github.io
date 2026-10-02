@@ -119,6 +119,10 @@ select {
   grid-column: span 12;
 }
 
+.library-panel {
+  grid-column: span 6;
+}
+
 .panel-header {
   display: flex;
   align-items: center;
