@@ -3170,6 +3170,14 @@ function renderWeaponList() {
   renderLibraryList(els.weaponList, state.weapons, state.selectedWeaponId, "weapon");
 }
 
+function updateDuplicateNameWarning(form, items, name, editingId) {
+  const normalizedName = name.trim().toLowerCase();
+  const isDuplicate = normalizedName !== "" && items.some(
+    (item) => item.id !== editingId && item.name.trim().toLowerCase() === normalizedName,
+  );
+  form.querySelector(".duplicate-name-warning").hidden = !isDuplicate;
+}
+
 function renderBuildForm() {
   if (!state.buildDraft) {
     els.buildForm.classList.add("hidden");
@@ -3216,7 +3224,8 @@ function renderBuildForm() {
     <div class="editor-toolbar">
       <label class="field">
         <span>Build Name</span>
-        <input id="build-name" type="text" value="${escapeHtml(state.buildDraft.name)}" />
+        <input id="build-name" type="text" value="${escapeHtml(state.buildDraft.name)}" aria-describedby="build-name-warning" />
+        <small id="build-name-warning" class="duplicate-name-warning" aria-live="polite" hidden>Another build has this name.</small>
       </label>
       <button type="submit">${state.editingBuildId ? "Save Build" : "Create Build"}</button>
       <button class="secondary" id="duplicate-build-form" type="button">Duplicate</button>
@@ -3232,7 +3241,9 @@ function renderBuildForm() {
 
   els.buildForm.querySelector("#build-name").addEventListener("input", (event) => {
     state.buildDraft.name = event.target.value;
+    updateDuplicateNameWarning(els.buildForm, state.builds, state.buildDraft.name, state.editingBuildId);
   });
+  updateDuplicateNameWarning(els.buildForm, state.builds, state.buildDraft.name, state.editingBuildId);
 
   els.buildForm.querySelector("#duplicate-build-form").addEventListener("click", () => {
     duplicateCurrentBuildDraft();
@@ -3319,7 +3330,8 @@ function renderWeaponForm() {
     <div class="editor-toolbar">
       <label class="field">
         <span>Weapon Name</span>
-        <input id="weapon-name" type="text" value="${escapeHtml(state.weaponDraft.name)}" />
+        <input id="weapon-name" type="text" value="${escapeHtml(state.weaponDraft.name)}" aria-describedby="weapon-name-warning" />
+        <small id="weapon-name-warning" class="duplicate-name-warning" aria-live="polite" hidden>Another weapon has this name.</small>
       </label>
     </div>
     <div class="editor-actions-row">
@@ -3341,7 +3353,9 @@ function renderWeaponForm() {
 
   els.weaponForm.querySelector("#weapon-name").addEventListener("input", (event) => {
     state.weaponDraft.name = event.target.value;
+    updateDuplicateNameWarning(els.weaponForm, state.weapons, state.weaponDraft.name, state.editingWeaponId);
   });
+  updateDuplicateNameWarning(els.weaponForm, state.weapons, state.weaponDraft.name, state.editingWeaponId);
 
   els.weaponForm.querySelector("#duplicate-weapon-form").addEventListener("click", () => {
     duplicateCurrentWeaponDraft();

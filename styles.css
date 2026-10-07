@@ -1392,6 +1392,16 @@ button.danger:hover {
   min-width: 180px;
 }
 
+.duplicate-name-warning {
+  color: #f4c86a;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.duplicate-name-warning[hidden] {
+  display: none;
+}
+
 .editor-actions-row {
   display: flex;
   flex-wrap: wrap;
