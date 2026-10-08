@@ -2,6 +2,16 @@
 // Dates use America/Phoenix calendar dates; commit links are built from each full hash.
 window.CHANGELOG_DATA = Object.freeze([
   {
+    date: "October 7, 2026",
+    commit: "8b8ad87888c9b838b82f01f47e40684a9fc80b2c",
+    summary: "Expanded Day Mode into Matrix Compare with per-build Buildup Boost and critical-hit overrides, clearer active-state styling, and a more compact table.",
+  },
+  {
+    date: "October 7, 2026",
+    commit: "0dc6462d4e2802b9e9084d3174025f5234fcb103",
+    summary: "Added duplicate-name warnings to the Build and Weapon editors while continuing to allow duplicate names.",
+  },
+  {
     date: "October 2, 2026",
     commit: "9f7367544adb2d09175a3145b3af497dbacc035f",
     summary: "Added a 150% elemental weakness toggle to the 1:1 calculator, rift comparisons, and build-and-weapon comparison table.",
