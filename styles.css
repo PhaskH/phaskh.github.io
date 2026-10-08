@@ -1160,6 +1160,14 @@ button:hover {
   background: var(--accent-2);
 }
 
+button.day-mode-button {
+  background: #d65360;
+}
+
+button.day-mode-button:hover {
+  background: #b63e4b;
+}
+
 button.secondary {
   background: transparent;
 }
@@ -1702,6 +1710,194 @@ button.danger:hover {
   border-color: rgba(235, 99, 107, 0.72);
 }
 
+.modal-window.modal-window-day-mode {
+  background: linear-gradient(180deg, #29191d 0%, #321f24 100%);
+  border-color: #70404a;
+}
+
+.modal-window-day-mode .comparison-table thead th,
+.modal-window-day-mode .comparison-header-row {
+  background: #29191d;
+}
+
+.matrix-build-settings-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.matrix-build-settings-toolbar button {
+  min-height: 32px;
+  padding: 4px 8px;
+  font-size: 0.84rem;
+}
+
+#matrix-reset-uptimes:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.modal-title-with-badge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.day-mode-badge {
+  background: #682b34;
+  border: 1px solid #bc5865;
+  border-radius: 4px;
+  color: var(--text);
+  padding: 3px 6px;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+#matrix-toggle-settings {
+  background: #682b34;
+  border-color: #bc5865;
+}
+
+#matrix-toggle-settings:hover {
+  background: #833441;
+}
+
+#matrix-toggle-settings[aria-expanded="true"] {
+  background: #d65360;
+  border-color: #d65360;
+}
+
+#matrix-toggle-settings[aria-expanded="true"]:hover {
+  background: #b63e4b;
+  border-color: #b63e4b;
+}
+
+.matrix-header-container {
+  container-type: inline-size;
+  container-name: matrix-build;
+}
+
+.modal-window-comparison {
+  --matrix-weapon-column-width: 160px;
+}
+
+.modal-window-comparison .comparison-table .comparison-corner,
+.modal-window-comparison .comparison-header-row {
+  width: var(--matrix-weapon-column-width);
+  min-width: var(--matrix-weapon-column-width);
+  max-width: var(--matrix-weapon-column-width);
+}
+
+.modal-window-comparison .comparison-header-row-text {
+  display: block;
+  width: calc(var(--matrix-weapon-column-width) - 11px);
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+.matrix-build-header {
+  display: grid;
+  gap: 6px;
+}
+
+.matrix-build-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+}
+
+.matrix-build-heading .comparison-header-cell-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.matrix-build-settings {
+  display: grid;
+  gap: 4px;
+  width: 176px;
+}
+
+@container matrix-build (min-width: 360px) {
+  .matrix-build-settings {
+    grid-template-columns: repeat(2, 176px);
+    width: auto;
+    gap: 8px;
+  }
+}
+
+@container matrix-build (min-width: 480px) {
+  .matrix-build-header {
+    grid-template-columns: minmax(100px, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.matrix-build-settings[hidden],
+.matrix-build-settings-toolbar button[hidden] {
+  display: none;
+}
+
+.matrix-settings-expanded .comparison-header-cell {
+  min-width: 186px;
+}
+
+.matrix-build-setting {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 5px;
+}
+
+.matrix-build-setting > label {
+  font-size: 0.78rem;
+}
+
+.matrix-build-setting-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 28px;
+  align-items: center;
+  gap: 4px;
+}
+
+.matrix-build-setting-controls input {
+  min-width: 0;
+  width: 100%;
+  min-height: 30px;
+  padding: 4px 5px;
+  font-size: 0.84rem;
+}
+
+.matrix-build-setting-controls input.matrix-uptime-custom {
+  border-color: #f4c86a;
+}
+
+button.matrix-uptime-reset {
+  width: 28px;
+  min-height: 30px;
+  padding: 2px;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+button.matrix-uptime-reset:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.matrix-build-setting-controls input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
 .modal-close-button {
   min-height: 32px;
   width: auto;
@@ -1998,7 +2194,7 @@ button.danger:hover {
   background: #171b22;
 }
 
-.comparison-corner {
+.comparison-table thead .comparison-corner {
   z-index: 3;
   min-width: 76px;
 }
@@ -2094,6 +2290,10 @@ button.danger:hover {
 }
 
 @media (max-width: 780px) {
+  .modal-window-comparison {
+    --matrix-weapon-column-width: 120px;
+  }
+
   .app-shell {
     padding: 16px;
   }

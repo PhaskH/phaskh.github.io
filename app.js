@@ -143,6 +143,8 @@ const MODAL_MODE_CLASSES = [
   "modal-window-armor",
   "modal-window-uptime",
   "modal-window-uptime-day-mode",
+  "modal-window-comparison",
+  "modal-window-day-mode",
 ];
 
 const WEAPON_LIBRARY_TYPE_MAP = Object.freeze({
@@ -1337,9 +1339,10 @@ function getWeaponById(id) {
   return item;
 }
 
-function applyScenario(engine, build, weapon) {
+function applyScenario(engine, build, weapon, options = {}) {
   const extensions = window.PHASK_SKILL_EXTENSIONS;
   const extensionsEnabled = Boolean(state.extensionStatus?.enabled && extensions);
+  const uptimeValues = options.uptimeValues ?? state.uptimeValues;
   for (const field of state.data.buildFields) {
     if (field.extension) {
       continue;
@@ -1357,7 +1360,7 @@ function applyScenario(engine, build, weapon) {
     if (field.extension) {
       continue;
     }
-    writeCell(engine, calculatorSheetName(), field.ref, state.uptimeValues[field.ref]);
+    writeCell(engine, calculatorSheetName(), field.ref, uptimeValues[field.ref]);
   }
 
   let modifiers = null;
@@ -1365,7 +1368,7 @@ function applyScenario(engine, build, weapon) {
     modifiers = extensions.calculateScenarioModifiers(
       build.values,
       weapon.values,
-      state.uptimeValues,
+      uptimeValues,
       { buildupBoostOverrideEnabled: state.dayMode },
     );
     writeCell(
@@ -1452,7 +1455,7 @@ function applyScenario(engine, build, weapon) {
 }
 
 function calculateScenarioEffectiveDamage(engine, build, weapon, options = {}) {
-  const modifiers = applyScenario(engine, build, weapon);
+  const modifiers = applyScenario(engine, build, weapon, options);
   if (state.extensionStatus?.enabled) {
     const extensions = window.PHASK_SKILL_EXTENSIONS;
     writeCell(
@@ -1722,7 +1725,7 @@ function uptimePresetOptions() {
 function renderSelectionActions() {
   els.selectionActions.innerHTML = `
     <div class="selection-actions-row">
-      <button id="compare-build-weapon-matrix" type="button">Compare Selected Builds & Weapons</button>
+      <button id="compare-build-weapon-matrix" type="button">Matrix Compare</button>
       <div class="selection-actions-help">Select the builds and weapons you want to compare below, then click the button.</div>
     </div>
     <div class="selection-actions-row">
@@ -1730,7 +1733,7 @@ function renderSelectionActions() {
         <span>Uptime preset</span>
         <select id="uptime-preset-select">${uptimePresetOptions()}</select>
       </label>
-      <button id="view-edit-uptimes" type="button">View/Edit Uptimes</button>
+      <button id="view-edit-uptimes" class="${state.dayMode ? "day-mode-button" : ""}" type="button" ${state.dayMode ? 'title="Day Mode active"' : ""}>View/Edit Uptimes</button>
     </div>
     <div class="selection-actions-row selection-actions-library-row">
       <button id="open-weapon-library" type="button">Weapon Library</button>
@@ -4202,6 +4205,12 @@ function buildMatrixKey(buildId, weaponId) {
   return `${weaponId}::${buildId}`;
 }
 
+function matrixUptimeFields() {
+  return ["buildupBoostUptime", "critCapableDamageShare"]
+    .map((key) => state.uptimeFields.find((field) => field.key === key))
+    .filter(Boolean);
+}
+
 function calculateBuildWeaponComparisonResults(comparison) {
   const builds = comparison.buildIds.map((id) => getBuildById(id)).filter(Boolean);
   const weapons = comparison.weaponIds.map((id) => getWeaponById(id)).filter(Boolean);
@@ -4213,7 +4222,12 @@ function calculateBuildWeaponComparisonResults(comparison) {
         engine,
         build,
         weapon,
-        { elementWeakness150: comparison.elementWeakness150 },
+        {
+          elementWeakness150: comparison.elementWeakness150,
+          uptimeValues: state.dayMode
+            ? { ...state.uptimeValues, ...comparison.buildUptimeOverrides.get(build.id) }
+            : state.uptimeValues,
+        },
       );
     }
   }
@@ -4225,7 +4239,7 @@ function openBuildWeaponComparison() {
   const weaponsToCompare = state.weapons.filter((weapon) => weapon.compareEnabled !== false);
   if (!buildsToCompare.length || !weaponsToCompare.length) {
     openModal({
-      title: "Build and Weapon Comparison",
+      title: "Matrix Compare",
       mode: "medium",
       content: `
       <div class="comparison-intro">Select at least one build and one weapon with the checkboxes before running the comparison.</div>
@@ -4243,6 +4257,8 @@ function openBuildWeaponComparison() {
     referenceWeaponId:
       weaponsToCompare.find((weapon) => weapon.id === state.selectedWeaponId)?.id ?? weaponsToCompare[0].id,
     elementWeakness150: false,
+    buildUptimeOverrides: new Map(),
+    buildSettingsOpen: false,
   };
   calculateBuildWeaponComparisonResults(state.matrixComparison);
   renderBuildWeaponComparison();
@@ -4500,10 +4516,36 @@ function openImportModal() {
   });
 }
 
-function renderBuildWeaponComparison() {
+function renderMatrixBuildSettings(build, index) {
+  if (!state.dayMode) {
+    return "";
+  }
+  const comparison = state.matrixComparison;
+  const fields = matrixUptimeFields();
+  const overrides = comparison.buildUptimeOverrides.get(build.id) ?? {};
+  const controls = fields.map((field) => {
+    const isCustom = Object.hasOwn(overrides, field.ref);
+    const value = overrides[field.ref] ?? state.uptimeValues[field.ref] ?? field.defaultValue;
+    const controlId = `matrix-uptime-${index}-${field.key}`;
+    return `
+        <div class="matrix-build-setting">
+          <label for="${controlId}" title="${escapeHtml(field.label)}">${field.key === "buildupBoostUptime" ? "BuB" : "Crit"}</label>
+          <div class="matrix-build-setting-controls">
+            <input id="${controlId}" class="${isCustom ? "matrix-uptime-custom" : ""}" title="${isCustom ? "Custom for this comparison" : "Using global uptime"}" type="number" min="0" max="100" step="0.1" value="${(value * 100).toFixed(1)}" data-matrix-uptime-value="${field.ref}" data-build-id="${escapeHtml(build.id)}" aria-label="${escapeHtml(`${build.name}: ${field.label} percentage`)}" aria-describedby="${controlId}-feedback" aria-invalid="false" />
+            <span>%</span>
+            <button class="secondary matrix-uptime-reset" type="button" aria-label="${escapeHtml(`Reset ${build.name}: ${field.label} to global uptime`)}" title="Reset to global uptime" ${isCustom ? "" : "disabled"}>&#8634;</button>
+          </div>
+          <span id="${controlId}-feedback" class="matrix-uptime-feedback visually-hidden" aria-live="polite">${isCustom ? "Custom for this comparison" : "Using global uptime"}</span>
+        </div>`;
+  }).join("");
+  return `<div class="matrix-build-settings" data-matrix-settings-build="${escapeHtml(build.id)}" ${comparison.buildSettingsOpen ? "" : "hidden"}>${controls}</div>`;
+}
+
+function renderBuildWeaponComparison(resultsOnly = false) {
   if (!state.matrixComparison) {
     return;
   }
+  const tableScrollLeft = els.riftModalContent.querySelector(".comparison-table-wrap")?.scrollLeft ?? 0;
 
   const { referenceBuildId, referenceWeaponId, results, buildIds, weaponIds } = state.matrixComparison;
   const buildsToCompare = buildIds.map((id) => getBuildById(id)).filter(Boolean);
@@ -4512,9 +4554,16 @@ function renderBuildWeaponComparison() {
 
   const headerCells = buildsToCompare
     .map(
-      (build) => `
+      (build, index) => `
         <th scope="col" class="comparison-header-cell" title="${escapeHtml(build.name)}">
-          <span class="comparison-header-cell-text">${escapeHtml(build.name)}</span>
+          <div class="matrix-header-container">
+            <div class="matrix-build-header">
+              <div class="matrix-build-heading">
+                <span class="comparison-header-cell-text">${escapeHtml(build.name)}</span>
+              </div>
+              ${renderMatrixBuildSettings(build, index)}
+            </div>
+          </div>
         </th>
       `,
     )
@@ -4564,8 +4613,12 @@ function renderBuildWeaponComparison() {
     })
     .join("");
 
-  openModal({
-    title: "Build and Weapon Comparison",
+  if (resultsOnly) {
+    els.riftModalContent.querySelector(".comparison-table tbody").innerHTML = bodyRows;
+  } else {
+    openModal({
+    title: "Matrix Compare",
+    mode: "comparison",
     content: `
     <div class="comparison-intro">
       Click any cell to use it as the reference. The selected reference shows 100.00%, and all other cells show relative DPS difference against it.
@@ -4573,8 +4626,13 @@ function renderBuildWeaponComparison() {
     <div class="comparison-options">
       <label class="element-weakness-toggle"><input id="matrix-element-weakness" type="checkbox" ${state.matrixComparison.elementWeakness150 ? "checked" : ""} /><span>150% Elemental Weakness</span></label>
     </div>
+    ${state.dayMode ? `
+      <div class="matrix-build-settings-toolbar">
+        <button id="matrix-toggle-settings" class="secondary" type="button" aria-expanded="${state.matrixComparison.buildSettingsOpen}"><span aria-hidden="true">${state.matrixComparison.buildSettingsOpen ? "&#9662;" : "&#9656;"}</span> Override Values</button>
+        <button id="matrix-reset-uptimes" class="secondary" type="button" ${state.matrixComparison.buildSettingsOpen ? "" : "hidden"} ${state.matrixComparison.buildUptimeOverrides.size ? "" : "disabled"}>Reset Values</button>
+      </div>` : ""}
     <div class="comparison-table-wrap">
-      <table class="comparison-table">
+      <table class="comparison-table ${state.dayMode && state.matrixComparison.buildSettingsOpen ? "matrix-settings-expanded" : ""}">
         <thead>
           <tr>
             <th class="comparison-corner"></th>
@@ -4587,7 +4645,9 @@ function renderBuildWeaponComparison() {
       </table>
     </div>
   `,
-  });
+    });
+    els.riftModalContent.querySelector(".comparison-table-wrap").scrollLeft = tableScrollLeft;
+  }
 
   els.riftModalContent.querySelectorAll("[data-matrix-build-id]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -4597,12 +4657,89 @@ function renderBuildWeaponComparison() {
     });
   });
 
+  if (resultsOnly) {
+    return;
+  }
+
   els.riftModalContent.querySelector("#matrix-element-weakness").addEventListener("change", (event) => {
     state.matrixComparison.elementWeakness150 = event.target.checked;
     calculateBuildWeaponComparisonResults(state.matrixComparison);
     renderBuildWeaponComparison();
   });
 
+  const settings = els.riftModalContent.querySelector(".matrix-build-settings-toolbar");
+  if (settings) {
+    const comparison = state.matrixComparison;
+    const toggle = settings.querySelector("#matrix-toggle-settings");
+    const setSettingsOpen = (open) => {
+      comparison.buildSettingsOpen = open;
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.querySelector("span").innerHTML = open ? "&#9662;" : "&#9656;";
+      settings.querySelector("#matrix-reset-uptimes").hidden = !open;
+      els.riftModalContent.querySelector(".comparison-table").classList.toggle("matrix-settings-expanded", open);
+      els.riftModalContent.querySelectorAll(".matrix-build-settings").forEach((column) => {
+        column.hidden = !open;
+      });
+    };
+    toggle.addEventListener("click", () => {
+      setSettingsOpen(!comparison.buildSettingsOpen);
+    });
+    const refreshSettings = () => {
+      const modalWindow = els.riftModal.querySelector(".modal-window");
+      const scrollTop = modalWindow.scrollTop;
+      calculateBuildWeaponComparisonResults(state.matrixComparison);
+      renderBuildWeaponComparison();
+      modalWindow.scrollTop = scrollTop;
+    };
+    els.riftModalContent.querySelector("#matrix-reset-uptimes").addEventListener("click", () => {
+      state.matrixComparison.buildUptimeOverrides.clear();
+      refreshSettings();
+    });
+    els.riftModalContent.querySelectorAll("[data-matrix-uptime-value]").forEach((input) => {
+      const field = matrixUptimeFields().find((item) => item.ref === input.dataset.matrixUptimeValue);
+      const globalValue = state.uptimeValues[field.ref] ?? field.defaultValue;
+      const container = input.closest(".matrix-build-setting");
+      const feedback = container.querySelector(".matrix-uptime-feedback");
+      const resetButton = container.querySelector(".matrix-uptime-reset");
+      const updateValue = () => {
+        const invalid = input.value === "" || !input.checkValidity();
+        input.setAttribute("aria-invalid", String(invalid));
+        if (invalid) {
+          feedback.textContent = "Enter a value from 0 to 100%.";
+          input.title = feedback.textContent;
+          resetButton.disabled = false;
+          return;
+        }
+        const value = Number(input.value) / 100;
+        const isCustom = Math.abs(value - globalValue) > 1e-9;
+        const overrides = comparison.buildUptimeOverrides.get(input.dataset.buildId) ?? {};
+        if (isCustom) {
+          overrides[field.ref] = value;
+          comparison.buildUptimeOverrides.set(input.dataset.buildId, overrides);
+        } else {
+          delete overrides[field.ref];
+          if (Object.keys(overrides).length) {
+            comparison.buildUptimeOverrides.set(input.dataset.buildId, overrides);
+          } else {
+            comparison.buildUptimeOverrides.delete(input.dataset.buildId);
+          }
+        }
+        feedback.textContent = isCustom ? "Custom for this comparison" : "Using global uptime";
+        input.title = feedback.textContent;
+        input.classList.toggle("matrix-uptime-custom", isCustom);
+        resetButton.disabled = !isCustom;
+        settings.querySelector("#matrix-reset-uptimes").disabled = comparison.buildUptimeOverrides.size === 0;
+        calculateBuildWeaponComparisonResults(state.matrixComparison);
+        renderBuildWeaponComparison(true);
+      };
+      input.addEventListener("input", updateValue);
+      resetButton.addEventListener("click", () => {
+        input.value = String(Number((globalValue * 100).toFixed(10)));
+        updateValue();
+        input.focus({ preventScroll: true });
+      });
+    });
+  }
 }
 
 function setModalMode(mode = null) {
@@ -4615,10 +4752,19 @@ function setModalMode(mode = null) {
   if (mode) {
     modalWindow.classList.add(`modal-window-${mode}`);
   }
+  modalWindow.classList.toggle("modal-window-day-mode", state.dayMode && mode === "rift");
 }
 
 function openModal({ title, content, mode = null }) {
   els.modalTitle.textContent = title;
+  const showDayModeBadge = state.dayMode && title === "Matrix Compare";
+  els.modalTitle.classList.toggle("modal-title-with-badge", showDayModeBadge);
+  if (showDayModeBadge) {
+    const badge = document.createElement("span");
+    badge.className = "day-mode-badge";
+    badge.textContent = "Day Mode";
+    els.modalTitle.append(badge);
+  }
   setModalMode(mode);
   els.riftModalContent.innerHTML = content;
   els.riftModal.classList.remove("hidden");
