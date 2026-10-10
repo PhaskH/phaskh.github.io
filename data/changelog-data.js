@@ -2,6 +2,11 @@
 // Dates use America/Phoenix calendar dates; commit links are built from each full hash.
 window.CHANGELOG_DATA = Object.freeze([
   {
+    date: "October 10, 2026",
+    commit: "1e834496380385085b50448380a4f5101f5a7153",
+    summary: "Added per-build uptime preset selection and live uptime overrides to Matrix Compare when Day Mode is enabled.",
+  },
+  {
     date: "October 7, 2026",
     commit: "8b8ad87888c9b838b82f01f47e40684a9fc80b2c",
     summary: "Expanded Day Mode into Matrix Compare with per-build Buildup Boost and critical-hit overrides, clearer active-state styling, and a more compact table.",
