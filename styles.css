@@ -1823,15 +1823,41 @@ button.danger:hover {
 .matrix-build-settings {
   display: grid;
   gap: 4px;
-  width: 176px;
+  width: 260px;
 }
 
-@container matrix-build (min-width: 360px) {
-  .matrix-build-settings {
-    grid-template-columns: repeat(2, 176px);
-    width: auto;
-    gap: 8px;
-  }
+.matrix-column-preset {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 5px;
+}
+
+.matrix-column-preset select {
+  width: 100%;
+  min-width: 0;
+  min-height: 30px;
+  padding: 4px;
+  font-size: 0.8rem;
+}
+
+button.matrix-choose-uptimes {
+  width: 30px;
+  min-height: 30px;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.matrix-selected-uptimes {
+  display: grid;
+  gap: 4px;
+  max-height: 168px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.matrix-selected-uptimes:empty {
+  display: none;
 }
 
 @container matrix-build (min-width: 480px) {
@@ -1848,18 +1874,19 @@ button.danger:hover {
 }
 
 .matrix-settings-expanded .comparison-header-cell {
-  min-width: 186px;
+  min-width: 270px;
 }
 
 .matrix-build-setting {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 118px;
   align-items: center;
   gap: 5px;
 }
 
 .matrix-build-setting > label {
-  font-size: 0.78rem;
+  font-size: 0.74rem;
+  overflow-wrap: anywhere;
 }
 
 .matrix-build-setting-controls {
@@ -1896,6 +1923,81 @@ button.matrix-uptime-reset:disabled {
 
 .matrix-build-setting-controls input[aria-invalid="true"] {
   border-color: var(--danger);
+}
+
+.matrix-uptime-picker {
+  position: fixed;
+  width: min(380px, calc(100vw - 24px));
+  max-height: min(560px, 85vh);
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.matrix-uptime-picker[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.matrix-uptime-picker::backdrop {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.matrix-uptime-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.matrix-uptime-picker-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.matrix-uptime-picker-header button {
+  min-height: 32px;
+  padding: 4px 10px;
+}
+
+.matrix-uptime-picker-build {
+  margin: 8px 0;
+  font-size: 0.84rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.matrix-uptime-picker-list {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.matrix-uptime-picker-row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 2px;
+  border-top: 1px solid var(--border);
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.matrix-uptime-picker-row input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.matrix-uptime-picker-value {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .modal-close-button {

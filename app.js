@@ -1703,11 +1703,10 @@ function renderCalculatorActions() {
   });
 }
 
-function uptimePresetOptions() {
-  const selectedId = state.activeUptimePresetId;
-  const customOption = selectedId
+function uptimePresetOptions(selectedId = state.activeUptimePresetId) {
+  const customOption = state.activeUptimePresetId
     ? ""
-    : '<option value="custom" selected>Custom / Modified</option>';
+    : `<option value="custom" ${selectedId ? "" : "selected"}>Custom / Modified</option>`;
   const userOptions = state.uptimePresets
     .map(
       (preset) =>
@@ -4206,9 +4205,21 @@ function buildMatrixKey(buildId, weaponId) {
 }
 
 function matrixUptimeFields() {
-  return ["buildupBoostUptime", "critCapableDamageShare"]
-    .map((key) => state.uptimeFields.find((field) => field.key === key))
-    .filter(Boolean);
+  return state.uptimeFields;
+}
+
+function matrixBaseUptimeValues(comparison, buildId) {
+  const presetId = comparison.buildUptimePresets.get(buildId);
+  return getUptimePresetSnapshot(presetId)?.values ?? state.uptimeValues;
+}
+
+function matrixEffectiveUptimeValues(comparison, buildId) {
+  return { ...matrixBaseUptimeValues(comparison, buildId), ...comparison.buildUptimeOverrides.get(buildId) };
+}
+
+function formatMatrixUptime(field, value) {
+  const scale = field.displayScale ?? 100;
+  return scale === 1 ? String(value) : (value * scale).toFixed(1);
 }
 
 function calculateBuildWeaponComparisonResults(comparison) {
@@ -4225,7 +4236,7 @@ function calculateBuildWeaponComparisonResults(comparison) {
         {
           elementWeakness150: comparison.elementWeakness150,
           uptimeValues: state.dayMode
-            ? { ...state.uptimeValues, ...comparison.buildUptimeOverrides.get(build.id) }
+            ? matrixEffectiveUptimeValues(comparison, build.id)
             : state.uptimeValues,
         },
       );
@@ -4258,6 +4269,8 @@ function openBuildWeaponComparison() {
       weaponsToCompare.find((weapon) => weapon.id === state.selectedWeaponId)?.id ?? weaponsToCompare[0].id,
     elementWeakness150: false,
     buildUptimeOverrides: new Map(),
+    buildUptimePresets: new Map(),
+    buildSelectedUptimes: new Map(),
     buildSettingsOpen: false,
   };
   calculateBuildWeaponComparisonResults(state.matrixComparison);
@@ -4521,24 +4534,183 @@ function renderMatrixBuildSettings(build, index) {
     return "";
   }
   const comparison = state.matrixComparison;
-  const fields = matrixUptimeFields();
+  const fields = matrixUptimeFields().filter((field) => comparison.buildSelectedUptimes.get(build.id)?.has(field.ref));
+  const baseValues = matrixBaseUptimeValues(comparison, build.id);
+  const presetId = comparison.buildUptimePresets.get(build.id) ?? "";
+  const baseLabel = presetId ? "Using column preset" : "Using global uptime";
   const overrides = comparison.buildUptimeOverrides.get(build.id) ?? {};
   const controls = fields.map((field) => {
     const isCustom = Object.hasOwn(overrides, field.ref);
-    const value = overrides[field.ref] ?? state.uptimeValues[field.ref] ?? field.defaultValue;
+    const value = overrides[field.ref] ?? baseValues[field.ref] ?? field.defaultValue;
     const controlId = `matrix-uptime-${index}-${field.key}`;
     return `
         <div class="matrix-build-setting">
-          <label for="${controlId}" title="${escapeHtml(field.label)}">${field.key === "buildupBoostUptime" ? "BuB" : "Crit"}</label>
+          <label for="${controlId}" title="${escapeHtml(field.label)}">${escapeHtml(field.label)}</label>
           <div class="matrix-build-setting-controls">
-            <input id="${controlId}" class="${isCustom ? "matrix-uptime-custom" : ""}" title="${isCustom ? "Custom for this comparison" : "Using global uptime"}" type="number" min="0" max="100" step="0.1" value="${(value * 100).toFixed(1)}" data-matrix-uptime-value="${field.ref}" data-build-id="${escapeHtml(build.id)}" aria-label="${escapeHtml(`${build.name}: ${field.label} percentage`)}" aria-describedby="${controlId}-feedback" aria-invalid="false" />
-            <span>%</span>
-            <button class="secondary matrix-uptime-reset" type="button" aria-label="${escapeHtml(`Reset ${build.name}: ${field.label} to global uptime`)}" title="Reset to global uptime" ${isCustom ? "" : "disabled"}>&#8634;</button>
+            <input id="${controlId}" class="${isCustom ? "matrix-uptime-custom" : ""}" title="${isCustom ? "Custom for this comparison" : baseLabel}" type="number" min="${getUptimeMinValue(field)}" max="${getUptimeMaxValue(field)}" step="${field.step ?? (field.displayScale === 1 ? 1 : 0.1)}" value="${formatMatrixUptime(field, value)}" data-matrix-uptime-value="${field.ref}" data-build-id="${escapeHtml(build.id)}" aria-label="${escapeHtml(`${build.name}: ${field.label}${field.displayScale === 1 ? "" : " percentage"}`)}" aria-describedby="${controlId}-feedback" aria-invalid="false" />
+            <span>${field.displayScale === 1 ? "" : "%"}</span>
+            <button class="secondary matrix-uptime-reset" type="button" aria-label="${escapeHtml(`Reset ${build.name}: ${field.label}`)}" title="${presetId ? "Reset to column preset" : "Reset to global uptime"}" ${isCustom ? "" : "disabled"}>&#8634;</button>
           </div>
-          <span id="${controlId}-feedback" class="matrix-uptime-feedback visually-hidden" aria-live="polite">${isCustom ? "Custom for this comparison" : "Using global uptime"}</span>
+          <span id="${controlId}-feedback" class="matrix-uptime-feedback visually-hidden" aria-live="polite">${isCustom ? "Custom for this comparison" : baseLabel}</span>
         </div>`;
   }).join("");
-  return `<div class="matrix-build-settings" data-matrix-settings-build="${escapeHtml(build.id)}" ${comparison.buildSettingsOpen ? "" : "hidden"}>${controls}</div>`;
+  const selectedPresetId = presetId || state.activeUptimePresetId;
+  return `<div class="matrix-build-settings" data-matrix-settings-build="${escapeHtml(build.id)}" ${comparison.buildSettingsOpen ? "" : "hidden"}>
+    <div class="matrix-column-preset">
+      <select data-matrix-preset="${escapeHtml(build.id)}" aria-label="${escapeHtml(`Uptime preset for ${build.name}`)}" title="Uptime preset">${uptimePresetOptions(selectedPresetId)}</select>
+      <button type="button" class="secondary matrix-choose-uptimes" data-matrix-choose="${escapeHtml(build.id)}" aria-haspopup="dialog" aria-label="${escapeHtml(`Choose overrides for ${build.name}`)}" title="Choose Overrides">&#9745;</button>
+    </div>
+    <div class="matrix-selected-uptimes">${controls}</div>
+  </div>`;
+}
+
+function bindMatrixColumnSettings(root) {
+  const comparison = state.matrixComparison;
+  root.querySelectorAll("[data-matrix-preset]").forEach((select) => {
+    select.addEventListener("change", () => {
+      if (select.value !== "custom") comparison.buildUptimePresets.set(select.dataset.matrixPreset, select.value);
+      else comparison.buildUptimePresets.delete(select.dataset.matrixPreset);
+      comparison.buildUptimeOverrides.delete(select.dataset.matrixPreset);
+      refreshMatrixColumn(select.dataset.matrixPreset);
+      const next = [...els.riftModalContent.querySelectorAll("[data-matrix-preset]")]
+        .find((item) => item.dataset.matrixPreset === select.dataset.matrixPreset);
+      next?.focus({ preventScroll: true });
+    });
+  });
+  root.querySelectorAll("[data-matrix-choose]").forEach((button) => {
+    button.addEventListener("click", () => openMatrixUptimePicker(button.dataset.matrixChoose));
+  });
+  root.querySelectorAll("[data-matrix-uptime-value]").forEach((input) => {
+    const field = matrixUptimeFields().find((item) => item.ref === input.dataset.matrixUptimeValue);
+    const baseValue = matrixBaseUptimeValues(comparison, input.dataset.buildId)[field.ref] ?? field.defaultValue;
+    const baseLabel = comparison.buildUptimePresets.has(input.dataset.buildId) ? "Using column preset" : "Using global uptime";
+    const scale = field.displayScale ?? 100;
+    const container = input.closest(".matrix-build-setting");
+    const feedback = container.querySelector(".matrix-uptime-feedback");
+    const resetButton = container.querySelector(".matrix-uptime-reset");
+    const updateValue = (resetToBase = false) => {
+      const invalid = input.value === "" || !input.checkValidity();
+      input.setAttribute("aria-invalid", String(invalid));
+      if (invalid) {
+        feedback.textContent = `Enter a value from ${getUptimeMinValue(field)} to ${getUptimeMaxValue(field)}${scale === 1 ? "" : "%"}.`;
+        input.title = feedback.textContent;
+        resetButton.disabled = false;
+        return;
+      }
+      const value = resetToBase ? baseValue : Number(input.value) / scale;
+      const isCustom = Math.abs(value - baseValue) > 1e-9;
+      const overrides = comparison.buildUptimeOverrides.get(input.dataset.buildId) ?? {};
+      if (isCustom) {
+        overrides[field.ref] = value;
+        comparison.buildUptimeOverrides.set(input.dataset.buildId, overrides);
+      } else {
+        delete overrides[field.ref];
+        if (Object.keys(overrides).length) comparison.buildUptimeOverrides.set(input.dataset.buildId, overrides);
+        else comparison.buildUptimeOverrides.delete(input.dataset.buildId);
+      }
+      feedback.textContent = isCustom ? "Custom for this comparison" : baseLabel;
+      input.title = feedback.textContent;
+      input.classList.toggle("matrix-uptime-custom", isCustom);
+      resetButton.disabled = !isCustom;
+      els.riftModalContent.querySelector("#matrix-reset-uptimes").disabled = comparison.buildUptimeOverrides.size === 0;
+      calculateBuildWeaponComparisonResults(comparison);
+      renderBuildWeaponComparison(true);
+    };
+    input.addEventListener("input", () => updateValue());
+    resetButton.addEventListener("click", () => {
+      // Reset retains the exact baseline even when its displayed percentage is rounded.
+      input.value = formatMatrixUptime(field, baseValue);
+      updateValue(true);
+      input.focus({ preventScroll: true });
+    });
+  });
+}
+
+function refreshMatrixColumn(buildId) {
+  const comparison = state.matrixComparison;
+  const index = comparison.buildIds.indexOf(buildId);
+  const column = [...els.riftModalContent.querySelectorAll("[data-matrix-settings-build]")]
+    .find((item) => item.dataset.matrixSettingsBuild === buildId);
+  column.outerHTML = renderMatrixBuildSettings(getBuildById(buildId), index);
+  const nextColumn = [...els.riftModalContent.querySelectorAll("[data-matrix-settings-build]")]
+    .find((item) => item.dataset.matrixSettingsBuild === buildId);
+  bindMatrixColumnSettings(nextColumn);
+  els.riftModalContent.querySelector("#matrix-reset-uptimes").disabled = comparison.buildUptimeOverrides.size === 0;
+  calculateBuildWeaponComparisonResults(comparison);
+  renderBuildWeaponComparison(true);
+}
+
+function closeMatrixUptimePicker(returnFocus = true) {
+  const picker = document.getElementById("matrix-uptime-picker");
+  if (!picker) return;
+  const buildId = picker.dataset.buildId;
+  picker.close();
+  picker.remove();
+  if (returnFocus) {
+    [...els.riftModalContent.querySelectorAll("[data-matrix-choose]")]
+      .find((button) => button.dataset.matrixChoose === buildId)?.focus({ preventScroll: true });
+  }
+}
+
+function openMatrixUptimePicker(buildId) {
+  closeMatrixUptimePicker(false);
+  const comparison = state.matrixComparison;
+  const selected = comparison.buildSelectedUptimes.get(buildId) ?? new Set();
+  comparison.buildSelectedUptimes.set(buildId, selected);
+  const values = matrixEffectiveUptimeValues(comparison, buildId);
+  const picker = document.createElement("dialog");
+  picker.id = "matrix-uptime-picker";
+  picker.className = "matrix-uptime-picker";
+  picker.dataset.buildId = buildId;
+  picker.setAttribute("aria-labelledby", "matrix-uptime-picker-title");
+  picker.innerHTML = `<div class="matrix-uptime-picker-header"><h3 id="matrix-uptime-picker-title">Choose Overrides</h3><button type="button" class="secondary" aria-label="Close override picker">X</button></div>
+    <div class="matrix-uptime-picker-build">${escapeHtml(getBuildById(buildId).name)}</div>
+    <div class="matrix-uptime-picker-list">${[...matrixUptimeFields()].sort((a, b) => a.label.localeCompare(b.label)).map((field) => `<label class="matrix-uptime-picker-row"><input type="checkbox" data-matrix-pick="${escapeHtml(field.ref)}" ${selected.has(field.ref) ? "checked" : ""} /><span>${escapeHtml(field.label)}</span><span class="matrix-uptime-picker-value">${formatMatrixUptime(field, values[field.ref] ?? field.defaultValue)}${field.displayScale === 1 ? "" : "%"}</span></label>`).join("")}</div>`;
+  els.riftModalContent.append(picker);
+  picker.querySelector("button").addEventListener("click", () => closeMatrixUptimePicker());
+  picker.addEventListener("cancel", (event) => { event.preventDefault(); closeMatrixUptimePicker(); });
+  picker.addEventListener("click", (event) => {
+    const rect = picker.getBoundingClientRect();
+    if (event.target === picker && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) closeMatrixUptimePicker();
+  });
+  picker.querySelectorAll("[data-matrix-pick]").forEach((checkbox) => {
+    checkbox.addEventListener("change", () => {
+      const ref = checkbox.dataset.matrixPick;
+      if (checkbox.checked) selected.add(ref);
+      else {
+        selected.delete(ref);
+        const overrides = comparison.buildUptimeOverrides.get(buildId);
+        if (overrides) {
+          delete overrides[ref];
+          if (!Object.keys(overrides).length) comparison.buildUptimeOverrides.delete(buildId);
+        }
+      }
+      refreshMatrixColumn(buildId);
+      const field = matrixUptimeFields().find((item) => item.ref === ref);
+      checkbox.closest("label").querySelector(".matrix-uptime-picker-value").textContent = `${formatMatrixUptime(field, matrixEffectiveUptimeValues(comparison, buildId)[ref] ?? field.defaultValue)}${field.displayScale === 1 ? "" : "%"}`;
+    });
+  });
+  picker.showModal();
+  positionMatrixUptimePicker();
+}
+
+function positionMatrixUptimePicker() {
+  const picker = document.getElementById("matrix-uptime-picker");
+  if (!picker?.open) return;
+  picker.style.removeProperty("left");
+  picker.style.removeProperty("top");
+  picker.style.removeProperty("margin");
+  picker.style.removeProperty("right");
+  picker.style.removeProperty("bottom");
+  if (!window.matchMedia("(max-width: 520px)").matches) {
+    const anchor = [...els.riftModalContent.querySelectorAll("[data-matrix-choose]")].find((button) => button.dataset.matrixChoose === picker.dataset.buildId).getBoundingClientRect();
+    const rect = picker.getBoundingClientRect();
+    picker.style.left = `${Math.max(12, Math.min(anchor.right - rect.width, window.innerWidth - rect.width - 12))}px`;
+    picker.style.top = `${Math.max(12, Math.min(anchor.bottom + 6, window.innerHeight - rect.height - 12))}px`;
+    picker.style.margin = "0";
+    picker.style.right = "auto";
+    picker.style.bottom = "auto";
+  }
 }
 
 function renderBuildWeaponComparison(resultsOnly = false) {
@@ -4695,50 +4867,7 @@ function renderBuildWeaponComparison(resultsOnly = false) {
       state.matrixComparison.buildUptimeOverrides.clear();
       refreshSettings();
     });
-    els.riftModalContent.querySelectorAll("[data-matrix-uptime-value]").forEach((input) => {
-      const field = matrixUptimeFields().find((item) => item.ref === input.dataset.matrixUptimeValue);
-      const globalValue = state.uptimeValues[field.ref] ?? field.defaultValue;
-      const container = input.closest(".matrix-build-setting");
-      const feedback = container.querySelector(".matrix-uptime-feedback");
-      const resetButton = container.querySelector(".matrix-uptime-reset");
-      const updateValue = () => {
-        const invalid = input.value === "" || !input.checkValidity();
-        input.setAttribute("aria-invalid", String(invalid));
-        if (invalid) {
-          feedback.textContent = "Enter a value from 0 to 100%.";
-          input.title = feedback.textContent;
-          resetButton.disabled = false;
-          return;
-        }
-        const value = Number(input.value) / 100;
-        const isCustom = Math.abs(value - globalValue) > 1e-9;
-        const overrides = comparison.buildUptimeOverrides.get(input.dataset.buildId) ?? {};
-        if (isCustom) {
-          overrides[field.ref] = value;
-          comparison.buildUptimeOverrides.set(input.dataset.buildId, overrides);
-        } else {
-          delete overrides[field.ref];
-          if (Object.keys(overrides).length) {
-            comparison.buildUptimeOverrides.set(input.dataset.buildId, overrides);
-          } else {
-            comparison.buildUptimeOverrides.delete(input.dataset.buildId);
-          }
-        }
-        feedback.textContent = isCustom ? "Custom for this comparison" : "Using global uptime";
-        input.title = feedback.textContent;
-        input.classList.toggle("matrix-uptime-custom", isCustom);
-        resetButton.disabled = !isCustom;
-        settings.querySelector("#matrix-reset-uptimes").disabled = comparison.buildUptimeOverrides.size === 0;
-        calculateBuildWeaponComparisonResults(state.matrixComparison);
-        renderBuildWeaponComparison(true);
-      };
-      input.addEventListener("input", updateValue);
-      resetButton.addEventListener("click", () => {
-        input.value = String(Number((globalValue * 100).toFixed(10)));
-        updateValue();
-        input.focus({ preventScroll: true });
-      });
-    });
+    bindMatrixColumnSettings(els.riftModalContent);
   }
 }
 
@@ -4771,6 +4900,7 @@ function openModal({ title, content, mode = null }) {
 }
 
 function closeModal() {
+  closeMatrixUptimePicker(false);
   const returnFocus = state.modalReturnFocus;
   state.matrixComparison = null;
   state.riftComparison = null;
@@ -4973,12 +5103,18 @@ function wireGlobalEvents() {
   });
 
   window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && document.getElementById("matrix-uptime-picker")?.open) {
+      event.preventDefault();
+      closeMatrixUptimePicker();
+      return;
+    }
     if (event.key === "Escape" && !els.riftModal.classList.contains("hidden")) {
       closeModal();
     }
   });
 
   window.addEventListener("resize", () => {
+    positionMatrixUptimePicker();
     if (state.buildDraft) {
       const nextColumnCount = getBuildEditorColumnCount();
       if (nextColumnCount !== state.buildEditorColumnCount) {
